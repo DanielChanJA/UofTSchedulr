@@ -74,6 +74,7 @@ table {
     width: 50%;
     height: 100%;
     float: right;
+    max-width: 200px;
 }
 
 .menu ul {
@@ -97,6 +98,7 @@ input {
     width: 70%;
     font-family: raleway, serif;
     font-size: 100%;
+    max-width: 300px;
 }
 
 .table-header {
@@ -116,9 +118,11 @@ input {
 
 .schedule {
     width: 90%;
+    max-width: 400px;
     font-family: raleway, serif;
     border-collapse: initial;
     border: 1px solid #086788;
+    margin: 0 0 25px 0;
 }
 
 .schedule td {
