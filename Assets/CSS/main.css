@@ -120,13 +120,12 @@ input {
     width: 90%;
     max-width: 400px;
     font-family: raleway, serif;
-    border-collapse: initial;
-    border: 1px solid #086788;
     margin: 0 0 25px 0;
+    font-weight: bold;
 }
 
 .schedule td {
-    border: 1px solid #086788;
     width: 50%;
-    padding: 0 0 0 10px;
+    border: 5px solid #086788;
+    padding: 10px 0 0 10px;
 }
