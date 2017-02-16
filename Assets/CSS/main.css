@@ -105,15 +105,27 @@ input {
     margin: 0 0 10px 0;
 }
 
-.table-header ul {
+.table-header div {
     width: 50%;
     display: flex;
     justify-content: space-around;
 }
 
-.table-header h1 {
+.table-header button {
+    width: 35px;
+    height: 35px;
+}
+
+.header-day {
     display: inline-block;
     font-family: raleway, serif;
+    font-weight: bold;
+    padding: 8px 0 0 0;
+    font-size: 100%;
+}
+
+.schedule-container {
+    width: 100%;
 }
 
 .schedule {

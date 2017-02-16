@@ -60,20 +60,60 @@ var daysOTW = ["M", "T", "W", "TH", "F"];
 
 // Media query for mobile devices
 var mediaQueryMobile = window.matchMedia("(max-width: 736px)");
-if (mediaQueryMobile.matches) {
-    // Create the table for each day
+if (mediaQueryMobile.matches) {    
+    // Create the required table elements
+    var scheduleContainer = document.getElementsByClassName("schedule-container")[0];
+    for (let i = 0; i < 5; i++) {
+        var table = document.createElement("table");
+        table.className = "schedule schedule-" + daysOTW[i] + " center-x";
+        scheduleContainer.appendChild(table);
+    }
+    
+    // Create the table rows for each day
     for (let i = 0; i < daysOTW.length; i++) {
-        createDayTable(daysOTW[i]);
+        createDayTable(daysOTW[i], i);
     }
     
     // Populate the days
     var days = document.getElementsByClassName("schedule");
     populateDays(days);
+    
+    //Buttons
+    var currDay = 0;
+    var prevDay = document.getElementsByClassName("prev-day")[0];
+    prevDay.addEventListener("click", function() {
+        days[currDay].style.display = "none";
+        
+        // If it is the first day of the week
+        if (currDay == 0) {
+            days[days.length - 1].style.display = "table";
+            currDay = days.length - 1;
+        } else {
+            days[currDay - 1].style.display = "table"
+            currDay -= 1;
+        }
+        changeHeaderDay(day(currDay);
+    });
+    
+    var nextDay = document.getElementsByClassName("next-day")[0];
+    nextDay.addEventListener("click", function() {
+        days[currDay].style.display = "none";
+        
+        // If it is the last day of the week
+        if (currDay == days.length - 1) {
+            days[0].style.display = "table";
+            currDay = 0;
+        } else {
+            days[currDay + 1].style.display = "table";
+            currDay += 1;
+        }
+        changeHeaderDay(currDay);
+    });
 }
 
 
-// Create an empty table for one day
-function createDayTable(day) {
+// Create rows for an empty table for one day
+function createDayTable(day, num) {    
     var className = "schedule-" + day;
     var table = document.getElementsByClassName(className)[0];
     table.day = day;
@@ -100,16 +140,7 @@ function createDayTable(day) {
 }
 
 
-function checkDay(day, lst) {
-    for (let i = 0; i < lst.length; i++) {
-        if (day == lst[i]) {
-            return true;
-        }
-    return false;
-    }
-}
-
-
+// Insert courses from schedule list
 function populateDays() {
     for (let i = 0; i < days.length; i++) {
         for (let k = 0; k < schedule.length; k++) {
@@ -133,3 +164,20 @@ function populateDays() {
     }   
 }
 
+
+// Check if day is in lst
+function checkDay(day, lst) {
+    for (let i = 0; i < lst.length; i++) {
+        if (day == lst[i]) {
+            return true;
+        }
+    return false;
+    }
+}
+
+
+// Change the header for the schedule
+changeHeaderDay(day) {
+    var headerDay = document.getElementsByClassName("header-day")[0];
+    headerDay.innerHTML = day.days
+}
