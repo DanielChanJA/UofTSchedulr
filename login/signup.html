@@ -8,17 +8,24 @@
     <!--<link href='http://fonts.googleapis.com/css?family=Titillium+Web:400,300,600' rel='stylesheet' type='text/css'>-->
     <!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">-->
     <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
-
     <link rel="stylesheet" href="css/style_signup.css">
 </head>
 
 <body>
+    <nav class="menu">
+        <div>
+            <ul class="center-y">
+                <li> <a href="signup.html">Sign up</a> </li>
+                <li> <a href="signin.html">Sign in</a> </li>
+            </ul>
+        </div>
+    </nav>
     <div class="form">
 
-        <ul class="tab-group">
+        <!--<ul class="tab-group">
             <li class="tab active"><a href="#signup">Sign Up</a></li>
             <li class="tab"><a href="signin.html">Log In</a></li>
-        </ul>
+        </ul>-->
 
         <div class="tab-content">
             <div id="signup">
@@ -52,7 +59,7 @@
               Email Address<span class="req">*</span>
             </label>
                         <div class="rounded">
-                            <input type="email" class="login_reg" required autocomplete="off" pattern="/^[A-Za-z0-9._%+-]+(^@mail\.utoronto\.ca)" />
+                            <input type="email" class="login_reg" required autocomplete="off" />
                         </div>
                     </div>
 
@@ -65,22 +72,18 @@
                         </div>
                     </div>
 
-                    <!--<button type="submit" class="button button-block" />Get Started</button>-->
+                    <div class="ph-float">
+                        <button class='ph-button ph-btn-green'>Sign up</button>
+                    </div>
+                    <div class="anchor">
+                        <a href="https://facebook.com"> <img class="fblogin" src="css/fblogin.png" alt="Sign in with Facebook"></a>
+                    </div>
+                </form>
 
             </div>
-
-            <div class="ph-float">
-                <button class='ph-button ph-btn-green'>Log in</a>
-            </div>
-            <div>
-                <a href="https://facebook.com"><img class="fblogin" src="css/fblogin.png"></a>
-            </div>
-            </form>
 
         </div>
-
-    </div>
-    <!-- tab-content -->
+        <!-- tab-content -->
 
     </div>
     <!--<script src="js/index.js"></script>-->
