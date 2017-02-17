@@ -1,5 +1,3 @@
-var colours = ["#dd1c1a", "#f0c808", "#06aed5", "#fff1d0"];
-var daysOTW = ["M", "T", "W", "TH", "F"];
 var courses = [
     {
         "code": "CSC300",
@@ -7,23 +5,24 @@ var courses = [
         "instructor": "Jeremy Sills",
         "days": ["M"],
         "time": [11, 1],
-        "colour": ""
+        "colour": "#dd1c1a"
     },
     {
         "code": "CSC301",
         "name": "Introduction to Software Engineering",
         "instructor": "Joey Freund",
-        "days": ["M", "T"],
+        "days": ["T"],
         "time": [4, 1],
-        "colour": ""
+        "colour": "#f0c808"
+        
     },
     {
         "code": "CSC302",
         "name": "Engineering Large Software Systems",
         "instructor": "Joe",
         "days": ["M"],
-        "time": [1, 3],
-        "colour": ""
+        "time": [1, 2],
+        "colour": "#06aed5"
     }
 ];
 
@@ -40,9 +39,10 @@ var schedule = [
         "code": "CSC301",
         "name": "Introduction to Software Engineering",
         "instructor": "Joey Freund",
-        "days": ["M", "T"],
+        "days": ["T"],
         "time": [4, 1],
         "colour": "#f0c808"
+        
     },
     {
         "code": "CSC302",
@@ -54,49 +54,15 @@ var schedule = [
     }
 ];
 
+var colours = ["#dd1c1a", "#f0c808", "#06aed5", "#fff1d0"];
+var coloursPicked = [];
+var daysOTW = ["M", "T", "W", "TH", "F"];
 
-// Media query for mobile devices (max: iPad portrait - 1px)
-var mediaQueryMobile = window.matchMedia("(max-width: 767px)");
-if (mediaQueryMobile.matches) {
-    refreshSmallTable();
-}
-
-
-// Media query for tablets (min: iPad portrait)
-var mediaQueryTablet = window.matchMedia("(min-width: 768px)");
-if (mediaQueryTablet.matches) {
-    refreshLargeTable();
-}
-
-
-// Refresh table based on resize
-// Don't refresh if it is within a boundary
-var currWidth = window.innerWidth;
-window.onresize = function() {
-    if (window.innerWidth < 768) {
-        if (currWidth >= 768) {
-            refreshSmallTable();
-            currWidth = window.innerWidth;
-        }
-    } else {
-        if (currWidth < 768) {
-            refreshLargeTable();
-            currWidth = window.innerWidth;
-        }
-    }
-}
-
-
-function refreshSmallTable() { 
-    changeHeaderDay(0);
-    
-    // Remove previous elements
-    var scheduleContainer = document.getElementsByClassName("schedule-container")[0];
-    while (scheduleContainer.firstChild) {
-        scheduleContainer.removeChild(scheduleContainer.firstChild);
-    }
-    
+// Media query for mobile devices
+var mediaQueryMobile = window.matchMedia("(max-width: 736px)");
+if (mediaQueryMobile.matches) {    
     // Create the required table elements
+    var scheduleContainer = document.getElementsByClassName("schedule-container")[0];
     for (let i = 0; i < 5; i++) {
         var table = document.createElement("table");
         table.className = "schedule schedule-" + daysOTW[i] + " center-x";
@@ -110,7 +76,7 @@ function refreshSmallTable() {
     
     // Populate the days
     var days = document.getElementsByClassName("schedule");
-    populateDaysSmall(days);
+    populateDays(days);
     
     //Buttons
     var currDay = 0;
@@ -126,7 +92,7 @@ function refreshSmallTable() {
             days[currDay - 1].style.display = "table"
             currDay -= 1;
         }
-        changeHeaderDay(currDay);
+        changeHeaderDay(day(currDay);
     });
     
     var nextDay = document.getElementsByClassName("next-day")[0];
@@ -143,54 +109,6 @@ function refreshSmallTable() {
         }
         changeHeaderDay(currDay);
     });
-}
-
-
-function refreshLargeTable() {
-    // Remove previous elements
-    var scheduleContainer = document.getElementsByClassName("schedule-container")[0];
-    while (scheduleContainer.firstChild) {
-        scheduleContainer.removeChild(scheduleContainer.firstChild);
-    }
-    
-    // Create empty table elements
-    var scheduleContainer = document.getElementsByClassName("schedule-container")[0];
-    var table = document.createElement("table");
-    table.className = "schedule center-x";
-    scheduleContainer.appendChild(table);
-    
-    // Create row for days
-    var row = table.insertRow(0);
-    row.style.height = "50px";
-    for (let i = 0; i < 6; i++) {
-        var cell = row.insertCell(i);
-        if (i != 0) {
-            cell.innerHTML = daysOTW[i - 1]; 
-        }
-    }
-    
-    // Create rows for courses
-    var counter = 9;
-    for (let i = 1; i < 13; i++) {
-        var row = table.insertRow(i);
-        if (counter == 13) {
-            counter = 1;
-        }
-        row.timeStart = counter;
-        row.style.height = "50px";
-        for (let i = 0; i < 6; i++) {
-            row.insertCell(i);
-            if (i == 0) {
-                row.cells[i].innerHTML = counter + ":00";
-            } else {
-                row.cells[i].day = daysOTW[i - 1];
-            }
-        }
-        counter++;
-    }
-    
-    // Populate each row
-    populateDaysLarge(table);
 }
 
 
@@ -222,17 +140,21 @@ function createDayTable(day, num) {
 }
 
 
-// Find the right spots to insert courses for single day timetables
-function populateDaysSmall(days) {
+// Insert courses from schedule list
+function populateDays() {
     for (let i = 0; i < days.length; i++) {
         for (let k = 0; k < schedule.length; k++) {
             if (checkDay(days[i].day, schedule[k].days)) {
                 for (let n = 0; n < days[i].rows.length; n++) {
                     if (days[i].rows[n].timeStart == schedule[k].time[0]) {
-                        insertCourse(days[i].rows[n].cells[1], schedule[k]);
+                        days[i].rows[n].cells[1].innerHTML = schedule[k].code;
+                        days[i].rows[n].cells[1].style.borderBottom = "none";
+                        days[i].rows[n].cells[1].style.backgroundColor = schedule[k].colour;
                         if (schedule[k].time[1] > 1) {
                             for (let m = 1; m < schedule[k].time[1]; m++) {
-                                extendCourse(days[i].rows[n+m].cells[1], schedule[k]);
+                                days[i].rows[n+m].cells[1].style.borderTop = "none";
+                                days[i].rows[n+m].cells[1].style.borderBottom = "none";
+                                days[i].rows[n+m].cells[1].style.backgroundColor = schedule[k].colour;
                             }
                         }
                     }
@@ -243,134 +165,19 @@ function populateDaysSmall(days) {
 }
 
 
-// Find the right spots to insert courses for weekly timetable
-function populateDaysLarge(table) {
-    for (let i = 1; i < table.rows.length; i++) {
-        for (let k = 1; k < table.rows[i].cells.length; k++) {
-            for (let n = 0; n < schedule.length; n++) {
-                if (checkDay(table.rows[i].cells[k].day, schedule[n].days)) {
-                    if (table.rows[i].timeStart == schedule[n].time[0]) {
-                        insertCourse(table.rows[i].cells[k], schedule[n]);
-                        if (schedule[n].time[1] > 1) {
-                            for (let m = 1; m < schedule[n].time[1]; m++) {
-                                extendCourse(table.rows[i+m].cells[k], schedule[n]);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-
-
-// Insert the course after finding the right spot
-function insertCourse(cell, course) {
-    cell.innerHTML = course.code;
-    cell.style.borderBottom = "none";
-    cell.style.backgroundColor = course.colour;
-    cell.addEventListener("click", function() {
-        displayCourse(course); 
-    });
-}
-
-
-// Extend the course if the duration is longer than an hour
-function extendCourse(cell, course) {
-    cell.style.borderTop = "none";
-    cell.style.borderBottom = "none";
-    cell.style.backgroundColor = course.colour;
-    cell.addEventListener("click", function() {
-        displayCourse(course); 
-    }); 
-}
-
-
 // Check if day is in lst
 function checkDay(day, lst) {
     for (let i = 0; i < lst.length; i++) {
         if (day == lst[i]) {
             return true;
         }
-    }
     return false;
+    }
 }
 
 
 // Change the header for the schedule
-function changeHeaderDay(day) {
-    var newDay;
-    switch(day) {
-        case 0:
-            newDay = "Monday";
-            break;
-        case 1:
-            newDay = "Tuesday";
-            break;
-        case 2:
-            newDay = "Wednesday";
-            break;
-        case 3:
-            newDay = "Thursday";
-            break;
-        case 4:
-            newDay = "Friday";
-            break;
-        default:
-            break;
-    }
+changeHeaderDay(day) {
     var headerDay = document.getElementsByClassName("header-day")[0];
-    headerDay.innerHTML = newDay;
+    headerDay.innerHTML = day.days
 }
-
-
-// Display course information mdoal
-var modals = document.getElementsByClassName("modal-container");
-function displayCourse(course) {
-    var modalContainer = modals[1];
-    modalContainer.style.display = "block";
-    var modal = modalContainer.childNodes[1];
-    modal.childNodes[1].innerHTML = course.code;
-    modal.childNodes[5].innerHTML = course.name;
-    modal.childNodes[9].innerHTML = course.instructor;
-    var time = "";
-    for (let i = 0; i < course.days.length; i++) {
-        time += course.days[i] + " "
-    }
-    time += "<br>" + course.time[0] + ":00";
-    modal.childNodes[13].innerHTML = time;
-}
-
-
-// If user clicks outside of course information modal
-window.addEventListener("click", function(event) {
-    switch(event.target) {
-        case modals[0]:
-            modals[0].style.display = "none";
-            modals[0].childNodes[1].childNodes[3].value = "";
-            modals[0].childNodes[1].childNodes[5].value = "";
-            break;
-        case modals[1]:
-            modals[1].style.display = "none";
-            break;
-        default:
-            break;
-    }
-});
-
-
-// Display modal for sign in
-var buttonSignIn1 = document.getElementsByClassName("button-sign-in1")[0];
-buttonSignIn1.addEventListener("click", function() {
-    modals[0].style.display = "block";
-});
-
-
-// Second sign in button
-var buttonSignIn2 = document.getElementsByClassName("button-sign-in2")[0];
-buttonSignIn2.addEventListener("click", function() {
-    modals[0].style.display = "none";
-    modals[0].childNodes[1].childNodes[3].value = "";
-    modals[0].childNodes[1].childNodes[5].value = "";
-})
-
