@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset="utf-8">
+    <title>About Us</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    <link rel="stylesheet" href="Assets/font-awesome/css/font-awesome.min.css">
+</head>
+
+<body>
+
+    <nav class="navbar navbar-default" style="background: #086788;">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navmenu_about" aria-expanded="false">
+                    <span class="sr-only"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="pull-left" href="index.html"><img style="max-width:50px; padding-top: 2px; padding-bottom: 2px;" src="Assets/Images/schedulr_logo.png"></a>
+            </div>
+
+            <div class="collapse navbar-collapse" id="navmenu_about">
+                <ul class="nav navbar-nav">
+                    <li class>
+                        <a style="color: #FFFFFF" href="index.html">Scheduler</a>
+                    </li>
+                    <li>
+                        <a style="color: #FFFFFF" href="index.html">About Us</a>
+                    </li>
+                    <li class="active">
+                        <a style="color: #FFFFFF" href="feedback.html">Feedback<span class="sr-only">(current)</span></a>
+                    </li>
+                </ul>
+
+                <ul class="nav navbar-right navbar-nav">
+                    <li>
+                        <a style="color: #FFFFFF" href="login/signup.html">Sign Up</a>
+                    </li>
+                    <li>
+                        <a style="color: #FFFFFF" href="login/signin.html">Sign In</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div id="mycarousel" class="carousel slide" data-ride="carousel">
+            <div class="carousel-inner">
+                <div class="item active">
+                    <img src="Assets/Images/feedback_banner.jpg" class="img-responsive">
+                    <div class="carousel-caption">
+                        <h1>Contact Us</h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+
+    <div class="container well">
+
+        <div class="col-md-6">
+            <div class="input-group input-group-md">
+                <span class="input-group-addon" style="min-width: 120px;">Name</span>
+                <input type="text" class="form-control" placeholder="John Doe" required>
+            </div>
+            <div class="input-group input-group-md">
+                <span class="input-group-addon" style="min-width: 120px;">Email Address</span>
+                <input type="text" class="form-control" placeholder="john.doe@mail.utoronto.ca">
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="input-group input-group-md">
+                <span class="input-group-addon">Issue</span>
+                <textarea class="form-control" rows="5" id="comment" placeholder="Tell us more about your issue." required></textarea>
+            </div>
+        </div>
+
+        <div class="col-md-12 text-center">
+            <br>
+            <button class="btn-primary btn btn-lg" type="submit" role="button"><a href="index.html"></a>Submit Feedback</button>
+        </div>
+
+    </div>
+
+
+    <footer>
+
+        <p class="text-center">Made by UofT students, for UofT students.</p>
+        <div style="text-align: center">
+            <a href="https://github.com/cobalt-uoft/cobalt">
+                <i class="fa fa-mouse-pointer" aria-hidden="true"></i> Cobalt API
+            </a>
+        </div>
+    </footer>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+</body>
+
+</html>
