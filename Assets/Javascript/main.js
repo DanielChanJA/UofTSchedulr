@@ -358,13 +358,6 @@ window.addEventListener("click", function(event) {
 });
 
 
-// Display modal for sign in
-var buttonSignIn1 = document.getElementsByClassName("button-sign-in1")[0];
-buttonSignIn1.addEventListener("click", function() {
-    modals[0].style.display = "block";
-});
-
-
 // Second sign in button
 var buttonSignIn2 = document.getElementsByClassName("button-sign-in2")[0];
 buttonSignIn2.addEventListener("click", function() {

@@ -1,83 +1,82 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Schdule timetable scheduler">
-    <link rel="stylesheet" href="Assets/CSS/main.css">
-    <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css?family=Gorditas" rel="stylesheet">
-    <title>Schdule</title>
-</head>
-
-<body>
-    <nav class="menu">
-        <ul class="center-y">
-            <li>
-                <button class="button-sign-up" type="button"><a href="./login/signup.html">Sign up</a></button>
-            </li>
-            <li>
-                <button class="button-sign-in1" type="button">Sign in</button>
-            </li>
-        </ul>
-    </nav>
-    <div class="modal-container">
-        <div class="modal-sign-in center-x">
-            <h2>Facebook Login</h2>
-            <input class="center-x" type="text" name="email" placeholder="E-mail">
-            <input class="center-x" type="password" name="password" placeholder="Password">
-            <button class="button-sign-in2 center-x" type="button">Sign in</button>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="Schdule timetable scheduler">
+        <link rel="stylesheet" href="Assets/CSS/main.css">
+        <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Gorditas" rel="stylesheet">
+        <title>Schdule</title>
+    </head>
+    <body>
+        <nav class="menu">
+            <ul class="center-y">
+                <li>
+                    <a href="./login/signup.html">Sign up</a>
+                </li>
+                <li>
+                    <a href="./login/signin.html">Sign in</a>
+                </li>
+            </ul>
+        </nav>
+        <div class="modal-container">
+            <div class="modal-sign-in center-x">
+                <h2>Facebook Login</h2>
+                <input class="center-x" type="text" name="email" placeholder="E-mail">
+                <input class="center-x" type="password" name="password" placeholder="Password">
+                <button class="button-sign-in2 center-x" type="button">Sign in</button>
+            </div>
         </div>
-    </div>
-    <form class="search-bar">
-        <input class="center-x" type="text" name="search" placeholder="Course search">
-    </form>
-    <section class="table-header">
-        <div class="center-x">
-            <button class="prev-day">&#60;</button>
-            <h1 class="header-day"></h1>
-            <button class="next-day">&#62;</button>
+        <form class="search-bar">
+            <input class="center-x" type="text" name="search" placeholder="Search courses">
+        </form>
+        <section class="table-header">
+            <div class="center-x">
+                <button class="prev-day">&#60;</button>
+                <h1 class="header-day"></h1>
+                <button class="next-day">&#62;</button>
+            </div>
+        </section>
+        <noscript>You must have Javascript enabled.</noscript>
+        <section class="schedule-container"></section>
+        <div class="modal-container">
+            <div class="modal-course-info center-x">
+                <h2></h2>
+                <h3>Course Name</h3>
+                <p></p>
+                <h3>Instructor</h3>
+                <p></p>
+                <h3>Time</h3>
+                <p></p>
+            </div>
         </div>
-    </section>
-    <section class="schedule-container"></section>
-    <div class="modal-container">
-        <div class="modal-course-info center-x">
-            <h2></h2>
-            <h3>Course Name</h3>
-            <p></p>
-            <h3>Instructor</h3>
-            <p></p>
-            <h3>Time</h3>
-            <p></p>
-        </div>
-    </div>
-    <section class="course-info">
-        <div class="center-x">
-            <h2>CSC300</h2>
-            <h3>Course Name</h3>
-            <p>Computers and Society</p>
-            <h3>Instructor</h3>
-            <p>Jeremy Sills</p>
-            <h3>Time</h3>
-            <p>M<br>11:00</p>
-        </div>
-        <button class="button-add-class center-x" type="button">Add Class</button>
-    </section>
-    <section class="map">
-        <img class="center-x" src="Assets/Images/map-close.jpg" alt="location">
-    </section>
-    <footer>
-        <ul class="center-xy">
-            <li>
-                <a>About</a>
-            </li>
-            <li>
-                <a>Contact Us</a>
-            </li>
-        </ul>
-    </footer>
-    <script src="Assets/Javascript/main.js"></script>
-</body>
-
+        <section class="course-info">
+            <div class="center-x">
+                <h2>CSC300</h2>
+                <h3>Course Name</h3>
+                <p>Computers and Society</p>
+                <h3>Instructor</h3>
+                <p>Jeremy Sills</p>
+                <h3>Time</h3>
+                <p>M<br>11:00</p>
+            </div>
+            <button class="button-add-class center-x" type="button">Add Class</button>
+        </section>
+        <section class="map">
+            <img class="center-x" src="Assets/Images/map-close.jpg" alt="location">
+        </section>
+        <footer>
+            <ul class="center-xy">
+                <li>
+                    <a>About</a>
+                </li>
+                <li>
+                    <a>Contact Us</a>
+                </li>
+            </ul>
+        </footer>
+        <script src="Assets/Javascript/main.js"></script>
+    </body>
 </html>
+
