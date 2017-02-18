@@ -1,108 +1,114 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="description" content="Schdule timetable scheduler">
-        <link rel="stylesheet" href="Assets/CSS/main.css">
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
-        <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
-        <link href="https://fonts.googleapis.com/css?family=Gorditas" rel="stylesheet">
-        <title>Schdule</title>
-    </head>
-    <body>
-        <nav class="navbar navbar-default" style="background: #086788;">
-            <div class="container-fluid">
-                <div class="navbar-header">
-                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navmenu_about" aria-expanded="false">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Schdule timetable scheduler">
+    <link rel="stylesheet" href="Assets/CSS/main.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Gorditas" rel="stylesheet">
+    <title>Schdule</title>
+</head>
+
+<body>
+    <nav class="navbar navbar-default" style="background: #086788;">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navmenu_about" aria-expanded="false">
                         <span class="sr-only"></span>
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="pull-left" href="index.html"><img style="max-width:50px; padding-top: 2px; padding-bottom: 2px;" src="Assets/Images/schedulr_logo.png"></a>
-                </div>
-
-                <div class="collapse navbar-collapse" id="navmenu_about">
-                    <ul class="nav navbar-nav">
-                        <li class="active">
-                            <a style="color: #FFFFFF" href="index.html">Scheduler</a>
-                        </li>
-                        <li>
-                            <a style="color: #FFFFFF" href="about_us.html">About Us<span class="sr-only">(current)</span></a>
-                        </li>
-                        <li>
-                            <a style="color: #FFFFFF" href="feedback.html">Feedback</a>
-                        </li>
-                    </ul>
-
-                    <ul class="nav navbar-right navbar-nav">
-                        <li>
-                            <a style="color: #FFFFFF" href="login/signup.html">Sign Up</a>
-                        </li>
-                        <li>
-                            <a style="color: #FFFFFF" href="login/signin.html">Sign In</a>
-                        </li>
-                    </ul>
-                </div>
+                <a class="pull-left" href="index.html"><img style="max-width:50px; padding-top: 2px; padding-bottom: 2px;" src="Assets/Images/schedulr_logo.png"></a>
             </div>
-        </nav>
-        <div class="modal-container">
-            <div class="modal-sign-in center-x">
-                <h2>Facebook Login</h2>
-                <input class="center-x" type="text" name="email" placeholder="E-mail">
-                <input class="center-x" type="password" name="password" placeholder="Password">
-                <button class="button-sign-in2 center-x" type="button">Sign in</button>
+
+            <div class="collapse navbar-collapse" id="navmenu_about">
+                <ul class="nav navbar-nav">
+                    <li class="active">
+                        <a style="color: #FFFFFF" href="index.html">Scheduler</a>
+                    </li>
+                    <li>
+                        <a style="color: #FFFFFF" href="about_us.html">About Us<span class="sr-only">(current)</span></a>
+                    </li>
+                    <li>
+                        <a style="color: #FFFFFF" href="feedback.html">Feedback</a>
+                    </li>
+                </ul>
+
+                <ul class="nav navbar-right navbar-nav">
+                    <li>
+                        <a style="color: #FFFFFF" href="login/sign_up.html">Sign Up</a>
+                    </li>
+                    <li>
+                        <a style="color: #FFFFFF" href="login/sign_in.html">Sign In</a>
+                    </li>
+                </ul>
             </div>
         </div>
-        <form class="search-bar">
-            <input class="center-x" type="text" name="search" placeholder="Search courses">
-        </form>
-        <section class="table-header">
-            <div class="center-x">
-                <button class="prev-day">&#60;</button>
-                <h1 class="header-day"></h1>
-                <button class="next-day">&#62;</button>
-            </div>
-        </section>
-        <noscript>You must have Javascript enabled.</noscript>
-        <section class="schedule-container"></section>
-        <div class="modal-container">
-            <div class="modal-course-info center-x">
-                <h2></h2>
-                <h3>Course Name</h3>
-                <p></p>
-                <h3>Instructor</h3>
-                <p></p>
-                <h3>Time</h3>
-                <p class="modal-course-last"></p>
+    </nav>
+    <div class="modal-container">
+        <div class="modal-sign-in center-x">
+            <h2>Facebook Login</h2>
+            <input class="center-x" type="text" name="email" placeholder="E-mail">
+            <input class="center-x" type="password" name="password" placeholder="Password">
+            <button class="button-sign-in2 center-x" type="button">Sign in</button>
+        </div>
+    </div>
+    <form class="search-bar">
+        <input class="center-x" type="text" name="search" placeholder="Search courses">
+    </form>
+    <section class="table-header">
+        <div class="center-x">
+            <button class="prev-day">&#60;</button>
+            <h1 class="header-day"></h1>
+            <button class="next-day">&#62;</button>
+        </div>
+    </section>
+    <noscript>You must have Javascript enabled.</noscript>
+    <section class="schedule-container"></section>
+    <div class="modal-container">
+        <div class="modal-course-info center-x">
+            <h2></h2>
+            <h3>Course Name</h3>
+            <p></p>
+            <h3>Instructor</h3>
+            <p></p>
+            <h3>Time</h3>
+            <p class="modal-course-last"></p>
+        </div>
+    </div>
+    <section class="course-info">
+        <div class="center-x">
+            <h2>CSC300</h2>
+            <h3>Course Name</h3>
+            <p>Computers and Society</p>
+            <h3>Instructor</h3>
+            <p>Jeremy Sills</p>
+            <h3>Time</h3>
+            <p>M<br>11:00</p>
+        </div>
+        <button class="button-add-class center-x" type="button">Add Class</button>
+    </section>
+    <section class="map">
+        <img class="center-x" src="Assets/Images/map-close.jpg" alt="location">
+    </section>
+    <footer>
+        <div class="container okok">
+            <div class="row">
+                <p class="text-center">Made by UofT students, for UofT students.</p>
+                <div style="text-align: center">
+                    <a href="https://github.com/cobalt-uoft/cobalt">
+                        <i class="fa fa-mouse-pointer" aria-hidden="true"></i> Cobalt API
+                    </a>
+                </div>
             </div>
         </div>
-        <section class="course-info">
-            <div class="center-x">
-                <h2>CSC300</h2>
-                <h3>Course Name</h3>
-                <p>Computers and Society</p>
-                <h3>Instructor</h3>
-                <p>Jeremy Sills</p>
-                <h3>Time</h3>
-                <p>M<br>11:00</p>
-            </div>
-            <button class="button-add-class center-x" type="button">Add Class</button>
-        </section>
-        <section class="map">
-            <img class="center-x" src="Assets/Images/map-close.jpg" alt="location">
-        </section>
-        <footer>
-            <p class="text-center">Made by UofT students, for UofT students.</p>
-            <div style="text-align: center">
-                <a href="https://github.com/cobalt-uoft/cobalt">
-                    <i class="fa fa-mouse-pointer" aria-hidden="true"></i> Cobalt API
-                </a>
-            </div>
-        </footer>
-        <script src="Assets/Javascript/main.js"></script>
-    </body>
+    </footer>
+    <script src="Assets/Javascript/main.js"></script>
+</body>
+
 </html>
-
