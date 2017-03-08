@@ -1,0 +1,4 @@
+#!/bin/bash
+
+read -p "Get a course"
+curl -v -H "Content-Type: application/json" -X POST -d '{"course":"CSC309"}' http://localhost:3000/index
