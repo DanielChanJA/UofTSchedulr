@@ -78,6 +78,7 @@ input,
 .modal-sign-in input,
 .modal-sign-in button,
 .course-info,
+.search-bar button,
 noscript {
     font-family: raleway, serif;
 }
@@ -96,6 +97,22 @@ noscript {
 .search-bar {
     width: 100%;
     margin: 0 0 20px 0;
+}
+
+.search-bar input {
+    display: block;
+    margin: 0 0 10px 0;
+}
+
+.search-bar-btn {
+    background-color: #086788;
+    border: none;
+    color: white;
+    width: 35%;
+    height: 30px;
+    min-width: 100px;
+    font-size: 100%;
+    max-width: 200px;
 }
 
 input {

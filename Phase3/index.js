@@ -8,15 +8,15 @@ var db;
 app.use(bodyParser.json());
 
 mongo.connect(url, function(err, database) {
-    
-    // I think we need to populate the database somehow here
     db = database;
     app.listen(3000, function() {
         console.log("Listening on port 3000");
     });
 });
 
+
 // Search for course
 app.post("/index", function(req, res) {
-    db.collection("courses").find({})
+    // Call API for course, and return the information
 });
+
