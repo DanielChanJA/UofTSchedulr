@@ -1,4 +1,7 @@
 #!/bin/bash
 
 read -p "Get a course"
+curl -v http://localhost:3000/index
+
+read -p "Save timetable"
 curl -v -H "Content-Type: application/json" -X POST -d '{"course":"CSC309"}' http://localhost:3000/index
