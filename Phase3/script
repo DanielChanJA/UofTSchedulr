@@ -1,7 +1,33 @@
 #!/bin/bash
 
-read -p "Get a course"
-curl -v http://localhost:3000/index
+read -p "Attempt to log into a non-existing account"
+curl -H "Content-Type: application/json" -X POST -d '{"username":"nonexisting", "password":"password"}' http://localhost:3000/login
+
+read -p "Register an account"
+curl -H "Content-Type: application/json" -X POST -d '{"username":"vincent", "password":"password", "firstname":"Vincent", "lastname":"Huor"}' http://localhost:3000/register
+
+read -p "Try to register the same (existing) account"
+curl -H "Content-Type: application/json" -X POST -d '{"username":"vincent", "password":"password", "firstname":"Vincent", "lastname":"Huor"}' http://localhost:3000/register
+
+read -p "Log in to an account"
+curl -H "Content-Type: application/json" -X POST -d '{"username":"vincent", "password":"password"}' http://localhost:3000/login
+
+read -p "Search for course CSC207H1F"
+curl http://localhost:3000/search?course="CSC207H1F"
+
+read -p "Add course CSC207H1F"
+curl -H "Content-Type: application/json" -X POST -d '{"userid":"vincent", "courseid":"CSC207H1F", "lecture":"L0101"}' http://localhost:3000/addcourse
+
+read -p "Retrieve timetable"
+curl http://localhost:3000/timetable
+
+read -p "Add four more courses"
 
 read -p "Save timetable"
-curl -v -H "Content-Type: application/json" -X POST -d '{"course":"CSC309"}' http://localhost:3000/index
+
+read -p "Delete course CSC207H1F"
+curl -H "Content-Type: application/json" -X POST -d '{"userid":"vincent", "courseid":"CSC207H1F"}' http://localhost:3000/removecourse
+
+read -p "Delete timetable"
+
+read -p "Log out"
