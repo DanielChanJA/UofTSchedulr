@@ -270,11 +270,16 @@ function isLoggedIn(req, res, next) {
     });
 };
 
-
+/**
+ * Relevant routes for courses & navigating Cobalt.
+ */
 app.get('/search', getCourse);
 app.post('/addcourse', insertCourse);
 app.post('/removecourse', removeCourse);
 
+/**
+ * Relevant routes for authentication.
+ */
 app.post('/login', passport.authenticate('local'), authenticateUser);
 app.post('/register', createUser);
 app.post('/logout', destroySession);
