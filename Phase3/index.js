@@ -63,7 +63,16 @@ var userSchema = new mongoose.Schema({
     firstname: String,
     lastname: String
 });
+
 var Users = mongoose.model("Users", userSchema);
+
+// comments/feedback
+var commentSchema = new mongoose.Schema({
+    email: String,
+    comments: String
+});
+
+var Comment = mongoose.model("Comment", commentSchema);
 
 
 
@@ -106,6 +115,58 @@ function getCourse(req, res) {
 
 }
 
+/**
+ * This function posts comments from the about us page to the DB.
+ * 
+ */
+function insertComment(req, res) {
+    if (req.body.userid == null) {
+        console.log("Failed");
+        console.log(req.body);
+    }
+    var userid = req.body.userid;
+    var comment = req.body.comment;
+    console.log("Username: " + userid);
+    console.log("Comment: " + userid);
+    //////
+
+    Comment.findOne({ "userid": userid }, function(err, commentResult) {
+        if (err) {
+            console.log("Error retrieving users.");
+            return res.json({
+                Status: "Failed",
+                Message: "Error retrieving data."
+            });
+        }
+
+        if (commentResult == null) {
+            Course.create({
+                "userid": userid,
+                "comment": course,
+            }, function(err, course) {
+                if (err) {
+                    console.log(err);
+                } else {
+                    console.log(commentResult);
+                }
+            });
+
+            console.log("Created comment entry from: " + userid);
+            return res.json({
+                Status: "Success",
+                Message: "Entry inserted comment into DB."
+            });
+
+        } else {
+            console.log("DB contains entry: " + commentResult.userid + " : " + commentResult.comment);
+            return res.json({
+                Status: "Failed",
+                Message: "Entry exists in DB"
+            });
+        }
+    });
+
+}
 /**
  * This function inserts a user's desired course and lecture section into the DB.
  * Primary key is both the userid and the courseid.
@@ -271,6 +332,14 @@ function isLoggedIn(req, res, next) {
         Message: "You need to be logged in to access content."
     });
 };
+
+
+/**
+ * Routes for about us / comment. 
+ */
+app.post('/addcomment', insertComment);
+app.get('/getcomment', retrieveComment); // for devs
+
 
 /**
  * Relevant routes for courses & navigating Cobalt.
