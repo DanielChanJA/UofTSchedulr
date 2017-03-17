@@ -109,6 +109,8 @@ function getCourse(req, res) {
 /**
  * This function inserts a user's desired course and lecture section into the DB.
  * Primary key is both the userid and the courseid.
+ * 
+ * We need to verify here if the course exists.
  * @param {*} req 
  * @param {*} res 
  */
