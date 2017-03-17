@@ -12,3 +12,9 @@ curl -H "Content-Type: application/json" -X POST -d '{"username":"vincent","pass
 
 //Logout API, user vincent gets logged out.
 curl -H "Content-Type: application/json" -X POST -d '{"username":"vincent"}' http://localhost:3000/logout
+
+//Query for CSC207
+curl http://localhost:3000/search?course="CSC207"
+
+//Query for Neural Networks
+curl http://localhost:3000/search?course="Neural Networks"
