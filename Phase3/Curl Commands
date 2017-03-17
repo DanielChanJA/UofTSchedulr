@@ -1,0 +1,15 @@
+//Failed authorization, xyz : xyz does not exist. Will return Unauthorized
+curl - H "Content-Type: application/json" - X POST - d '{"username":"xyz","password":"xyz"}'
+http: //localhost:3000/login
+
+    //Successful authentication, vincent : password exists in the database.
+    curl - H "Content-Type: application/json" - X POST - d '{"username":"vincent","password":"password"}'
+http: //localhost:3000/login
+
+    //Successful registration, user vincent does not exist in the database. Assuming DB does not already contain vincent user.
+    curl - H "Content-Type: application/json" - X POST - d '{"username":"vincent","password":"password", "firstname":"Vincent", "lastname":"Huor"}'
+http: //localhost:3000/register
+
+    //Failed registration, user vincent already exists in the database. 
+    curl - H "Content-Type: application/json" - X POST - d '{"username":"vincent","password":"password", "firstname":"Vincent", "lastname":"Huor"}'
+http: //localhost:3000/register

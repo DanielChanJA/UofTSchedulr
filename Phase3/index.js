@@ -279,6 +279,9 @@ app.get('/search', getCourse);
 app.post('/addcourse', insertCourse);
 app.post('/removecourse', removeCourse);
 
+//Middleware example
+//app.get('/search', isLoggedIn, getCourse);
+
 /**
  * Relevant routes for authentication.
  */
