@@ -1,23 +1,42 @@
 var express = require("express");
 var bodyParser = require("body-parser");
-var app = express();
 var mongoose = require("mongoose");
-var mongo = require("mongodb").MongoClient;
-// var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
+var session = require('express-session');
+var passport = require("passport");
+var LocalStrategy = require("passport-local");
+var passportLocalMongoose = require("passport-local-mongoose");
+
+
+var User = require("./user");
+
+var app = express();
+
+app.use(passport.initialize());
+app.use(passport.session());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({
+    extended: true
+}));
+app.use(require("express-session")({
+    secret: "hevEbrurutr3",
+    resave: false,
+    saveUninitialized: false
+}))
+
+passport.use(new LocalStrategy(User.authenticate()));
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
 
 //Stuff to pull from Cobalt API.
 var request = require('request');
 var cobalt = "?key=wxyV572ztbmjVEc7qcokZ0xYVPv2Qf0n";
 var cobaltApi = "https://cobalt.qas.im/api/1.0/courses/";
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({
-    extended: true
-}));
 
-
-
-
+/**
+ * Initialization.
+ */
 mongoose.connect("mongodb://localhost/schdule", function(err, db) {
     if (err) {
         console.log("Unable to connect to DB.");
@@ -25,27 +44,35 @@ mongoose.connect("mongodb://localhost/schdule", function(err, db) {
 
     app.listen(3000, function() {
         console.log("Listening on port 3000");
-        console.log(db);
+        console.log("Successfully connected to schdule DB.");
     });
 });
 
+// userId course relationship.
 var courseSchema = new mongoose.Schema({
     userid: String,
     courseid: String,
     lecture: String
 });
-
 var Course = mongoose.model("Course", courseSchema);
 
-
-var timetableId = new mongoose.Schema({
-    userid: String,
-    courseid1: String,
-
+// users schema
+var userSchema = new mongoose.Schema({
+    email: String,
+    password: String,
+    firstname: String,
+    lastname: String
 });
+var Users = mongoose.model("Users", userSchema);
 
 
 
+
+/**
+ * Gets the course deets from Cobalt API.
+ * @param {*} req 
+ * @param {*} res 
+ */
 
 function getCourse(req, res) {
     var query = req.query.course;
@@ -58,10 +85,18 @@ function getCourse(req, res) {
     request(searchUri, function(err, resp, body) {
         if (err) {
             console.log("Error:", err);
+            return res.json({
+                Status: "Failed",
+                Message: err
+            });
         }
 
         if (resp.statusCode != 200) {
             console.log("Invalid status code: ", resp.statusCode);
+            return res.json({
+                Status: "Failed",
+                Message: "Unknown status code."
+            });
         }
 
         // Everything is a-ok.
@@ -71,9 +106,14 @@ function getCourse(req, res) {
 
 }
 
+/**
+ * This function inserts a user's desired course and lecture section into the DB.
+ * Primary key is both the userid and the courseid.
+ * @param {*} req 
+ * @param {*} res 
+ */
 function insertCourse(req, res) {
 
-    // res.json(req.body);
     if (req.body.userid == null) {
         console.log("Failed");
         console.log(req.body);
@@ -88,10 +128,14 @@ function insertCourse(req, res) {
     console.log("Section: " + section);
 
 
-    Course.findOne({ "userid": userid, "courseid": course, "lecture": section }, function(err, courseResult) {
+    // Will not allow users to add multiple lecture sections of the same course. Only one is permitted.
+    Course.findOne({ "userid": userid, "courseid": course }, function(err, courseResult) {
         if (err) {
             console.log("Error retrieving users.");
-            return;
+            return res.json({
+                Status: "Failed",
+                Message: "Error retrieving data."
+            });
         }
 
         if (courseResult == null) {
@@ -108,37 +152,130 @@ function insertCourse(req, res) {
             });
 
             console.log("Created entry");
-            res.json({
+            return res.json({
                 Status: "Success",
                 Message: "Entry inserted into DB."
             });
 
         } else {
             console.log("DB contains entry: " + courseResult.userid + " : " + courseResult.courseid + " : " + courseResult.lecture);
-            res.send("Entry exists");
+            return res.json({
+                Status: "Failed",
+                Message: "Entry exists in DB"
+            });
         }
     });
 
 }
 
+/**
+ * Removes the course from the database.
+ * @param {*} req 
+ * @param {*} res 
+ */
+function removeCourse(req, res) {
+
+    var userid = req.body.userid;
+    var course = req.body.courseid + req.body.sem;
+    var section = req.body.lecture;
+
+    Course.findOneAndRemove({ "userid": userid, "courseid": course }, function(err, id) {
+        if (err) {
+            console.log("Error retrieving entries.");
+            return res.json({
+                Status: "Failed",
+                Message: "Unknown error occurred."
+            });
+        }
+
+        if (id != null) {
+            console.log("Successfully deleted entry: " + userid + " : " + course);
+            return res.json({
+                Status: "Success",
+                Message: "Course successfully removed."
+            });
+        } else {
+            console.log("Unable to find record: " + userid + " : " + course);
+            return res.json({
+                Status: "Failed",
+                Message: "Record doesn't exist."
+            });
+        }
+
+    });
 
 
 
+}
 
-// Save timetable
-app.put("/index", function(req, res) {
-    db.collection("timetables").insertOne(req.data);
+/**
+ * Uses Passport.js to authenticate users.
+ * @param {*} req 
+ * @param {*} res 
+ */
+function createUser(req, res) {
+    User.register(new User({ username: req.body.username, firstname: req.body.firstname, lastname: req.body.lastname }), req.body.password, function(err, user) {
+        if (err) {
+            console.log(err);
+            return res.json({
+                Status: "Failed",
+                Message: "Username already exists."
+            });
+        }
 
-});
 
+        passport.authenticate("local")(req, res, function() {
+            return res.json({
+                Status: "Success",
+                Message: "Successfully created the account."
+            });
+        })
+    });
+}
 
-// Delete timetable
-app.delete("/index", function(req, res) {
+/**
+ * Function is only called iff the user is successfully authenticated.
+ * @param {*} req 
+ * @param {*} res 
+ */
+function authenticateUser(req, res) {
+    return res.json({
+        Status: "Success",
+        Message: "Successfully authenticated."
+    });
+}
 
-});
+function destroySession(req, res) {
+
+    req.logout();
+    res.json({
+        Status: "Success",
+        Message: "Successfully logged out."
+    });
+}
+
+/**
+ * Middleware if you want to verify that the user is logged in. Place it inbetween the routes and the function call below.
+ * @param {*} req 
+ * @param {*} res 
+ * @param {*} next 
+ */
+function isLoggedIn(req, res, next) {
+    if (req.isAuthenticated()) {
+        return next();
+    }
+    return res.json({
+        Status: "Failed",
+        Message: "You need to be logged in to access content."
+    });
+};
 
 
 app.get('/search', getCourse);
 app.post('/addcourse', insertCourse);
-// app.post('/login', processLogin);
+app.post('/removecourse', removeCourse);
+
+app.post('/login', passport.authenticate('local'), authenticateUser);
+app.post('/register', createUser);
+app.post('/logout', destroySession);
 // app.get('/timetable', generateTimetable);
