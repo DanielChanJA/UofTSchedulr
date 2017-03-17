@@ -1,6 +1,7 @@
 var express = require("express");
 var app = express();
 var bodyParser = require("body-parser");
+var mongoose = require("mongoose");
 var mongo = require("mongodb").MongoClient;
 // var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 
@@ -9,17 +10,27 @@ var request = require('request');
 var cobalt = "?key=wxyV572ztbmjVEc7qcokZ0xYVPv2Qf0n";
 var cobaltApi = "https://cobalt.qas.im/api/1.0/courses/";
 
-app.use(bodyParser.json());
-
-mongo.connect("mongodb://localhost:27017/schdule", function(err, db) {
+mongoose.connect("mongodb://localhost/schdule", function(err, db) {
     if (err) {
-        console.log("Cannot connect to the database");
+        console.log("Unable to connect to DB.");
     }
+
     app.listen(3000, function() {
         console.log("Listening on port 3000");
         console.log(db);
     });
 });
+
+var courseSchema = new mongoose.Schema({
+    userid: String,
+    courseid: String
+});
+
+
+var Course = mongoose.model("Course", courseSchema);
+
+
+app.use(bodyParser.json());
 
 
 function getCourse(req, res) {
@@ -46,7 +57,41 @@ function getCourse(req, res) {
 
 }
 
-function generateTimetable(req, res) {
+function insertCourse(req, res) {
+
+    var userid = req.query.userid;
+    var course = req.query.courseid + req.query.sem;
+
+    console.log("Username: " + userid);
+    console.log("Course: " + course);
+
+
+    Course.findOne({ "userid": userid, "courseid": course }, function(err, courseResult) {
+        if (err) {
+            console.log("Error retrieving users.");
+            return;
+        }
+
+        if (courseResult.userid == null) {
+            Course.create({
+                "userid": userid,
+                "courseid": course
+            }, function(err, course) {
+                if (err) {
+                    console.log(err);
+                } else {
+                    console.log(course);
+                }
+            });
+
+            console.log("Created entry");
+            res.status("200").end();
+
+        } else {
+            console.log("DB contains entry: " + courseResult.userid + " : " + courseResult.courseid);
+            res.send("Entry exists");
+        }
+    });
 
 }
 
@@ -67,5 +112,6 @@ app.delete("/index", function(req, res) {
 
 
 app.get('/search', getCourse);
-app.post('/login', processLogin);
-app.get('/timetable', generateTimetable);
+app.post('/addcourse', insertCourse);
+// app.post('/login', processLogin);
+// app.get('/timetable', generateTimetable);
