@@ -519,6 +519,12 @@ function abbreviateDay(day) {
 }
 
 
+/**
+ * Calls the CobaltAPI, plops everything that Cobalt has on Courses and stores it locally in our own Mongo as local cache.
+ * This function is called on startup.
+ * 
+ * Interesting fact: UofT across all 3 campuses have 6721 courses in both undergraduate and graduate courses!
+ */
 function loadCourses() {
     var limit = 100;
     var skip = 0;
