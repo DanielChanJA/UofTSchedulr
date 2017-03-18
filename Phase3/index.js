@@ -443,7 +443,7 @@ function buildTimetable(data) {
             days.push([day, time]);
 
             // Iterate through the selected courses to check for conflicts
-            for (let m = 0; m < selectedCourses.length; m++) {
+            for (let m = 1; m < selectedCourses.length; m++) {
 
                 // If there is a conflict
                 for (let j = 1; j < selectedCourses[m].timeslots[j]; j++) {
