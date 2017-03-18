@@ -607,7 +607,7 @@ function saveTimetable(req, res) {
             console.log("Error");
             return res.json({
                 Status: "Failed",
-                Message: "Failed ot save timetable"
+                Message: "Failed to save timetable"
             });
         }
     });
@@ -623,7 +623,7 @@ app.get('/getcomment', retrieveCommentAll); // for devs
 /**
  * Relevant routes for courses & navigating Cobalt.
  */
-app.get('/search', isLoggedIn, getCourse);
+app.get('/search', getCourse);
 app.post('/addcourse', insertCourse);
 app.post('/removecourse', removeCourse);
 app.get('/newtimetable', newTimetable);
