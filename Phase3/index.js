@@ -245,11 +245,6 @@ function insertCourse(req, res) {
             });
 
             console.log("Created entry");
-            
-            for (let i = 0; i < selectedCourses.length; i++) {
-                console.log(selectedCourses[i].days);
-            }
-            
             return res.json({
                 Status: "Success",
                 Message: "Entry inserted into DB."
