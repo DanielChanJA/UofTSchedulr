@@ -69,7 +69,7 @@ var Users = mongoose.model("Users", userSchema);
 // comments/feedback
 var commentSchema = new mongoose.Schema({
     email: String,
-    comments: String
+    comment: String
 });
 
 var Comment = mongoose.model("Comment", commentSchema);
@@ -115,22 +115,43 @@ function getCourse(req, res) {
 
 }
 
+
+/**
+ * This function retrieves all comments from DB.
+ * 
+ */
+function retrieveCommentAll(req, res) {
+    server.get('/usersList', function(req, res) {
+        Comment.find({}, function(err, comments) {
+            var commentMap = {};
+
+            comments.forEach(function(comment) {
+                userMap[comment._id] = comment;
+            });
+
+            res.send(commentMap);
+        });
+    });
+
+}
+
 /**
  * This function posts comments from the about us page to the DB.
  * 
  */
 function insertComment(req, res) {
-    if (req.body.userid == null) {
+    if (req.body.email == null) {
         console.log("Failed");
         console.log(req.body);
     }
-    var userid = req.body.userid;
+    var email = req.body.email;
     var comment = req.body.comment;
-    console.log("Username: " + userid);
-    console.log("Comment: " + userid);
+    console.log("Username: " + email);
+    console.log("Comment: " + comment);
+
     //////
 
-    Comment.findOne({ "userid": userid }, function(err, commentResult) {
+    Comment.findOne({ "email": email }, function(err, commentResult) {
         if (err) {
             console.log("Error retrieving users.");
             return res.json({
@@ -140,10 +161,10 @@ function insertComment(req, res) {
         }
 
         if (commentResult == null) {
-            Course.create({
-                "userid": userid,
-                "comment": course,
-            }, function(err, course) {
+            Comment.create({
+                "email": email,
+                "comment": comment,
+            }, function(err, comment) {
                 if (err) {
                     console.log(err);
                 } else {
@@ -151,14 +172,14 @@ function insertComment(req, res) {
                 }
             });
 
-            console.log("Created comment entry from: " + userid);
+            console.log("Created comment entry from: " + email);
             return res.json({
                 Status: "Success",
                 Message: "Entry inserted comment into DB."
             });
 
         } else {
-            console.log("DB contains entry: " + commentResult.userid + " : " + commentResult.comment);
+            console.log("DB contains entry: " + commentResult.email + " : " + commentResult.comment);
             return res.json({
                 Status: "Failed",
                 Message: "Entry exists in DB"
@@ -338,7 +359,7 @@ function isLoggedIn(req, res, next) {
  * Routes for about us / comment. 
  */
 app.post('/addcomment', insertComment);
-app.get('/getcomment', retrieveComment); // for devs
+app.get('/getcomment', retrieveCommentAll); // for devs
 
 
 /**
