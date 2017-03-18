@@ -518,6 +518,8 @@ function loadCourses() {
     var skip = 0;
     var popOut = false;
 
+    // Need to implement a check if a connection can be successfully established, we drop the coursesData relation
+    // Otherwise stop, dont process anything and just use pre-existing data.
     CourseData.remove({}, function(err) {
         if (err) {
             console.log("Failed to remove courses.");
