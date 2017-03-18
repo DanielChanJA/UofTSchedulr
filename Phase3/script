@@ -44,7 +44,7 @@ curl -H "Content-Type: application/json" -X POST -d '{"userid":"vincent", "data"
 "breadths":[5]}]}' http://localhost:3000/addcourse
 
 read -p "Save timetable"
-curl -H "Content-Type: application/json" -X PUT -d '{"userid":"vincent"}' http://localhost:3000/removecourse
+curl -H "Content-Type: application/json" -X PUT -d '{"userid":"vincent"}' http://localhost:3000/savetimetable
 
 read -p "Delete timetable"
 

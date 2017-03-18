@@ -270,7 +270,7 @@ function insertCourse(req, res) {
         if (courseResult == null && buildTimetable(req.body.data[0])) {
             Course.create({
                 "userid": userid,
-                "courseid": course,
+                "courseid": course
                 //                "lecture": section
             }, function(err, course) {
                 if (err) {
@@ -443,7 +443,7 @@ function buildTimetable(data) {
             days.push([day, time]);
 
             // Iterate through the selected courses to check for conflicts
-            for (let m = 0; m < selectedCourses.length; m++) {
+            for (let m = 1; m < selectedCourses.length; m++) {
 
                 // If there is a conflict
                 for (let j = 1; j < selectedCourses[m].timeslots[j]; j++) {
@@ -596,8 +596,14 @@ function saveTimetable(req, res) {
     }
 
     var userid = req.body.userid;
+<<<<<<< HEAD
     var query = { "userid": userid, "timetableid": selectedCourses[0] }
     Course.findOneAndUpdate(query, selectedCourses, { upsert: true }, function(err, result) {
+=======
+    var timetableid = selectedCourses[0];
+    var query = {"userid": userid, "timetableid": timetableid}
+    Course.findOneAndUpdate(query, {"userid": userid, "timetableid": timetableid, "timetable": selectedCourses}, {upsert: true}, function(err, result) {
+>>>>>>> 295dbb2dc61eaea3b9121aa454db71b8e4b2cb06
         if (err) {
             console.log("Error");
             return res.json({
