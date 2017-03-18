@@ -64,7 +64,16 @@ var userSchema = new mongoose.Schema({
     firstname: String,
     lastname: String
 });
+
 var Users = mongoose.model("Users", userSchema);
+
+// comments/feedback
+var commentSchema = new mongoose.Schema({
+    email: String,
+    comment: String
+});
+
+var Comment = mongoose.model("Comment", commentSchema);
 
 
 
@@ -107,6 +116,86 @@ function getCourse(req, res) {
 
 }
 
+
+/**
+ * This function retrieves all comments from DB.
+ * 
+ * returns JSON     {
+                    "user": "messages",
+                    "vicnent2": "messages23124"
+                    }
+ */
+function retrieveCommentAll(req, res) {
+    Comment.find({}, function(err, users) {
+        if (err) {
+            console.log("error");
+            throw err;
+        } else {
+            var userMap = {};
+
+            users.forEach(function(user) {
+                userMap[user.email] = user.comment;
+            });
+            res.send(userMap);
+            console.log(userMap);
+        }
+    });
+}
+
+
+/**
+ * This function posts comments from the about us page to the DB.
+ * 
+ */
+function insertComment(req, res) {
+    if (req.body.email == null) {
+        console.log("Failed");
+        console.log(req.body);
+    }
+    var email = req.body.email;
+    var comment = req.body.comment;
+    console.log("Username: " + email);
+    console.log("Comment: " + comment);
+
+    //////
+
+    Comment.findOne({ "email": email }, function(err, commentResult) {
+        if (err) {
+            console.log("Error retrieving users.");
+            return res.json({
+                Status: "Failed",
+                Message: "Error retrieving data."
+            });
+        }
+
+        if (commentResult == null) {
+            Comment.create({
+                "email": email,
+                "comment": comment,
+            }, function(err, comment) {
+                if (err) {
+                    console.log(err);
+                } else {
+                    console.log(commentResult);
+                }
+            });
+
+            console.log("Created comment entry from: " + email);
+            return res.json({
+                Status: "Success",
+                Message: "Entry inserted comment into DB."
+            });
+
+        } else {
+            console.log("DB contains entry: " + commentResult.email + " : " + commentResult.comment);
+            return res.json({
+                Status: "Failed",
+                Message: "Entry exists in DB"
+            });
+        }
+    });
+
+}
 /**
  * This function inserts a user's desired course and lecture section into the DB.
  * Primary key is both the userid and the courseid.
@@ -387,6 +476,14 @@ function abbreviateDay(day) {
     }
     return d;
 }
+
+/**
+ * Routes for about us / comment. 
+ */
+app.post('/addcomment', insertComment);
+app.get('/getcomment', retrieveCommentAll); // for devs
+
+>>>>>>> c017744e138282432a6c310ab7119d42d90a5e85
 
 /**
  * Relevant routes for courses & navigating Cobalt.
