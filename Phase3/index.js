@@ -119,21 +119,28 @@ function getCourse(req, res) {
 /**
  * This function retrieves all comments from DB.
  * 
+ * returns JSON     {
+                    "user": "messages",
+                    "vicnent2": "messages23124"
+                    }
  */
 function retrieveCommentAll(req, res) {
-    server.get('/usersList', function(req, res) {
-        Comment.find({}, function(err, comments) {
-            var commentMap = {};
+    Comment.find({}, function(err, users) {
+        if (err) {
+            console.log("error");
+            throw err;
+        } else {
+            var userMap = {};
 
-            comments.forEach(function(comment) {
-                userMap[comment._id] = comment;
+            users.forEach(function(user) {
+                userMap[user.email] = user.comment;
             });
-
-            res.send(commentMap);
-        });
+            res.send(userMap);
+            console.log(userMap);
+        }
     });
-
 }
+
 
 /**
  * This function posts comments from the about us page to the DB.
