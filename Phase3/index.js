@@ -107,6 +107,14 @@ var commentSchema = new mongoose.Schema({
 
 var Comment = mongoose.model("Comment", commentSchema);
 
+// Timetables schema
+var timetableSchema = new mongoose.Schema({
+    userid: String,
+    timetableid: Number,
+    timetable: Array
+})
+var Timetables = mongoose.model("Timetables", timetableSchema);
+
 loadCourses();
 
 
@@ -602,7 +610,7 @@ function saveTimetable(req, res) {
     var userid = req.body.userid;
     var timetableid = selectedCourses[0];
     var query = { "userid": userid, "timetableid": timetableid }
-    Course.findOneAndUpdate(query, { "userid": userid, "timetableid": timetableid, "timetable": selectedCourses }, { upsert: true }, function(err, result) {
+    Timetables.findOneAndUpdate(query, { "timetable": selectedCourses }, { "upsert": true, "new": true }, function(err, result) {
         if (err) {
             console.log("Error");
             return res.json({
@@ -610,6 +618,9 @@ function saveTimetable(req, res) {
                 Message: "Failed to save timetable"
             });
         }
+    });
+    Timetables.findOne({ "userid": userid, "timetableid": timetableid}, function(err, result) {
+       console.log("The result is " + result); 
     });
 }
 
