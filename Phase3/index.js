@@ -386,7 +386,7 @@ function authenticateUser(req, res) {
 function destroySession(req, res) {
 
     req.logout();
-    res.json({
+    res.status(200).json({
         Status: "Success",
         Message: "Successfully logged out."
     });
@@ -613,14 +613,14 @@ function saveTimetable(req, res) {
     Timetables.findOneAndUpdate(query, { "timetable": selectedCourses }, { "upsert": true, "new": true }, function(err, result) {
         if (err) {
             console.log("Error");
-            return res.json({
+            return res.status(500).json({
                 Status: "Failed",
                 Message: "Failed to save timetable"
             });
         }
     });
-    Timetables.findOne({ "userid": userid, "timetableid": timetableid}, function(err, result) {
-       console.log("The result is " + result); 
+    Timetables.findOne({ "userid": userid, "timetableid": timetableid }, function(err, result) {
+        console.log("The result is " + result);
     });
 }
 
