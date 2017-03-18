@@ -347,7 +347,7 @@ function removeCourse(req, res) {
 }
 
 /**
- * Uses Passport.js to authenticate users.
+ * Uses Passport.js to authenticate users. User accounts are stored locally on mongo.
  * @param {*} req 
  * @param {*} res 
  */
@@ -386,7 +386,7 @@ function authenticateUser(req, res) {
 function destroySession(req, res) {
 
     req.logout();
-    res.json({
+    res.status(200).json({
         Status: "Success",
         Message: "Successfully logged out."
     });
@@ -522,6 +522,12 @@ function abbreviateDay(day) {
 }
 
 
+/**
+ * Calls the CobaltAPI, plops everything that Cobalt has on Courses and stores it locally in our own Mongo as local cache.
+ * This function is called on startup.
+ * 
+ * Interesting fact: UofT across all 3 campuses have 6721 courses in both undergraduate and graduate courses!
+ */
 function loadCourses() {
     var limit = 100;
     var skip = 0;
@@ -616,7 +622,7 @@ function saveTimetable(req, res) {
     Timetables.findOneAndUpdate(query, {$set:{timetable: selectedCourses}}, { upsert: true, new: true }, function(err, result) {
         if (err) {
             console.log("Error");
-            return res.json({
+            return res.status(500).json({
                 Status: "Failed",
                 Message: "Failed to save timetable"
             });
