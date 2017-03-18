@@ -393,6 +393,8 @@ function destroySession(req, res) {
 function isLoggedIn(req, res, next) {
     if (req.isAuthenticated()) {
         console.log("User successfully authenticated.");
+        console.log(req.user);
+        console.log(req.isAuthenticated());
         return next();
     }
 
