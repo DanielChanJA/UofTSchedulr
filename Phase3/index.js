@@ -347,7 +347,7 @@ function removeCourse(req, res) {
 }
 
 /**
- * Uses Passport.js to authenticate users.
+ * Uses Passport.js to authenticate users. User accounts are stored locally on mongo.
  * @param {*} req 
  * @param {*} res 
  */
