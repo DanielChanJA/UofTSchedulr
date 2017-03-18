@@ -248,9 +248,7 @@ function insertCourse(req, res) {
             
             for (let i = 0; i < selectedCourses.length; i++) {
                 console.log(selectedCourses[i].days);
-                console.log(selectedCourses[i].timeslots);
             }
-            
             
             return res.json({
                 Status: "Success",
@@ -292,6 +290,7 @@ function removeCourse(req, res) {
 
         if (id != null) {
             console.log("Successfully deleted entry: " + userid + " : " + course);
+            updateTimetable(req.body.courseid);
             return res.json({
                 Status: "Success",
                 Message: "Course successfully removed."
@@ -415,10 +414,10 @@ function buildTimetable(data) {
             
             // Iterate through the selected courses to check for conflicts
             for (let m = 0; m < selectedCourses.length; m++) {
-                
-                // If there is a conflict
-                for (let j = 0; j < selectedCourses[m].timeslots[j]; j++) {
-                    if (startTime >= selectedCourses[m].timeslots[j][0] && startTime <= selectedCourses[m].timeslots[1]) {
+
+                // Iterate through a selected course's timeslots
+                for (let j = 0; j < selectedCourses[m].timeslots.length; j++) {
+                    if (startTime >= selectedCourses[m].timeslots[j][0] && startTime <= selectedCourses[m].timeslots[j][1]) {
                         conflict = true;
                         break;
                     }   
@@ -426,11 +425,20 @@ function buildTimetable(data) {
             }
         }
         if (conflict == false) {
-            selectedCourses.push({"code": data.code, "name": data.name, "instructor": data.meeting_sections[i].instructors, "days": days, "timeslots": timeslots, "colour": ""});
+            selectedCourses.push({"courseid": data.id, "code": data.code, "name": data.name, "instructor": data.meeting_sections[i].instructors, "days": days, "timeslots": timeslots, "colour": ""});
             return true;
         }
     }
     return false;
+}
+                                 
+// Update timetable when deleting a course
+function updateTimetable(course) {
+    for (let i = 0; i < selectedCourses.length; i++) {
+        if (selectedCourses[i].courseid == course) {
+            selectedCourses.splice(i, 1);
+        }
+    }
 }
 
 function convertDayToNum(day) {
@@ -482,8 +490,6 @@ function abbreviateDay(day) {
  */
 app.post('/addcomment', insertComment);
 app.get('/getcomment', retrieveCommentAll); // for devs
-
->>>>>>> c017744e138282432a6c310ab7119d42d90a5e85
 
 /**
  * Relevant routes for courses & navigating Cobalt.
