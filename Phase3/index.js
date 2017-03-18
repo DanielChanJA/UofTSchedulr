@@ -138,7 +138,7 @@ function getCourse(req, res) {
     request(searchUri, function(err, resp, body) {
         if (err) {
             console.log("Error:", err);
-            return res.json({
+            return res.status(500).json({
                 Status: "Failed",
                 Message: err
             });
@@ -146,14 +146,14 @@ function getCourse(req, res) {
 
         if (resp.statusCode != 200) {
             console.log("Invalid status code: ", resp.statusCode);
-            return res.json({
+            return res.status(400).json({
                 Status: "Failed",
                 Message: "Unknown status code."
             });
         }
 
         // Everything is a-ok.
-        res.send(JSON.parse(body));
+        res.status(200).send(JSON.parse(body));
 
     });
 
@@ -268,7 +268,7 @@ function insertCourse(req, res) {
     Course.findOne({ "userid": userid, "courseid": course }, function(err, courseResult) {
         if (err) {
             console.log("Error retrieving users.");
-            return res.json({
+            return res.status(500).json({
                 Status: "Failed",
                 Message: "Error retrieving data."
             });
@@ -288,7 +288,7 @@ function insertCourse(req, res) {
             });
 
             console.log("Created entry");
-            return res.json({
+            return res.status(200).json({
                 Status: "Success",
                 Message: "Entry inserted into DB."
             });
@@ -296,7 +296,7 @@ function insertCourse(req, res) {
         } else {
             //            console.log("DB contains entry: " + courseResult.userid + " : " + courseResult.courseid + " : " + courseResult.lecture);
             console.log("DB contains entry: " + courseResult.userid + " : " + courseResult.courseid);
-            return res.json({
+            return res.status(400).json({
                 Status: "Failed",
                 Message: "Entry exists in DB, or there are no available timeslots"
             });
@@ -320,7 +320,7 @@ function removeCourse(req, res) {
     Course.findOneAndRemove({ "userid": userid, "courseid": course }, function(err, id) {
         if (err) {
             console.log("Error retrieving entries.");
-            return res.json({
+            return res.status(500).json({
                 Status: "Failed",
                 Message: "Unknown error occurred."
             });
@@ -328,13 +328,13 @@ function removeCourse(req, res) {
 
         if (id != null) {
             console.log("Successfully deleted entry: " + userid + " : " + course);
-            return res.json({
+            return res.status(200).json({
                 Status: "Success",
                 Message: "Course successfully removed."
             });
         } else {
             console.log("Unable to find record: " + userid + " : " + course);
-            return res.json({
+            return res.status(400).json({
                 Status: "Failed",
                 Message: "Record doesn't exist."
             });
@@ -355,7 +355,7 @@ function createUser(req, res) {
     User.register(new User({ username: req.body.username, firstname: req.body.firstname, lastname: req.body.lastname }), req.body.password, function(err, user) {
         if (err) {
             console.log(err);
-            return res.json({
+            return res.status(400).json({
                 Status: "Failed",
                 Message: "Username already exists."
             });
@@ -363,7 +363,7 @@ function createUser(req, res) {
 
 
         passport.authenticate("local")(req, res, function() {
-            return res.json({
+            return res.status(200).json({
                 Status: "Success",
                 Message: "Successfully created the account."
             });
@@ -377,7 +377,7 @@ function createUser(req, res) {
  * @param {*} res 
  */
 function authenticateUser(req, res) {
-    return res.json({
+    return res.status(200).json({
         Status: "Success",
         Message: "Successfully authenticated."
     });
@@ -407,7 +407,7 @@ function isLoggedIn(req, res, next) {
     }
 
     console.log(req.user);
-    return res.json({
+    return res.status(401).json({
         Status: "Failed",
         Message: "You need to be logged in to access content."
     });
