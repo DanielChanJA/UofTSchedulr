@@ -455,7 +455,7 @@ function buildTimetable(data) {
             }
         }
         if (conflict == false) {
-            selectedCourses.push({"code": data.code, "name": data.name, "instructor": data.meeting_sections[i].instructors, "days": days, "timeslots": timeslots, "colour": "" });
+            selectedCourses.push({ "code": data.code, "name": data.name, "instructor": data.meeting_sections[i].instructors, "days": days, "timeslots": timeslots, "colour": "" });
             return true;
         }
     }
@@ -545,9 +545,6 @@ function loadCourses() {
                 console.log("Empty body");
                 // return true;
             } else {
-
-
-
                 var courseInfo = JSON.parse(body);
                 console.log("Attempting to insert...");
                 console.log(courseInfo);
@@ -597,10 +594,10 @@ function saveTimetable(req, res) {
     if (req.body.userid == null) {
         console.log("Failed");
     }
-    
+
     var userid = req.body.userid;
-    var query = {"userid": userid, "timetableid": selectedCourses[0]}
-    Course.findOneAndUpdate(query, selectedCourses, {upsert: true}, function(err, result) {
+    var query = { "userid": userid, "timetableid": selectedCourses[0] }
+    Course.findOneAndUpdate(query, selectedCourses, { upsert: true }, function(err, result) {
         if (err) {
             console.log("Error");
             return res.json({
