@@ -295,7 +295,7 @@ function insertCourse(req, res) {
 
         } else {
             //            console.log("DB contains entry: " + courseResult.userid + " : " + courseResult.courseid + " : " + courseResult.lecture);
-            console.log("DB contains entry: " + courseResult.userid + " : " + courseResult.courseid);
+            console.log("DB contains entry: " + userid + " : " + course);
             return res.status(400).json({
                 Status: "Failed",
                 Message: "Entry exists in DB, or there are no available timeslots"
@@ -456,16 +456,19 @@ function buildTimetable(data) {
 
             // Iterate through the selected courses to check for conflicts
             for (let m = 1; m < selectedCourses.length; m++) {
-
                 // If there is a conflict
-                for (let j = 1; j < selectedCourses[m].timeslots[j]; j++) {
-                    if (startTime >= selectedCourses[m].timeslots[j][0] && startTime <= selectedCourses[m].timeslots[1]) {
+                for (let j = 0; j < selectedCourses[m].timeslots.length; j++) {
+                    if (startTime >= selectedCourses[m].timeslots[j][0] && startTime <= selectedCourses[m].timeslots[j][1]) {
                         conflict = true;
                         break;
                     }
                 }
+                if (conflict == true) {
+                    break;
+                }
             }
         }
+        
         if (conflict == false) {
             selectedCourses.push({ "code": data.code, "name": data.name, "instructor": data.meeting_sections[i].instructors, "days": days, "timeslots": timeslots, "colour": "" });
             return true;
@@ -581,8 +584,7 @@ function loadCourses() {
 
 
 function newTimetable(req, res) {
-//    var id = Math.floor(Math.random() * 1000000) + 1;
-    var id = 1000;
+    var id = Math.floor(Math.random() * 1000000) + 1;
     selectedCourses = [];
     while (contains(id, timetableIds)) {
         id = Math.floor(Math.random() * 1000000) + 1;
