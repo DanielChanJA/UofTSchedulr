@@ -34,6 +34,7 @@ var cobalt = "?key=wxyV572ztbmjVEc7qcokZ0xYVPv2Qf0n";
 var cobaltApi = "https://cobalt.qas.im/api/1.0/courses/";
 
 var selectedCourses = [];
+var timetableIds = [];
 
 /**
  * Initialization.
@@ -280,13 +281,6 @@ function insertCourse(req, res) {
             });
 
             console.log("Created entry");
-
-            for (let i = 0; i < selectedCourses.length; i++) {
-                console.log(selectedCourses[i].days);
-                console.log(selectedCourses[i].timeslots);
-            }
-
-
             return res.json({
                 Status: "Success",
                 Message: "Entry inserted into DB."
@@ -452,7 +446,7 @@ function buildTimetable(data) {
             for (let m = 0; m < selectedCourses.length; m++) {
 
                 // If there is a conflict
-                for (let j = 0; j < selectedCourses[m].timeslots[j]; j++) {
+                for (let j = 1; j < selectedCourses[m].timeslots[j]; j++) {
                     if (startTime >= selectedCourses[m].timeslots[j][0] && startTime <= selectedCourses[m].timeslots[1]) {
                         conflict = true;
                         break;
@@ -461,7 +455,7 @@ function buildTimetable(data) {
             }
         }
         if (conflict == false) {
-            selectedCourses.push({ "code": data.code, "name": data.name, "instructor": data.meeting_sections[i].instructors, "days": days, "timeslots": timeslots, "colour": "" });
+            selectedCourses.push({"code": data.code, "name": data.name, "instructor": data.meeting_sections[i].instructors, "days": days, "timeslots": timeslots, "colour": "" });
             return true;
         }
     }
@@ -577,6 +571,45 @@ function loadCourses() {
 }
 
 
+function newTimetable(req, res) {
+    var id = Math.floor(Math.random() * 1000000) + 1;
+    selectedCourses = [];
+    while (contains(id, timetableIds)) {
+        id = Math.floor(Math.random() * 1000000) + 1;
+    }
+    selectedCourses.push(id);
+    timetableIds.push(id);
+    res.sendStatus(200);
+}
+
+
+function contains(item, container) {
+    for (let i = 0; i < container.length; i++) {
+        if (item == container[i]) {
+            return true;
+        }
+    }
+    return false;
+}
+
+
+function saveTimetable(req, res) {
+    if (req.body.userid == null) {
+        console.log("Failed");
+    }
+    
+    var userid = req.body.userid;
+    var query = {"userid": userid, "timetableid": selectedCourses[0]}
+    Course.findOneAndUpdate(query, selectedCourses, {upsert: true}, function(err, result) {
+        if (err) {
+            console.log("Error");
+            return res.json({
+                Status: "Failed",
+                Message: "Failed ot save timetable"
+            });
+        }
+    });
+}
 
 
 /**
@@ -585,15 +618,14 @@ function loadCourses() {
 app.post('/addcomment', insertComment);
 app.get('/getcomment', retrieveCommentAll); // for devs
 
-
-
-
 /**
  * Relevant routes for courses & navigating Cobalt.
  */
 app.get('/search', getCourse);
 app.post('/addcourse', insertCourse);
 app.post('/removecourse', removeCourse);
+app.get('/newtimetable', newTimetable);
+app.put('/savetimetable', isLoggedIn, saveTimetable);
 
 //Middleware example
 //app.get('/search', isLoggedIn, getCourse);
