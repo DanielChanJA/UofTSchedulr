@@ -49,6 +49,9 @@ mongoose.connect("mongodb://localhost/schdule", function(err, db) {
     });
 });
 
+
+
+
 // userId course relationship.
 var courseSchema = new mongoose.Schema({
     userid: String,
@@ -56,6 +59,35 @@ var courseSchema = new mongoose.Schema({
     lecture: String
 });
 var Course = mongoose.model("Course", courseSchema);
+
+var courseDatabase = new mongoose.Schema({
+    id: String,
+    code: String,
+    name: String,
+    description: String,
+    division: String,
+    department: String,
+    prerequisites: String,
+    exclusions: String,
+    level: Number,
+    campus: String,
+    term: String,
+    breadths: [Number],
+    meeting_sections: [{
+        code: String,
+        instructors: [String],
+        times: [{
+            day: String,
+            start: Number,
+            end: Number,
+            duration: Number,
+            location: String
+        }],
+        size: Number,
+        enrolment: Number
+    }]
+});
+var CourseData = mongoose.model("CourseData", courseDatabase);
 
 // users schema
 var userSchema = new mongoose.Schema({
@@ -75,7 +107,10 @@ var commentSchema = new mongoose.Schema({
 
 var Comment = mongoose.model("Comment", commentSchema);
 
+loadCourses();
 
+
+console.log("Completed Initialization.");
 
 
 /**
@@ -212,13 +247,13 @@ function insertCourse(req, res) {
     }
 
     var userid = req.body.userid;
-//    var course = req.body.courseid + req.body.sem;
-//    var section = req.body.lecture;
+    //    var course = req.body.courseid + req.body.sem;
+    //    var section = req.body.lecture;
     var course = req.body.data[0].id;
 
     console.log("Username: " + userid);
     console.log("Course: " + course);
-//    console.log("Section: " + section);
+    //    console.log("Section: " + section);
 
 
     // Will not allow users to add multiple lecture sections of the same course. Only one is permitted.
@@ -235,7 +270,7 @@ function insertCourse(req, res) {
             Course.create({
                 "userid": userid,
                 "courseid": course,
-//                "lecture": section
+                //                "lecture": section
             }, function(err, course) {
                 if (err) {
                     console.log(err);
@@ -245,13 +280,20 @@ function insertCourse(req, res) {
             });
 
             console.log("Created entry");
+
+            for (let i = 0; i < selectedCourses.length; i++) {
+                console.log(selectedCourses[i].days);
+                console.log(selectedCourses[i].timeslots);
+            }
+
+
             return res.json({
                 Status: "Success",
                 Message: "Entry inserted into DB."
             });
 
         } else {
-//            console.log("DB contains entry: " + courseResult.userid + " : " + courseResult.courseid + " : " + courseResult.lecture);
+            //            console.log("DB contains entry: " + courseResult.userid + " : " + courseResult.courseid + " : " + courseResult.lecture);
             console.log("DB contains entry: " + courseResult.userid + " : " + courseResult.courseid);
             return res.json({
                 Status: "Failed",
@@ -270,8 +312,8 @@ function insertCourse(req, res) {
 function removeCourse(req, res) {
 
     var userid = req.body.userid;
-//    var course = req.body.courseid + req.body.sem;
-//    var section = req.body.lecture;
+    //    var course = req.body.courseid + req.body.sem;
+    //    var section = req.body.lecture;
     var course = req.body.courseid;
 
     Course.findOneAndRemove({ "userid": userid, "courseid": course }, function(err, id) {
@@ -285,7 +327,6 @@ function removeCourse(req, res) {
 
         if (id != null) {
             console.log("Successfully deleted entry: " + userid + " : " + course);
-            updateTimetable(req.body.courseid);
             return res.json({
                 Status: "Success",
                 Message: "Course successfully removed."
@@ -376,12 +417,12 @@ function buildTimetable(data) {
     var time;
     var conflict;
     var timeslots;
-    
+
     // Iterate through the meeting sections
     for (let i = 0; i < data.meeting_sections.length; i++) {
         days = [];
         timeslots = [];
-        
+
         // Iterate through a meeting section's timeslots
         conflict = false;
         startTime = 0;
@@ -390,9 +431,9 @@ function buildTimetable(data) {
 
             // If there is a conflict
             if (conflict == true) {
-                    break;
-                }
-            
+                break;
+            }
+
             // Convert timeslots to numbers
             startTime = data.meeting_sections[i].times[k].start;
             endTime = data.meeting_sections[i].times[k].end;
@@ -401,44 +442,35 @@ function buildTimetable(data) {
             startTime += convertDayToNum(data.meeting_sections[i].times[k].day);
             endTime += convertDayToNum(data.meeting_sections[i].times[k].day);
             timeslots.push([startTime, endTime]);
-            
+
             // Convert timeslots for front end
             day = abbreviateDay(data.meeting_sections[i].times[k].day);
             time = data.meeting_sections[i].times[k].start / 3600;
             days.push([day, time]);
-            
+
             // Iterate through the selected courses to check for conflicts
             for (let m = 0; m < selectedCourses.length; m++) {
 
-                // Iterate through a selected course's timeslots
-                for (let j = 0; j < selectedCourses[m].timeslots.length; j++) {
-                    if (startTime >= selectedCourses[m].timeslots[j][0] && startTime <= selectedCourses[m].timeslots[j][1]) {
+                // If there is a conflict
+                for (let j = 0; j < selectedCourses[m].timeslots[j]; j++) {
+                    if (startTime >= selectedCourses[m].timeslots[j][0] && startTime <= selectedCourses[m].timeslots[1]) {
                         conflict = true;
                         break;
-                    }   
+                    }
                 }
             }
         }
         if (conflict == false) {
-            selectedCourses.push({"courseid": data.id, "code": data.code, "name": data.name, "instructor": data.meeting_sections[i].instructors, "days": days, "timeslots": timeslots, "colour": ""});
+            selectedCourses.push({ "code": data.code, "name": data.name, "instructor": data.meeting_sections[i].instructors, "days": days, "timeslots": timeslots, "colour": "" });
             return true;
         }
     }
     return false;
 }
-                                 
-// Update timetable when deleting a course
-function updateTimetable(course) {
-    for (let i = 0; i < selectedCourses.length; i++) {
-        if (selectedCourses[i].courseid == course) {
-            selectedCourses.splice(i, 1);
-        }
-    }
-}
 
 function convertDayToNum(day) {
     var num;
-    switch(day) {
+    switch (day) {
         case "MONDAY":
             num = 0;
             break;
@@ -460,7 +492,7 @@ function convertDayToNum(day) {
 
 function abbreviateDay(day) {
     var d;
-    switch(day) {
+    switch (day) {
         case "MONDAY":
             d = "M";
             break;
@@ -480,11 +512,79 @@ function abbreviateDay(day) {
     return d;
 }
 
+
+function loadCourses() {
+    var limit = 100;
+    var skip = 0;
+    var popOut = false;
+
+    CourseData.remove({}, function(err) {
+        if (err) {
+            console.log("Failed to remove courses.");
+            return true;
+        } else {
+            console.log("Successfully removed courses.");
+        }
+    })
+
+
+    while (popOut == false || skip < 7000) {
+
+        var searchUri = "https://cobalt.qas.im/api/1.0/courses" + cobalt + "&limit=" + limit + "&skip=" + skip;
+        console.log(searchUri);
+
+        popOut = request(searchUri, function(err, resp, body) {
+            console.log("Sending req");
+            if (err) {
+                console.log("Error connecting to Cobalt, falling back to pre-existing data.");
+                return true;
+            }
+
+            if (resp.statusCode != 200) {
+                console.log("Cobalt API returned a different status code than expected: " + resp.statusCode);
+                return true;
+            }
+
+            if (body == null) {
+                console.log("Empty body");
+                // return true;
+            } else {
+
+
+
+                var courseInfo = JSON.parse(body);
+                console.log("Attempting to insert...");
+                console.log(courseInfo);
+
+                CourseData.insertMany(courseInfo, function(err, docs) {
+                    if (err) {
+                        console.log("Failed to add set into database.");
+                        // return true;
+                    } else {
+                        console.log(docs.length + " courses were successfully inserted into the database.");
+                        // return false;
+                    }
+                });
+            }
+        });
+
+        console.log("End of iteration.");
+        skip = skip + 100;
+
+    }
+}
+
+
+
+
 /**
  * Routes for about us / comment. 
  */
 app.post('/addcomment', insertComment);
 app.get('/getcomment', retrieveCommentAll); // for devs
+
+
+
 
 /**
  * Relevant routes for courses & navigating Cobalt.
