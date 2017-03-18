@@ -581,7 +581,8 @@ function loadCourses() {
 
 
 function newTimetable(req, res) {
-    var id = Math.floor(Math.random() * 1000000) + 1;
+//    var id = Math.floor(Math.random() * 1000000) + 1;
+    var id = 1000;
     selectedCourses = [];
     while (contains(id, timetableIds)) {
         id = Math.floor(Math.random() * 1000000) + 1;
@@ -610,18 +611,54 @@ function saveTimetable(req, res) {
     var userid = req.body.userid;
     var timetableid = selectedCourses[0];
     var query = { "userid": userid, "timetableid": timetableid }
-    Timetables.findOneAndUpdate(query, { "timetable": selectedCourses }, { "upsert": true, "new": true }, function(err, result) {
+    Timetables.findOneAndUpdate(query, {$set:{timetable: selectedCourses}}, { upsert: true, new: true }, function(err, result) {
         if (err) {
             console.log("Error");
             return res.json({
                 Status: "Failed",
                 Message: "Failed to save timetable"
             });
+        } else {
+            res.sendStatus(200);
         }
     });
-    Timetables.findOne({ "userid": userid, "timetableid": timetableid}, function(err, result) {
-       console.log("The result is " + result); 
+}
+
+
+function deleteTimetable(req, res) {
+    var userid = req.body.userid;
+    var timetableid = req.body.timetable[0];
+    var query = {"userid": userid, "timetableid": timetableid};
+    Timetables.findOneAndRemove(query, {sort: false}, function(err, result) {
+        if (err) {
+            return res.json( {
+                Status: "Failed",
+                Message: "Failed to delete timetable"
+            });
+        }
     });
+    for (let i = 0; i < timetableIds.length; i++) {
+        if (timetableIds[i] == timetableid) {
+            timetableIds.splice(i, 1);
+        }
+    }
+    res.sendStatus(200);
+}
+
+
+function loadTimetable(req, res) {
+    var userid = req.body.userid;
+    var timetableid = req.body.timetable[0];
+    Timetables.findOne({"userid": userid, "timetableid": timetableid}, function(err, result) {
+        if (err) {
+            return res.json({
+                Status: "Failed",
+                Messaeg: "Failed to load timetable"
+            });
+        }
+        selectedCourses = result;
+    });
+    res.sendStatus(200);
 }
 
 
@@ -639,6 +676,8 @@ app.post('/addcourse', insertCourse);
 app.post('/removecourse', removeCourse);
 app.get('/newtimetable', newTimetable);
 app.put('/savetimetable', isLoggedIn, saveTimetable);
+app.delete('/deletetimetable', isLoggedIn, deleteTimetable);
+app.get('/loadtimetable', isLoggedIn, loadTimetable);
 
 //Middleware example
 //app.get('/search', isLoggedIn, getCourse);
