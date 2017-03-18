@@ -3,25 +3,24 @@ var bodyParser = require("body-parser");
 var mongoose = require("mongoose");
 var session = require('express-session');
 var passport = require("passport");
+var User = require("./user");
 var LocalStrategy = require("passport-local");
 var passportLocalMongoose = require("passport-local-mongoose");
 
-
-var User = require("./user");
-
 var app = express();
 
+app.use(require("express-session")({
+    secret: "hevEbrurutr3",
+    resave: false,
+    saveUninitialized: false
+}));
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
     extended: true
 }));
-app.use(require("express-session")({
-    secret: "hevEbrurutr3",
-    resave: false,
-    saveUninitialized: false
-}))
+
 
 passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
@@ -393,8 +392,11 @@ function destroySession(req, res) {
  */
 function isLoggedIn(req, res, next) {
     if (req.isAuthenticated()) {
+        console.log("User successfully authenticated.");
         return next();
     }
+
+    console.log(req.user);
     return res.json({
         Status: "Failed",
         Message: "You need to be logged in to access content."
@@ -619,7 +621,7 @@ app.get('/getcomment', retrieveCommentAll); // for devs
 /**
  * Relevant routes for courses & navigating Cobalt.
  */
-app.get('/search', getCourse);
+app.get('/search', isLoggedIn, getCourse);
 app.post('/addcourse', insertCourse);
 app.post('/removecourse', removeCourse);
 app.get('/newtimetable', newTimetable);
