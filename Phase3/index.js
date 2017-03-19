@@ -415,6 +415,7 @@ function authenticateUser(req, res) {
 
 function destroySession(req, res) {
 
+    console.log(req.user.username + " logged out.");
     req.logout();
     res.status(200).json({
         Status: "Success",
