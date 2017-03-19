@@ -129,11 +129,7 @@ console.log("Completed Initialization.");
  */
 
 function getCourse(req, res) {
-    if (!req.body.course) {
-        console.log("Failed");
-        console.log(req.body);
-        return res.sendStatus(400);
-    }
+
     var query = req.query.course;
     console.log("Searched for: " + query);
 
@@ -158,6 +154,14 @@ function getCourse(req, res) {
             });
         }
 
+        if (body.length == 2) {
+            console.log(body);
+            console.log(body.length);
+            return res.status(400).json({
+                Status: "Failed",
+                Message: "No courses to list."
+            });
+        }
         // Everything is a-ok.
         res.status(200).send(JSON.parse(body));
 
