@@ -194,9 +194,13 @@ function retrieveCommentAll(req, res) {
  * 
  */
 function insertComment(req, res) {
-    if (req.body.email == null) {
+    if (req.body.email == null || req.body.comment == null) {
         console.log("Failed");
         console.log(req.body);
+        return res.status(400).json({
+            Status: "Failed",
+            Message: "Missing email or "
+        });
     }
     var email = req.body.email;
     var comment = req.body.comment;
@@ -360,8 +364,6 @@ function removeCourse(req, res) {
         }
 
     });
-
-
 
 }
 
