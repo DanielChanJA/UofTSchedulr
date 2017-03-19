@@ -64,6 +64,12 @@ curl -H "Content-Type: application/json" -X POST -d '{"username":"vincent"}' htt
 read -p $'\nAdding a comment correctly'
 curl -H "Content-Type: application/json" -X POST -d '{"email":"vincent", "comment": "I love your website"}' http://localhost:3000/addcomment
 
+read -p $'\nAdding a comment correctly'
+curl -H "Content-Type: application/json" -X POST -d '{"email":"vincent", "comment": "anymessages"}' http://localhost:3000/addcomment
+
+read -p $'\nAdding a comment correctly'
+curl -H "Content-Type: application/json" -X POST -d '{"email":"daniel", "comment": "hello"}' http://localhost:3000/addcomment
+
 read -p $'\nAdding a comment incorrectly, expect 400 status'
 curl -H "Content-Type: application/json" -X POST -d '{"email":"vincent"}' http://localhost:3000/addcomment
 
