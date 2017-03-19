@@ -99,12 +99,13 @@ var userSchema = new mongoose.Schema({
 
 var Users = mongoose.model("Users", userSchema);
 
-// comments/feedback
+// feeback schema
 var commentSchema = new mongoose.Schema({
     email: String,
-    comment: String
+    comments: [{
+        type: String
+    }]
 });
-
 var Comment = mongoose.model("Comment", commentSchema);
 
 // Timetables schema
@@ -128,6 +129,11 @@ console.log("Completed Initialization.");
  */
 
 function getCourse(req, res) {
+    if (!req.body.course) {
+        console.log("Failed");
+        console.log(req.body);
+        return res.sendStatus(400);
+    }
     var query = req.query.course;
     console.log("Searched for: " + query);
 
@@ -164,23 +170,25 @@ function getCourse(req, res) {
  * This function retrieves all comments from DB.
  * 
  * returns JSON     {
-                    "user": "messages",
-                    "vicnent2": "messages23124"
+                    "user": ["messages"],
                     }
  */
 function retrieveCommentAll(req, res) {
     Comment.find({}, function(err, users) {
         if (err) {
             console.log("error");
-            throw err;
-        } else {
-            var userMap = {};
-
-            users.forEach(function(user) {
-                userMap[user.email] = user.comment;
+            return res.status(500).json({
+                Status: "Failed",
+                Message: "Error retrieving data. Server encountered an unexpected condition."
             });
-            res.send(userMap);
+        } else {
+            // Renders a new JSON format readable to the devs.
+            var userMap = {};
+            users.forEach(function(user) {
+                userMap[user.email] = user.comments;
+            });
             console.log(userMap);
+            res.status(200).send(userMap);
         }
     });
 }
@@ -191,50 +199,67 @@ function retrieveCommentAll(req, res) {
  * 
  */
 function insertComment(req, res) {
-    if (req.body.email == null) {
+    if (!req.body.email || !req.body.comment) {
         console.log("Failed");
         console.log(req.body);
+        return res.sendStatus(400);
     }
     var email = req.body.email;
     var comment = req.body.comment;
     console.log("Username: " + email);
     console.log("Comment: " + comment);
 
-    //////
-
+    // Check to see if the given email is in the DB.
     Comment.findOne({ "email": email }, function(err, commentResult) {
         if (err) {
-            console.log("Error retrieving users.");
-            return res.json({
+            console.log("Error retrieving users."); //// error with db
+            return res.status(500).json({
                 Status: "Failed",
-                Message: "Error retrieving data."
+                Message: "Error retrieving data. Server encountered an unexpected condition."
             });
         }
-
+        // Creates a new object if the user hasn't posted a comment before.
         if (commentResult == null) {
             Comment.create({
                 "email": email,
-                "comment": comment,
+                "comments": [comment],
             }, function(err, comment) {
                 if (err) {
                     console.log(err);
+                    res.status(500).json({
+                        Status: "Failed",
+                        Message: "Error retrieving data. Server encountered an unexpected condition."
+                    });
                 } else {
                     console.log(commentResult);
                 }
             });
 
             console.log("Created comment entry from: " + email);
-            return res.json({
+            return res.status(200).json({
                 Status: "Success",
-                Message: "Entry inserted comment into DB."
+                Message: "Comment inserted into DB."
             });
 
         } else {
-            console.log("DB contains entry: " + commentResult.email + " : " + commentResult.comment);
-            return res.json({
-                Status: "Failed",
-                Message: "Entry exists in DB"
+            // Inserts the new comment by the user if they have previously commented.
+            Comment.update({ "email": email }, { $push: { comments: comment } }, { upsert: true }, function(err) {
+                if (err) {
+                    console.log(err);
+                    return res.status(500).json({
+                        Status: "Failed",
+                        Message: "Error retrieving data. Server encountered an unexpected condition."
+                    });
+                } else {
+                    console.log("Successfully added");
+                    console.log("pushed");
+                    return res.status(200).json({
+                        Status: "Success",
+                        Message: "Entry pushed comment into DB."
+                    });
+                }
             });
+
         }
     });
 
@@ -249,9 +274,14 @@ function insertComment(req, res) {
  */
 function insertCourse(req, res) {
 
-    if (req.body.userid == null) {
+    // if (req.body.userid == null) {
+    //     console.log("Failed");
+    //     console.log(req.body);
+    // }
+    if (!req.body.userid) {
         console.log("Failed");
         console.log(req.body);
+        return res.sendStatus(400);
     }
 
     var userid = req.body.userid;
@@ -295,7 +325,7 @@ function insertCourse(req, res) {
 
         } else {
             //            console.log("DB contains entry: " + courseResult.userid + " : " + courseResult.courseid + " : " + courseResult.lecture);
-            console.log("DB contains entry: " + courseResult.userid + " : " + courseResult.courseid);
+            console.log("DB contains entry: " + userid + " : " + course);
             return res.status(400).json({
                 Status: "Failed",
                 Message: "Entry exists in DB, or there are no available timeslots"
@@ -311,7 +341,9 @@ function insertCourse(req, res) {
  * @param {*} res 
  */
 function removeCourse(req, res) {
-
+    if (!req.body.userid || !req.body.courseid) {
+        return res.sendStatus(400);
+    }
     var userid = req.body.userid;
     //    var course = req.body.courseid + req.body.sem;
     //    var section = req.body.lecture;
@@ -342,8 +374,6 @@ function removeCourse(req, res) {
 
     });
 
-
-
 }
 
 /**
@@ -352,6 +382,9 @@ function removeCourse(req, res) {
  * @param {*} res 
  */
 function createUser(req, res) {
+    if (!req.body.username || !req.body.firstname || !req.body.lastname || !req.body.password) {
+        return res.sendStatus(400);
+    }
     User.register(new User({ username: req.body.username, firstname: req.body.firstname, lastname: req.body.lastname }), req.body.password, function(err, user) {
         if (err) {
             console.log(err);
@@ -456,16 +489,19 @@ function buildTimetable(data) {
 
             // Iterate through the selected courses to check for conflicts
             for (let m = 1; m < selectedCourses.length; m++) {
-
                 // If there is a conflict
-                for (let j = 1; j < selectedCourses[m].timeslots[j]; j++) {
-                    if (startTime >= selectedCourses[m].timeslots[j][0] && startTime <= selectedCourses[m].timeslots[1]) {
+                for (let j = 0; j < selectedCourses[m].timeslots.length; j++) {
+                    if (startTime >= selectedCourses[m].timeslots[j][0] && startTime <= selectedCourses[m].timeslots[j][1]) {
                         conflict = true;
                         break;
                     }
                 }
+                if (conflict == true) {
+                    break;
+                }
             }
         }
+
         if (conflict == false) {
             selectedCourses.push({ "code": data.code, "name": data.name, "instructor": data.meeting_sections[i].instructors, "days": days, "timeslots": timeslots, "colour": "" });
             return true;
@@ -616,18 +652,54 @@ function saveTimetable(req, res) {
     var userid = req.body.userid;
     var timetableid = selectedCourses[0];
     var query = { "userid": userid, "timetableid": timetableid }
-    Timetables.findOneAndUpdate(query, { "timetable": selectedCourses }, { "upsert": true, "new": true }, function(err, result) {
+    Timetables.findOneAndUpdate(query, { $set: { timetable: selectedCourses } }, { upsert: true, new: true }, function(err, result) {
         if (err) {
             console.log("Error");
             return res.status(500).json({
                 Status: "Failed",
                 Message: "Failed to save timetable"
             });
+        } else {
+            res.sendStatus(200);
         }
     });
-    Timetables.findOne({ "userid": userid, "timetableid": timetableid }, function(err, result) {
-        console.log("The result is " + result);
+}
+
+
+function deleteTimetable(req, res) {
+    var userid = req.body.userid;
+    var timetableid = req.body.timetable[0];
+    var query = { "userid": userid, "timetableid": timetableid };
+    Timetables.findOneAndRemove(query, { sort: false }, function(err, result) {
+        if (err) {
+            return res.json({
+                Status: "Failed",
+                Message: "Failed to delete timetable"
+            });
+        }
     });
+    for (let i = 0; i < timetableIds.length; i++) {
+        if (timetableIds[i] == timetableid) {
+            timetableIds.splice(i, 1);
+        }
+    }
+    res.sendStatus(200);
+}
+
+
+function loadTimetable(req, res) {
+    var userid = req.body.userid;
+    var timetableid = req.body.timetable[0];
+    Timetables.findOne({ "userid": userid, "timetableid": timetableid }, function(err, result) {
+        if (err) {
+            return res.json({
+                Status: "Failed",
+                Messaeg: "Failed to load timetable"
+            });
+        }
+        selectedCourses = result;
+    });
+    res.sendStatus(200);
 }
 
 
@@ -645,6 +717,8 @@ app.post('/addcourse', insertCourse);
 app.post('/removecourse', removeCourse);
 app.get('/newtimetable', newTimetable);
 app.put('/savetimetable', isLoggedIn, saveTimetable);
+app.delete('/deletetimetable', isLoggedIn, deleteTimetable);
+app.get('/loadtimetable', isLoggedIn, loadTimetable);
 
 //Middleware example
 //app.get('/search', isLoggedIn, getCourse);
