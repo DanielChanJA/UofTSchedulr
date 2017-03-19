@@ -279,10 +279,7 @@ function insertComment(req, res) {
  */
 function insertCourse(req, res) {
 
-    // if (req.body.userid == null) {
-    //     console.log("Failed");
-    //     console.log(req.body);
-    // }
+
     if (!req.body.userid) {
         console.log("Failed");
         console.log(req.body);
@@ -290,13 +287,11 @@ function insertCourse(req, res) {
     }
 
     var userid = req.body.userid;
-    //    var course = req.body.courseid + req.body.sem;
-    //    var section = req.body.lecture;
+
     var course = req.body.data[0].id;
 
     console.log("Username: " + userid);
     console.log("Course: " + course);
-    //    console.log("Section: " + section);
 
 
     // Will not allow users to add multiple lecture sections of the same course. Only one is permitted.
@@ -329,7 +324,6 @@ function insertCourse(req, res) {
             });
 
         } else {
-            //            console.log("DB contains entry: " + courseResult.userid + " : " + courseResult.courseid + " : " + courseResult.lecture);
             console.log("DB contains entry: " + userid + " : " + course);
             return res.status(400).json({
                 Status: "Failed",
@@ -350,8 +344,6 @@ function removeCourse(req, res) {
         return res.sendStatus(400);
     }
     var userid = req.body.userid;
-    //    var course = req.body.courseid + req.body.sem;
-    //    var section = req.body.lecture;
     var course = req.body.courseid;
 
     Course.findOneAndRemove({ "userid": userid, "courseid": course }, function(err, id) {
@@ -602,7 +594,6 @@ function loadCourses() {
 
             if (body == null) {
                 console.log("Empty body");
-                // return true;
             } else {
                 var courseInfo = JSON.parse(body);
                 console.log("Attempting to insert...");
@@ -611,10 +602,8 @@ function loadCourses() {
                 CourseData.insertMany(courseInfo, function(err, docs) {
                     if (err) {
                         console.log("Failed to add set into database.");
-                        // return true;
                     } else {
                         console.log(docs.length + " courses were successfully inserted into the database.");
-                        // return false;
                     }
                 });
             }
@@ -734,4 +723,3 @@ app.get('/loadtimetable', isLoggedIn, loadTimetable);
 app.post('/login', passport.authenticate('local'), authenticateUser);
 app.post('/register', createUser);
 app.post('/logout', destroySession);
-// app.get('/timetable', generateTimetable);
