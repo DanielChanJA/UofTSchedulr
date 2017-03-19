@@ -99,12 +99,13 @@ var userSchema = new mongoose.Schema({
 
 var Users = mongoose.model("Users", userSchema);
 
-// comments/feedback
+// feeback schema
 var commentSchema = new mongoose.Schema({
     email: String,
-    comment: String
+    comments: [{
+        type: String
+    }]
 });
-
 var Comment = mongoose.model("Comment", commentSchema);
 
 // Timetables schema
@@ -164,23 +165,25 @@ function getCourse(req, res) {
  * This function retrieves all comments from DB.
  * 
  * returns JSON     {
-                    "user": "messages",
-                    "vicnent2": "messages23124"
+                    "user": ["messages"],
                     }
  */
 function retrieveCommentAll(req, res) {
     Comment.find({}, function(err, users) {
         if (err) {
             console.log("error");
-            throw err;
-        } else {
-            var userMap = {};
-
-            users.forEach(function(user) {
-                userMap[user.email] = user.comment;
+            return res.status(500).json({
+                Status: "Failed",
+                Message: "Error retrieving data. Server encountered an unexpected condition."
             });
-            res.send(userMap);
+        } else {
+            // Renders a new JSON format readable to the devs.
+            var userMap = {};
+            users.forEach(function(user) {
+                userMap[user.email] = user.comments;
+            });
             console.log(userMap);
+            res.status(200).send(userMap);
         }
     });
 }
@@ -200,41 +203,57 @@ function insertComment(req, res) {
     console.log("Username: " + email);
     console.log("Comment: " + comment);
 
-    //////
-
+    // Check to see if the given email is in the DB.
     Comment.findOne({ "email": email }, function(err, commentResult) {
         if (err) {
-            console.log("Error retrieving users.");
-            return res.json({
+            console.log("Error retrieving users."); //// error with db
+            return res.status(500).json({
                 Status: "Failed",
-                Message: "Error retrieving data."
+                Message: "Error retrieving data. Server encountered an unexpected condition."
             });
         }
-
+        // Creates a new object if the user hasn't posted a comment before.
         if (commentResult == null) {
             Comment.create({
                 "email": email,
-                "comment": comment,
+                "comments": [comment],
             }, function(err, comment) {
                 if (err) {
                     console.log(err);
+                    res.status(500).json({
+                        Status: "Failed",
+                        Message: "Error retrieving data. Server encountered an unexpected condition."
+                    });
                 } else {
                     console.log(commentResult);
                 }
             });
 
             console.log("Created comment entry from: " + email);
-            return res.json({
+            return res.status(200).json({
                 Status: "Success",
-                Message: "Entry inserted comment into DB."
+                Message: "Comment inserted into DB."
             });
 
         } else {
-            console.log("DB contains entry: " + commentResult.email + " : " + commentResult.comment);
-            return res.json({
-                Status: "Failed",
-                Message: "Entry exists in DB"
+            // Inserts the new comment by the user if they have previously commented.
+            Comment.update({ "email": email }, { $push: { comments: comment } }, { upsert: true }, function(err) {
+                if (err) {
+                    console.log(err);
+                    return res.status(500).json({
+                        Status: "Failed",
+                        Message: "Error retrieving data. Server encountered an unexpected condition."
+                    });
+                } else {
+                    console.log("Successfully added");
+                    console.log("pushed");
+                    return res.status(200).json({
+                        Status: "Success",
+                        Message: "Entry pushed comment into DB."
+                    });
+                }
             });
+
         }
     });
 
@@ -468,7 +487,7 @@ function buildTimetable(data) {
                 }
             }
         }
-        
+
         if (conflict == false) {
             selectedCourses.push({ "code": data.code, "name": data.name, "instructor": data.meeting_sections[i].instructors, "days": days, "timeslots": timeslots, "colour": "" });
             return true;
@@ -619,7 +638,7 @@ function saveTimetable(req, res) {
     var userid = req.body.userid;
     var timetableid = selectedCourses[0];
     var query = { "userid": userid, "timetableid": timetableid }
-    Timetables.findOneAndUpdate(query, {$set:{timetable: selectedCourses}}, { upsert: true, new: true }, function(err, result) {
+    Timetables.findOneAndUpdate(query, { $set: { timetable: selectedCourses } }, { upsert: true, new: true }, function(err, result) {
         if (err) {
             console.log("Error");
             return res.status(500).json({
@@ -636,10 +655,10 @@ function saveTimetable(req, res) {
 function deleteTimetable(req, res) {
     var userid = req.body.userid;
     var timetableid = req.body.timetable[0];
-    var query = {"userid": userid, "timetableid": timetableid};
-    Timetables.findOneAndRemove(query, {sort: false}, function(err, result) {
+    var query = { "userid": userid, "timetableid": timetableid };
+    Timetables.findOneAndRemove(query, { sort: false }, function(err, result) {
         if (err) {
-            return res.json( {
+            return res.json({
                 Status: "Failed",
                 Message: "Failed to delete timetable"
             });
@@ -657,7 +676,7 @@ function deleteTimetable(req, res) {
 function loadTimetable(req, res) {
     var userid = req.body.userid;
     var timetableid = req.body.timetable[0];
-    Timetables.findOne({"userid": userid, "timetableid": timetableid}, function(err, result) {
+    Timetables.findOne({ "userid": userid, "timetableid": timetableid }, function(err, result) {
         if (err) {
             return res.json({
                 Status: "Failed",
