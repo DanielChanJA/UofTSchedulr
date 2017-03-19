@@ -129,6 +129,11 @@ console.log("Completed Initialization.");
  */
 
 function getCourse(req, res) {
+    if (!req.body.course) {
+        console.log("Failed");
+        console.log(req.body);
+        return res.sendStatus(400);
+    }
     var query = req.query.course;
     console.log("Searched for: " + query);
 
@@ -194,13 +199,10 @@ function retrieveCommentAll(req, res) {
  * 
  */
 function insertComment(req, res) {
-    if (req.body.email == null || req.body.comment == null) {
+    if (!req.body.email || !req.body.comment) {
         console.log("Failed");
         console.log(req.body);
-        return res.status(400).json({
-            Status: "Failed",
-            Message: "Missing email or "
-        });
+        return res.sendStatus(400);
     }
     var email = req.body.email;
     var comment = req.body.comment;
@@ -272,9 +274,14 @@ function insertComment(req, res) {
  */
 function insertCourse(req, res) {
 
-    if (req.body.userid == null) {
+    // if (req.body.userid == null) {
+    //     console.log("Failed");
+    //     console.log(req.body);
+    // }
+    if (!req.body.userid) {
         console.log("Failed");
         console.log(req.body);
+        return res.sendStatus(400);
     }
 
     var userid = req.body.userid;
@@ -334,7 +341,9 @@ function insertCourse(req, res) {
  * @param {*} res 
  */
 function removeCourse(req, res) {
-
+    if (!req.body.userid || !req.body.courseid) {
+        return res.sendStatus(400);
+    }
     var userid = req.body.userid;
     //    var course = req.body.courseid + req.body.sem;
     //    var section = req.body.lecture;
@@ -373,6 +382,9 @@ function removeCourse(req, res) {
  * @param {*} res 
  */
 function createUser(req, res) {
+    if (!req.body.username || !req.body.firstname || !req.body.lastname || !req.body.password) {
+        return res.sendStatus(400);
+    }
     User.register(new User({ username: req.body.username, firstname: req.body.firstname, lastname: req.body.lastname }), req.body.password, function(err, user) {
         if (err) {
             console.log(err);
