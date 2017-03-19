@@ -60,3 +60,9 @@ curl -H "Content-Type: application/json" -X POST -d '{"userid":"vincent", "cours
 
 read -p $'\nLog out'
 curl -H "Content-Type: application/json" -X POST -d '{"username":"vincent"}' http://localhost:3000/logout
+
+read -p $'\nAdding a comment'
+curl -H "Content-Type: application/json" -X POST -d '{"email":"vincent", comment: ["I love your website"]}' http://localhost:3000/addcomment
+
+read -p $'\nRetrieving all comments'
+curl http://localhost:3000/getcomment
