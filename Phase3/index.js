@@ -154,6 +154,7 @@ function getCourse(req, res) {
             });
         }
 
+        // If the response from the API call is [] we know its an empty array. Means that the user input was wrong.
         if (body.length == 2) {
             console.log(body);
             console.log(body.length);
