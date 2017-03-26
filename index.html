@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
     <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Gorditas" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
     <title>Schdule</title>
 </head>
 
@@ -60,7 +61,8 @@
     </div>
     <form class="search-bar">
         <input class="center-x" type="text" name="search" placeholder="Search courses">
-        <button class="search-bar-btn center-x" type="submit">Search</button>
+        <button class="search-bar-btn center-x" type="button">Search</button>
+        <button class="button-add-class center-x" type="button" disabled>Add Class</button>
     </form>
     <section class="table-header">
         <div class="center-x">
@@ -84,18 +86,12 @@
     </div>
     <section class="course-info">
         <div class="center-x">
-            <h2>CSC300</h2>
-            <h3>Course Name</h3>
-            <p>Computers and Society</p>
-            <h3>Instructor</h3>
-            <p>Jeremy Sills</p>
-            <h3>Time</h3>
-            <p>M<br>11:00</p>
+            <h2 class="course-code"></h2>
+            <h3 class="course-name-title"></h3>
+            <p class="course-name"></p>
+            <h3 class="course-sections"></h3>
+            <form class="sections"></form>
         </div>
-        <button class="button-add-class center-x" type="button">Add Class</button>
-    </section>
-    <section class="map">
-        <img class="center-x" src="Assets/Images/map-close.jpg" alt="location">
     </section>
     <footer>
         <div class="container okok">

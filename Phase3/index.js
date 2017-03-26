@@ -6,6 +6,7 @@ var passport = require("passport");
 var User = require("./user");
 var LocalStrategy = require("passport-local");
 var passportLocalMongoose = require("passport-local-mongoose");
+var path = require("path");
 
 var app = express();
 
@@ -20,7 +21,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
     extended: true
 }));
-
+app.use(express.static(__dirname + "/../"));
 
 passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
@@ -698,6 +699,20 @@ function loadTimetable(req, res) {
 }
 
 
+// Get the main page
+function getIndex(req, res) {
+    res.sendFile(path.join(__dirname + "/../index.html"));
+}
+
+
+// Search local database for course
+function searchCourse(req, res) {
+    CourseData.find({code: req.query.code}, function(err, result) {
+        res.send(result);
+    });
+}
+
+
 /**
  * Routes for about us / comment. 
  */
@@ -714,6 +729,8 @@ app.get('/newtimetable', newTimetable);
 app.put('/savetimetable', isLoggedIn, saveTimetable);
 app.delete('/deletetimetable', isLoggedIn, deleteTimetable);
 app.get('/loadtimetable', isLoggedIn, loadTimetable);
+app.get('/', getIndex);
+app.get('/coursesearch', searchCourse);
 
 //Middleware example
 //app.get('/search', isLoggedIn, getCourse);

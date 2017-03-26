@@ -26,31 +26,7 @@ var courses = [{
     }
 ];
 
-var schedule = [{
-        "code": "CSC300",
-        "name": "Computers and Society",
-        "instructor": "Jeremy Sills",
-        "days": ["M"],
-        "time": [11, 1],
-        "colour": "#dd1c1a"
-    },
-    {
-        "code": "CSC301",
-        "name": "Introduction to Software Engineering",
-        "instructor": "Joey Freund",
-        "days": ["M", "T"],
-        "time": [4, 1],
-        "colour": "#f0c808"
-    },
-    {
-        "code": "CSC302",
-        "name": "Engineering Large Software Systems",
-        "instructor": "Joe",
-        "days": ["M"],
-        "time": [1, 3],
-        "colour": "#06aed5"
-    }
-];
+var schedule = [];
 
 
 // Media query for mobile devices (max: iPad portrait - 1px)
@@ -322,6 +298,25 @@ function changeHeaderDay(day) {
 }
 
 
+// Interpret the days from search result
+function interpretDay(day) {
+    switch (day) {
+        case "MONDAY":
+            return "M";
+        case "TUESDAY":
+            return "T";
+        case "WEDNESDAY":
+            return "W";
+        case "THURSDAY":
+            return "TH";
+        case "FRIDAY":
+            return "F";
+        default:
+            break;
+    }
+}
+
+
 // Display course information mdoal
 var modals = document.getElementsByClassName("modal-container");
 
@@ -366,3 +361,62 @@ buttonSignIn2.addEventListener("click", function() {
     modals[0].childNodes[1].childNodes[5].value = "";
 })
 
+
+// CRUD functions
+$(".search-bar-btn").on("click", function() {
+    var code = $("input[name='search']").val();
+    if (code == "") {
+        alert("You must input a course code.");
+    } else {
+        $.ajax({type: "GET", url: "/coursesearch", data: {code: code}, contentType: "application/json; charset=utf-8", success: function(res) {
+            $(".course-code").html(res[0].code);
+            $(".course-name-title").html("Course Name");
+            $(".course-name").html(res[0].name);
+            $(".course-sections").html("Sections");
+            var sections = $(".sections");
+            sections.empty();
+            $.each(res[0].meeting_sections, function (i, section) {
+                sections.append("<input type='radio' name='section' value='" + res[0].meeting_sections[i].code + "'> " + res[0].meeting_sections[i].code + "<br>");
+            });
+            $(".course-info div").append(sections);
+            $(".button-add-class").prop("disabled", false);
+        }});
+    }
+});
+
+$(".button-add-class").on("click", function() {
+    var radioBtns = $("input[name='section']");
+    var code = "";
+    var section;
+    for (let i = 0; i < radioBtns.length; i++) {
+        if (radioBtns[i].checked) {
+            code = $("input[name='search']").val();
+            section = radioBtns[i].value;
+        }
+    }
+    if (code == "") {
+        alert("You must select a section");
+    } else {
+        $.ajax({type: "GET", url: "/coursesearch", data: {code: code}, contentType: "application/json; charset=utf-8", success: function(res) {
+            course = {"code": res[0].code, "name": res[0].name, "colour": colours[0], "days": []};
+            colours.shift();
+            for (let k = 0; k < res[0].meeting_sections.length; k++) {
+                if (res[0].meeting_sections[k].code == section) {
+                    if (res[0].meeting_sections[k].times.length == 0) {
+                        alert("There are no times for this section.");
+                    }
+                    course.instructor = res[0].meeting_sections[k].instructors[0];
+                    for (let m = 0; m < res[0].meeting_sections[k].times.length; m++) {
+                        course.days.push(interpretDay(res[0].meeting_sections[k].times[m].day));
+                    }
+                    let timeStart = res[0].meeting_sections[k].times[0].start / 3600;
+                    let duration = res[0].meeting_sections[k].times[0].duration / 3600;
+                    course.time = [timeStart, duration];
+                }
+            }
+            schedule.push(course);
+            refreshSmallTable();
+            refreshLargeTable();
+        }});
+    }
+});
