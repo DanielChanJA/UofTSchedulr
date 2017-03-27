@@ -61,6 +61,15 @@ window.onresize = function() {
 }
 
 
+function refreshTable() {
+    if (window.innerWidth < 768) {
+        refreshSmallTable();
+    } else {
+        refreshLargeTable();
+    }
+}
+
+
 function refreshSmallTable() {
     changeHeaderDay(0);
 
@@ -227,7 +236,7 @@ function populateDaysLarge(table) {
                         insertCourse(table.rows[i].cells[k], schedule[n]);
                         if (schedule[n].time[1] > 1) {
                             for (let m = 1; m < schedule[n].time[1]; m++) {
-                                extendCourse(table.rows[i + m].cells[k], schedule[n]);
+                                extendCourse(table.rows[i + m].cells[k], schedule[n], m, schedule[n].time[1]);
                             }
                         }
                     }
@@ -250,9 +259,11 @@ function insertCourse(cell, course) {
 
 
 // Extend the course if the duration is longer than an hour
-function extendCourse(cell, course) {
+function extendCourse(cell, course, n, m) {
+    if (n != m - 1) {
+        cell.style.borderBottom = "none";
+    }
     cell.style.borderTop = "none";
-    cell.style.borderBottom = "none";
     cell.style.backgroundColor = course.colour;
     cell.addEventListener("click", function() {
         displayCourse(course);
@@ -363,6 +374,7 @@ buttonSignIn2.addEventListener("click", function() {
 
 
 // CRUD functions
+// Search for a course
 $(".search-bar-btn").on("click", function() {
     var code = $("input[name='search']").val();
     if (code == "") {
@@ -380,10 +392,15 @@ $(".search-bar-btn").on("click", function() {
             });
             $(".course-info div").append(sections);
             $(".button-add-class").prop("disabled", false);
+            if (window.innerWidth < 768) {
+                window.scrollTo(0, document.body.scrollHeight);
+            }
         }});
     }
 });
 
+
+// Add a course that was searched
 $(".button-add-class").on("click", function() {
     var radioBtns = $("input[name='section']");
     var code = "";
@@ -409,14 +426,29 @@ $(".button-add-class").on("click", function() {
                     for (let m = 0; m < res[0].meeting_sections[k].times.length; m++) {
                         course.days.push(interpretDay(res[0].meeting_sections[k].times[m].day));
                     }
-                    let timeStart = res[0].meeting_sections[k].times[0].start / 3600;
+                    var timeStart = res[0].meeting_sections[k].times[0].start / 3600;
+                    if (timeStart > 12) {
+                        timeStart -= 12;
+                    }
                     let duration = res[0].meeting_sections[k].times[0].duration / 3600;
                     course.time = [timeStart, duration];
                 }
             }
             schedule.push(course);
-            refreshSmallTable();
-            refreshLargeTable();
+            refreshTable();
         }});
     }
+});
+
+
+// Delete a course which was clicked on the timetable
+$(".btn-delete-course").on("click", function() {
+    for (let i = 0; i < schedule.length; i++) {
+        if (schedule[i].code == $(".modal-course-info h2").text()) {
+            colours.push(schedule[i].colour);
+            schedule.splice(i, 1);
+        }
+    }
+    refreshTable();
+    $(".modal-container").css("display", "none");
 });
