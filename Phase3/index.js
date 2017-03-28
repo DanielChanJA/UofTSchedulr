@@ -707,7 +707,7 @@ function getIndex(req, res) {
 
 // Search local database for course
 function searchCourse(req, res) {
-    CourseData.find({code: req.query.code}, function(err, result) {
+    CourseData.find({ code: req.query.code }, function(err, result) {
         res.send(result);
     });
 }

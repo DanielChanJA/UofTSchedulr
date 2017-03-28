@@ -380,22 +380,48 @@ $(".search-bar-btn").on("click", function() {
     if (code == "") {
         alert("You must input a course code.");
     } else {
-        $.ajax({type: "GET", url: "/coursesearch", data: {code: code}, contentType: "application/json; charset=utf-8", success: function(res) {
-            $(".course-code").html(res[0].code);
-            $(".course-name-title").html("Course Name");
-            $(".course-name").html(res[0].name);
-            $(".course-sections").html("Sections");
-            var sections = $(".sections");
-            sections.empty();
-            $.each(res[0].meeting_sections, function (i, section) {
-                sections.append("<input type='radio' name='section' value='" + res[0].meeting_sections[i].code + "'> " + res[0].meeting_sections[i].code + "<br>");
-            });
-            $(".course-info div").append(sections);
-            $(".button-add-class").prop("disabled", false);
-            if (window.innerWidth < 768) {
-                window.scrollTo(0, document.body.scrollHeight);
+        $.ajax({
+            type: "GET",
+            url: "/coursesearch",
+            data: { code: code },
+            contentType: "application/json; charset=utf-8",
+            success: function(res) {
+                $(".course-code").html(res[0].code);
+                $(".course-name-title").html("Course Name:" + "&nbsp;&nbsp;&nbsp;&nbsp;" + res[0].name);
+                // $(".course-name").html(res[0].name);
+                $(".course-department").html('Department:' + "&nbsp;&nbsp;&nbsp;&nbsp;" + res[0].department);
+                $(".course-prereq").html("Prerequisites:" + "&nbsp;&nbsp;&nbsp;&nbsp;" + res[0].prerequisites);
+                $(".show-more-button").show();
+                // show more
+
+                $(".course-description").html("Description:" + "&nbsp;&nbsp;&nbsp;&nbsp;" + res[0].description);
+                $(".course-exclusions").html("Exclusions:" + "&nbsp;&nbsp;&nbsp;&nbsp;" + res[0].exclusions);
+                $(".course-campus").html("Campus:" + "&nbsp;&nbsp;&nbsp;&nbsp;" + res[0].campus);
+                $(".course-breadths").html("Breadths:" + "&nbsp;&nbsp;&nbsp;&nbsp;" + res[0].breadths);
+
+                $(".course-sections").html("Sections");
+                var sections = $(".sections");
+                sections.empty();
+                $.each(res[0].meeting_sections, function(i, section) {
+                    sections.append("<input type='radio' name='section' value='" + res[0].meeting_sections[i].code + "'> " + res[0].meeting_sections[i].code + "<br>");
+                });
+
+                $(".course-info .center-x").append(sections); //replaced div with .center-x
+                $(".button-add-class").prop("disabled", false);
+                if (window.innerWidth < 768) {
+                    window.scrollTo(0, document.body.scrollHeight);
+                }
             }
-        }});
+        });
+    }
+});
+
+$(".show-more-button").click(function() {
+    $(".show-more-class").slideToggle();
+    if ($(".show-more-button").text() == "show more") {
+        $(".show-more-button").text("show less");
+    } else {
+        $(".show-more-button").text("show more");
     }
 });
 
@@ -414,29 +440,35 @@ $(".button-add-class").on("click", function() {
     if (code == "") {
         alert("You must select a section");
     } else {
-        $.ajax({type: "GET", url: "/coursesearch", data: {code: code}, contentType: "application/json; charset=utf-8", success: function(res) {
-            course = {"code": res[0].code, "name": res[0].name, "colour": colours[0], "days": []};
-            colours.shift();
-            for (let k = 0; k < res[0].meeting_sections.length; k++) {
-                if (res[0].meeting_sections[k].code == section) {
-                    if (res[0].meeting_sections[k].times.length == 0) {
-                        alert("There are no times for this section.");
+        $.ajax({
+            type: "GET",
+            url: "/coursesearch",
+            data: { code: code },
+            contentType: "application/json; charset=utf-8",
+            success: function(res) {
+                course = { "code": res[0].code, "name": res[0].name, "colour": colours[0], "days": [] };
+                colours.shift();
+                for (let k = 0; k < res[0].meeting_sections.length; k++) {
+                    if (res[0].meeting_sections[k].code == section) {
+                        if (res[0].meeting_sections[k].times.length == 0) {
+                            alert("There are no times for this section.");
+                        }
+                        course.instructor = res[0].meeting_sections[k].instructors[0];
+                        for (let m = 0; m < res[0].meeting_sections[k].times.length; m++) {
+                            course.days.push(interpretDay(res[0].meeting_sections[k].times[m].day));
+                        }
+                        var timeStart = res[0].meeting_sections[k].times[0].start / 3600;
+                        if (timeStart > 12) {
+                            timeStart -= 12;
+                        }
+                        let duration = res[0].meeting_sections[k].times[0].duration / 3600;
+                        course.time = [timeStart, duration];
                     }
-                    course.instructor = res[0].meeting_sections[k].instructors[0];
-                    for (let m = 0; m < res[0].meeting_sections[k].times.length; m++) {
-                        course.days.push(interpretDay(res[0].meeting_sections[k].times[m].day));
-                    }
-                    var timeStart = res[0].meeting_sections[k].times[0].start / 3600;
-                    if (timeStart > 12) {
-                        timeStart -= 12;
-                    }
-                    let duration = res[0].meeting_sections[k].times[0].duration / 3600;
-                    course.time = [timeStart, duration];
                 }
+                schedule.push(course);
+                refreshTable();
             }
-            schedule.push(course);
-            refreshTable();
-        }});
+        });
     }
 });
 
