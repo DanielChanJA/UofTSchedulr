@@ -1,30 +1,5 @@
 var colours = ["#dd1c1a", "#f0c808", "#06aed5", "#fff1d0"];
 var daysOTW = ["M", "T", "W", "TH", "F"];
-var courses = [{
-        "code": "CSC300",
-        "name": "Computers and Society",
-        "instructor": "Jeremy Sills",
-        "days": ["M"],
-        "time": [11, 1],
-        "colour": ""
-    },
-    {
-        "code": "CSC301",
-        "name": "Introduction to Software Engineering",
-        "instructor": "Joey Freund",
-        "days": ["M", "T"],
-        "time": [4, 1],
-        "colour": ""
-    },
-    {
-        "code": "CSC302",
-        "name": "Engineering Large Software Systems",
-        "instructor": "Joe",
-        "days": ["M"],
-        "time": [1, 3],
-        "colour": ""
-    }
-];
 
 var schedule = [];
 
@@ -386,30 +361,34 @@ $(".search-bar-btn").on("click", function() {
             data: { code: code },
             contentType: "application/json; charset=utf-8",
             success: function(res) {
-                $(".course-code").html(res[0].code);
-                $(".course-name-title").html("Course Name:" + "&nbsp;&nbsp;&nbsp;&nbsp;" + res[0].name);
-                // $(".course-name").html(res[0].name);
-                $(".course-department").html('Department:' + "&nbsp;&nbsp;&nbsp;&nbsp;" + res[0].department);
-                $(".course-prereq").html("Prerequisites:" + "&nbsp;&nbsp;&nbsp;&nbsp;" + res[0].prerequisites);
-                $(".show-more-button").show();
-                // show more
+                if (res == "") {
+                    alert("Course not found. Search is case sensitive, and must be the full course code (Ex: CSC108H1F).");
+                } else {
+                    $(".course-code").html(res[0].code);
+                    $(".course-name-title").html("Course Name:" + "&nbsp;&nbsp;&nbsp;&nbsp;" + res[0].name);
+                    // $(".course-name").html(res[0].name);
+                    $(".course-department").html('Department:' + "&nbsp;&nbsp;&nbsp;&nbsp;" + res[0].department);
+                    $(".course-prereq").html("Prerequisites:" + "&nbsp;&nbsp;&nbsp;&nbsp;" + res[0].prerequisites);
+                    $(".show-more-button").show();
+                    // show more
 
-                $(".course-description").html("Description:" + "&nbsp;&nbsp;&nbsp;&nbsp;" + res[0].description);
-                $(".course-exclusions").html("Exclusions:" + "&nbsp;&nbsp;&nbsp;&nbsp;" + res[0].exclusions);
-                $(".course-campus").html("Campus:" + "&nbsp;&nbsp;&nbsp;&nbsp;" + res[0].campus);
-                $(".course-breadths").html("Breadths:" + "&nbsp;&nbsp;&nbsp;&nbsp;" + res[0].breadths);
+                    $(".course-description").html("Description:" + "&nbsp;&nbsp;&nbsp;&nbsp;" + res[0].description);
+                    $(".course-exclusions").html("Exclusions:" + "&nbsp;&nbsp;&nbsp;&nbsp;" + res[0].exclusions);
+                    $(".course-campus").html("Campus:" + "&nbsp;&nbsp;&nbsp;&nbsp;" + res[0].campus);
+                    $(".course-breadths").html("Breadths:" + "&nbsp;&nbsp;&nbsp;&nbsp;" + res[0].breadths);
 
-                $(".course-sections").html("Sections");
-                var sections = $(".sections");
-                sections.empty();
-                $.each(res[0].meeting_sections, function(i, section) {
-                    sections.append("<input type='radio' name='section' value='" + res[0].meeting_sections[i].code + "'> " + res[0].meeting_sections[i].code + "<br>");
-                });
+                    $(".course-sections").html("Sections");
+                    var sections = $(".sections");
+                    sections.empty();
+                    $.each(res[0].meeting_sections, function(i, section) {
+                        sections.append("<input type='radio' name='section' value='" + res[0].meeting_sections[i].code + "'> " + res[0].meeting_sections[i].code + "<br>");
+                    });
 
-                $(".course-info .center-x").append(sections); //replaced div with .center-x
-                $(".button-add-class").prop("disabled", false);
-                if (window.innerWidth < 768) {
-                    window.scrollTo(0, document.body.scrollHeight);
+                    $(".course-info .center-x").append(sections); //replaced div with .center-x
+                    $(".button-add-class").prop("disabled", false);
+                    if (window.innerWidth < 768) {
+                        window.scrollTo(0, document.body.scrollHeight);
+                    }   
                 }
             }
         });
