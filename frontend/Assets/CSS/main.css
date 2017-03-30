@@ -188,7 +188,10 @@ noscript {
     display: block;
 }
 
-.button-add-class {
+.button-add-class,
+.btn-save,
+.btn-delete,
+.btn-load {
     width: 50%;
     height: 30px;
     background-color: #086788;
@@ -198,6 +201,7 @@ noscript {
     min-width: 100px;
     max-width: 200px;
     font-size: 100%;
+    display: block;
 }
 
 .modal-course-info button {
