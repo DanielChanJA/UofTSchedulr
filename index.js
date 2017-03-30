@@ -35,7 +35,6 @@ var cobalt = "?key=wxyV572ztbmjVEc7qcokZ0xYVPv2Qf0n";
 var cobaltApi = "https://cobalt.qas.im/api/1.0/courses/";
 
 var selectedCourses = [];
-var timetableIds = [];
 
 /**
  * Initialization.
@@ -103,7 +102,6 @@ var Comment = mongoose.model("Comment", commentSchema);
 // Timetables schema
 var timetableSchema = new mongoose.Schema({
     userid: String,
-    timetableid: Number,
     timetable: Array
 })
 var Timetables = mongoose.model("Timetables", timetableSchema);
@@ -270,60 +268,12 @@ function insertComment(req, res) {
  * @param {*} res 
  */
 function insertCourse(req, res) {
-
-
-    if (!req.body.userid) {
-        console.log("Failed");
-        console.log(req.body);
-        return res.sendStatus(400);
+    if (buildTimetable(req.body.data[0]) == true) {
+        res.send(selectedCourses);
+    } else {
+        res.send(false);
     }
-
-    var userid = req.body.userid;
-
-    var course = req.body.data[0].id;
-
-    console.log("Username: " + userid);
-    console.log("Course: " + course);
-
-
-    // Will not allow users to add multiple lecture sections of the same course. Only one is permitted.
-    Course.findOne({ "userid": userid, "courseid": course }, function(err, courseResult) {
-        if (err) {
-            console.log("Error retrieving users.");
-            return res.status(500).json({
-                Status: "Failed",
-                Message: "Error retrieving data."
-            });
-        }
-
-        if (courseResult == null && buildTimetable(req.body.data[0])) {
-            Course.create({
-                "userid": userid,
-                "courseid": course
-                    //                "lecture": section
-            }, function(err, course) {
-                if (err) {
-                    console.log(err);
-                } else {
-                    console.log(courseResult);
-                }
-            });
-
-            console.log("Created entry");
-            return res.status(200).json({
-                Status: "Success",
-                Message: "Entry inserted into DB."
-            });
-
-        } else {
-            console.log("DB contains entry: " + userid + " : " + course);
-            return res.status(400).json({
-                Status: "Failed",
-                Message: "Entry exists in DB, or there are no available timeslots"
-            });
-        }
-    });
-
+    
 }
 
 /**
@@ -332,37 +282,12 @@ function insertCourse(req, res) {
  * @param {*} res 
  */
 function removeCourse(req, res) {
-    if (!req.body.userid || !req.body.courseid) {
-        return res.sendStatus(400);
+    for (let i = 0; i < selectedCourses.length; i++) {
+        if (selectedCourses[i].code == req.body.code) {
+            selectedCourses.splice(i, 1);
+        }
     }
-    var userid = req.body.userid;
-    var course = req.body.courseid;
-
-    Course.findOneAndRemove({ "userid": userid, "courseid": course }, function(err, id) {
-        if (err) {
-            console.log("Error retrieving entries.");
-            return res.status(500).json({
-                Status: "Failed",
-                Message: "Unknown error occurred."
-            });
-        }
-
-        if (id != null) {
-            console.log("Successfully deleted entry: " + userid + " : " + course);
-            return res.status(200).json({
-                Status: "Success",
-                Message: "Course successfully removed."
-            });
-        } else {
-            console.log("Unable to find record: " + userid + " : " + course);
-            return res.status(400).json({
-                Status: "Failed",
-                Message: "Record doesn't exist."
-            });
-        }
-
-    });
-
+    res.send(selectedCourses);
 }
 
 
@@ -552,7 +477,7 @@ function buildTimetable(data) {
             days.push([day, time]);
 
             // Iterate through the selected courses to check for conflicts
-            for (let m = 1; m < selectedCourses.length; m++) {
+            for (let m = 0; m < selectedCourses.length; m++) {
                 // If there is a conflict
                 for (let j = 0; j < selectedCourses[m].timeslots.length; j++) {
                     if (startTime >= selectedCourses[m].timeslots[j][0] && startTime <= selectedCourses[m].timeslots[j][1]) {
@@ -567,7 +492,7 @@ function buildTimetable(data) {
         }
 
         if (conflict == false) {
-            selectedCourses.push({ "code": data.code, "name": data.name, "instructor": data.meeting_sections[i].instructors, "days": days, "timeslots": timeslots, "colour": "" });
+            selectedCourses.push({ "code": data.code, "name": data.name, "instructor": data.meeting_sections[i].instructors, "days": days, "timeslots": timeslots, "colour": "", duration: data.meeting_sections[i].times[0].duration });
             return true;
         }
     }
@@ -683,18 +608,6 @@ function loadCourses() {
 }
 
 
-function newTimetable(req, res) {
-    var id = Math.floor(Math.random() * 1000000) + 1;
-    selectedCourses = [];
-    while (contains(id, timetableIds)) {
-        id = Math.floor(Math.random() * 1000000) + 1;
-    }
-    selectedCourses.push(id);
-    timetableIds.push(id);
-    res.sendStatus(200);
-}
-
-
 function contains(item, container) {
     for (let i = 0; i < container.length; i++) {
         if (item == container[i]) {
@@ -709,10 +622,8 @@ function saveTimetable(req, res) {
     if (req.body.userid == null) {
         console.log("Failed");
     }
-
     var userid = req.body.userid;
-    var timetableid = selectedCourses[0];
-    var query = { "userid": userid, "timetableid": timetableid }
+    var query = { "userid": userid, timetable: selectedCourses }
     Timetables.findOneAndUpdate(query, { $set: { timetable: selectedCourses } }, { upsert: true, new: true }, function(err, result) {
         if (err) {
             console.log("Error");
@@ -727,41 +638,41 @@ function saveTimetable(req, res) {
 }
 
 
-function deleteTimetable(req, res) {
-    var userid = req.body.userid;
-    var timetableid = req.body.timetable[0];
-    var query = { "userid": userid, "timetableid": timetableid };
-    Timetables.findOneAndRemove(query, { sort: false }, function(err, result) {
-        if (err) {
-            return res.json({
-                Status: "Failed",
-                Message: "Failed to delete timetable"
-            });
-        }
-    });
-    for (let i = 0; i < timetableIds.length; i++) {
-        if (timetableIds[i] == timetableid) {
-            timetableIds.splice(i, 1);
-        }
-    }
-    res.sendStatus(200);
-}
+//function deleteTimetable(req, res) {
+//    var userid = req.body.userid;
+//    var timetableid = req.body.timetable[0];
+//    var query = { "userid": userid, "timetableid": timetableid };
+//    Timetables.findOneAndRemove(query, { sort: false }, function(err, result) {
+//        if (err) {
+//            return res.json({
+//                Status: "Failed",
+//                Message: "Failed to delete timetable"
+//            });
+//        }
+//    });
+//    for (let i = 0; i < timetableIds.length; i++) {
+//        if (timetableIds[i] == timetableid) {
+//            timetableIds.splice(i, 1);
+//        }
+//    }
+//    res.sendStatus(200);
+//}
 
 
-function loadTimetable(req, res) {
-    var userid = req.body.userid;
-    var timetableid = req.body.timetable[0];
-    Timetables.findOne({ "userid": userid, "timetableid": timetableid }, function(err, result) {
-        if (err) {
-            return res.json({
-                Status: "Failed",
-                Messaeg: "Failed to load timetable"
-            });
-        }
-        selectedCourses = result;
-    });
-    res.sendStatus(200);
-}
+//function loadTimetable(req, res) {
+//    var userid = req.body.userid;
+//    var timetableid = req.body.timetable[0];
+//    Timetables.findOne({ "userid": userid, "timetableid": timetableid }, function(err, result) {
+//        if (err) {
+//            return res.json({
+//                Status: "Failed",
+//                Messaeg: "Failed to load timetable"
+//            });
+//        }
+//        selectedCourses = result;
+//    });
+//    res.sendStatus(200);
+//}
 
 
 
@@ -784,11 +695,10 @@ app.get('/getcomment', isAdminLoggedIn, retrieveCommentAll); // for devs. retrie
  */
 app.get('/search', getCourse);
 app.post('/addcourse', insertCourse);
-app.post('/removecourse', removeCourse);
-app.get('/newtimetable', newTimetable);
-app.put('/savetimetable', isLoggedIn, saveTimetable);
-app.delete('/deletetimetable', isLoggedIn, deleteTimetable);
-app.get('/loadtimetable', isLoggedIn, loadTimetable);
+app.delete('/removecourse', removeCourse);
+//app.put('/savetimetable', isLoggedIn, saveTimetable);
+//app.delete('/deletetimetable', isLoggedIn, deleteTimetable);
+//app.get('/loadtimetable', isLoggedIn, loadTimetable);
 app.get('/coursesearch', searchCourse);
 
 /**
