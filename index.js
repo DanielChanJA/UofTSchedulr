@@ -790,9 +790,6 @@ app.delete('/deletetimetable', isLoggedIn, deleteTimetable);
 app.get('/loadtimetable', isLoggedIn, loadTimetable);
 app.get('/coursesearch', searchCourse);
 
-//Middleware example
-//app.get('/search', isLoggedIn, getCourse);
-
 /**
  * Relevant routes for authentication.
  */
