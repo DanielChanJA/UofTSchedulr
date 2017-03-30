@@ -673,7 +673,7 @@ app.post('/logout', destroySession);
 app.get('/isLoggedIn', function(req, res) {
     console.log(req.isAuthenticated());
     if (req.isAuthenticated() == true)
-        return res.status(200).send('Hurray!');
+        return res.status(200).json('Hurray!');
     else
-        return res.status(401).send('User not logged in.');
+        return res.status(401).json('User not logged in.');
 });

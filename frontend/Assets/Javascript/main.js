@@ -24,7 +24,7 @@ function checkLogin() {
     $.ajax({
         type: "GET",
         url: "/isLoggedIn",
-        dataType: "json",
+        dataType: "text json",
         contentType: "application/json; charset=utf-8",
         success: function(response) {
             return console.log("You are logged in.");
