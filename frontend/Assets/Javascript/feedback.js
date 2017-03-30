@@ -17,6 +17,8 @@ $("#submit-feedback").on("click", function(event) {
             alert("Please fill in all input fields.");
         }
     });
-    event.stopPropagation();
+    $('#comment').val('');
+    $('#email').val('');
+    // event.stopPropagation();
 
 });
