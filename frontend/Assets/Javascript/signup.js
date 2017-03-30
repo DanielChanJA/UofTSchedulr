@@ -21,11 +21,6 @@ $(document).ready(function() {
             success: function(response) {
                 alert("Successfully signed up!");
                 return;
-            },
-            error: function(response) {
-                console.log(response);
-                alert("One or more fields were incorrect.");
-                return false;
             }
         });
     });

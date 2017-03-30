@@ -388,11 +388,12 @@ function helperCreateUser(req) {
  * @param {*} res 
  */
 function createUser(req, res) {
-    if (!req.body.username || !req.body.firstname || !req.body.password) {
-        return res.sendStatus(400);
-    }
-    var userInfo = helperCreateUser(req);
-    User.register(new User(userInfo), req.body.password, function(err, user) {
+    console.log(req.body.username);
+
+    // if (!req.body.username || !req.body.firstname || !req.body.password) {
+    //     return res.sendStatus(400);
+    // }
+    User.register(new User({ "username": req.body.username, "firstname": req.body.firstname, "lastname": req.body.lastname }), req.body.password, function(err, user) {
         if (err) {
             console.log(err);
             return res.status(400).json({
