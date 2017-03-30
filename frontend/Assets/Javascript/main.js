@@ -190,7 +190,7 @@ function populateDaysSmall(days) {
                         insertCourse(days[i].rows[n].cells[1], schedule[k]);
                         if (schedule[k].time[1] > 1) {
                             for (let m = 1; m < schedule[k].time[1]; m++) {
-                                extendCourse(days[i].rows[n + m].cells[1], schedule[k]);
+                                extendCourse(days[i].rows[n + m].cells[1], schedule[k], m, schedule[k].time[1]);
                             }
                         }
                     }

@@ -617,24 +617,24 @@ function contains(item, container) {
 }
 
 
-//function saveTimetable(req, res) {
-//    if (req.body.userid == null) {
-//        console.log("Failed");
-//    }
-//    var userid = req.body.userid;
-//    var query = { "userid": userid, timetable: selectedCourses }
-//    Timetables.findOneAndUpdate(query, { $set: { timetable: selectedCourses } }, { upsert: true, new: true }, function(err, result) {
-//        if (err) {
-//            console.log("Error");
-//            return res.status(500).json({
-//                Status: "Failed",
-//                Message: "Failed to save timetable"
-//            });
-//        } else {
-//            res.sendStatus(200);
-//        }
-//    });
-//}
+function saveTimetable(req, res) {
+    if (req.body.userid == null) {
+        console.log("Failed");
+    }
+    var userid = req.body.userid;
+    var query = { "userid": userid, timetable: selectedCourses }
+    Timetables.findOneAndUpdate(query, { $set: { timetable: selectedCourses } }, { upsert: true, new: true }, function(err, result) {
+        if (err) {
+            console.log("Error");
+            return res.status(500).json({
+                Status: "Failed",
+                Message: "Failed to save timetable"
+            });
+        } else {
+            res.sendStatus(200);
+        }
+    });
+}
 
 
 //function deleteTimetable(req, res) {
