@@ -58,8 +58,6 @@ curl -H "Content-Type: application/json" -X POST -d '{"userid":"vincent", "cours
 read -p $'\nDelete course3'
 curl -H "Content-Type: application/json" -X POST -d '{"userid":"vincent", "courseid":"course3"}' http://localhost:3000/removecourse
 
-read -p $'\nLog out'
-curl -H "Content-Type: application/json" -X POST -d '{"username":"vincent"}' http://localhost:3000/logout
 
 read -p $'\nAdding a comment correctly'
 curl -H "Content-Type: application/json" -X POST -d '{"email":"vincent", "comment": "I love your website"}' http://localhost:3000/addcomment
@@ -70,14 +68,32 @@ curl -H "Content-Type: application/json" -X POST -d '{"email":"vincent", "commen
 read -p $'\nAdding a comment correctly'
 curl -H "Content-Type: application/json" -X POST -d '{"email":"daniel", "comment": "hello"}' http://localhost:3000/addcomment
 
-read -p $'\nAdding a comment incorrectly, expect 400 status'
-curl -H "Content-Type: application/json" -X POST -d '{"email":"vincent"}' http://localhost:3000/addcomment
+# read -p $'\nAdding a comment incorrectly, expect 400 status'
+# curl -H "Content-Type: application/json" -X POST -d '{"email":"vincent"}' http://localhost:3000/addcomment
 
-read -p $'\nAdding a comment incorrectly, expect 400 status'
-curl -H "Content-Type: application/json" -X POST -d '{"comment": "I love your website"}' http://localhost:3000/addcomment
+# read -p $'\nAdding a comment incorrectly, expect 400 status'
+# curl -H "Content-Type: application/json" -X POST -d '{"comment": "I love your website"}' http://localhost:3000/addcomment
 
-read -p $'\nAdding a comment incorrectly, expect 400 status'
-curl -H "Content-Type: application/json" -X POST -d '{}' http://localhost:3000/addcomment
+# read -p $'\nAdding a comment incorrectly, expect 400 status'
+# curl -H "Content-Type: application/json" -X POST -d '{}' http://localhost:3000/addcomment
 
-read -p $'\nRetrieving all comments'
+read -p $'\nRetrieving all comments. denied because not logged-in/no cookie'
 curl http://localhost:3000/getcomment
+
+read -p $'\nRetrieving all comments. denied because not admin.'
+curl http://localhost:3000/getcomment --cookie user1.cookie
+
+read -p $'\nLog out'
+curl -H "Content-Type: application/json" -X POST -d '{"username":"vincent"}' http://localhost:3000/logout --cookie user1.cookie
+
+read -p $'\nRegister an admin account named brave'
+curl -H "Content-Type: application/json" -X POST -d '{"username":"brave", "password":"password", "firstname":"bravename", "lastname":"yup", "admin" : true}' http://localhost:3000/register
+
+read -p $'\nLog in to an admin account named brave'
+curl -H "Content-Type: application/json" -X POST -d '{"username":"brave", "password":"password"}' http://localhost:3000/login --cookie-jar user2.cookie
+
+read -p $'\nRetrieving all comments. accepted because is admin.'
+curl http://localhost:3000/getcomment --cookie user2.cookie
+
+read -p $'\nLog out admin'
+curl -H "Content-Type: application/json" -X POST -d '{"username":"brave"}' http://localhost:3000/logout --cookie user2.cookie

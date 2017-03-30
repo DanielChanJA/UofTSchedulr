@@ -91,14 +91,15 @@ var courseDatabase = new mongoose.Schema({
 var CourseData = mongoose.model("CourseData", courseDatabase);
 
 // users schema
-var userSchema = new mongoose.Schema({
-    email: String,
-    password: String,
-    firstname: String,
-    lastname: String
-});
+// var userSchema = new mongoose.Schema({
+//     username: String, // email >> username
+//     password: String,
+//     firstname: String,
+//     lastname: String,
+//     admin: { type: Boolean, default: false }
+// });
 
-var Users = mongoose.model("Users", userSchema);
+// var Users = mongoose.model("Users", userSchema);
 
 // feeback schema
 var commentSchema = new mongoose.Schema({
@@ -194,7 +195,7 @@ function retrieveCommentAll(req, res) {
                 userMap[user.email] = user.comments;
             });
             console.log(userMap);
-            res.status(200).send(userMap);
+            return res.send(userMap);
         }
     });
 }
@@ -374,6 +375,23 @@ function removeCourse(req, res) {
 
 }
 
+
+function helperCreateUser(req) {
+    var userInfo = {};
+    if (req.body.username) {
+        userInfo.username = req.body.username;
+    }
+    if (req.body.firstname) {
+        userInfo.firstname = req.body.firstname;
+    }
+    if (req.body.lastname) {
+        userInfo.lastname = req.body.lastname;
+    }
+    if (req.body.admin) {
+        userInfo.admin = req.body.admin;
+    }
+    return userInfo;
+}
 /**
  * Uses Passport.js to authenticate users. User accounts are stored locally on mongo.
  * @param {*} req 
@@ -383,7 +401,8 @@ function createUser(req, res) {
     if (!req.body.username || !req.body.firstname || !req.body.lastname || !req.body.password) {
         return res.sendStatus(400);
     }
-    User.register(new User({ username: req.body.username, firstname: req.body.firstname, lastname: req.body.lastname }), req.body.password, function(err, user) {
+    var userInfo = helperCreateUser(req);
+    User.register(new User(userInfo), req.body.password, function(err, user) {
         if (err) {
             console.log(err);
             return res.status(400).json({
@@ -410,7 +429,7 @@ function createUser(req, res) {
 function authenticateUser(req, res) {
     return res.status(200).json({
         Status: "Success",
-        Message: "Successfully authenticated."
+        Message: "Successfully authenticated. Logging in username: " + req.user.username
     });
 }
 
@@ -443,6 +462,48 @@ function isLoggedIn(req, res, next) {
         Status: "Failed",
         Message: "You need to be logged in to access content."
     });
+};
+
+/**
+ * Middleware if you want to verify that the user is logged in. Place it inbetween the routes and the function call below.
+ * @param {*} req 
+ * @param {*} res 
+ * @param {*} next 
+ */
+function isAdminLoggedIn(req, res, next) {
+    if (req.isAuthenticated()) {
+        ///
+        console.log(" 1" + req.user.username);
+        User.findOne({ username: req.user.username }, function(err, user) {
+            if (err) {
+                console.log("2" + err);
+                return res.status(500);
+            } else {
+                console.log("3" + user.admin);
+                console.log("4" + user);
+                if (user.admin === true) {
+                    console.log("User is confirmed an Admin");
+                    console.log("5" + req.user);
+                    return next();
+                } else {
+                    return res.status(401).json({
+                        Status: "Failed",
+                        Message: "You have been denied access since you are not an Admin."
+                    });
+
+                }
+            }
+        });
+        ///
+
+    } else {
+
+        console.log(req.user);
+        return res.status(401).json({
+            Status: "Failed",
+            Message: "You have been denied access since you are not logged in."
+        });
+    }
 };
 
 // Adds courses
@@ -717,7 +778,7 @@ function searchCourse(req, res) {
  * Routes for about us / comment. 
  */
 app.post('/addcomment', insertComment);
-app.get('/getcomment', retrieveCommentAll); // for devs
+app.get('/getcomment', isAdminLoggedIn, retrieveCommentAll); // for devs. retrieveCommentAll
 
 /**
  * Relevant routes for courses & navigating Cobalt.
