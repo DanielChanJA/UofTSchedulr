@@ -148,6 +148,13 @@ table {
     transform: translateX(-50%);
 }
 
+.center-z {
+    position: relative;
+    left: 50%;
+    transform: translateX(-170%);
+    padding: 4px 8px 8px 8px;
+}
+
 .center-xy {
     position: relative;
     top: 50%;

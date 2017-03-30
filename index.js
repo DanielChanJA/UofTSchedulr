@@ -645,7 +645,12 @@ function saveTimetable(req, res) {
 
 // Search local database for course
 function searchCourse(req, res) {
-    CourseData.find({ code: req.query.code }, function(err, result) {
+    var filter = {};
+    filter.code = req.query.code;
+    if (req.query.campus) {
+        filter.campus = req.query.campus;
+    }
+    CourseData.find(filter, function(err, result) {
         res.send(result);
     });
 }
