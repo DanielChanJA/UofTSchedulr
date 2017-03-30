@@ -388,7 +388,7 @@ function helperCreateUser(req) {
  * @param {*} res 
  */
 function createUser(req, res) {
-    if (!req.body.username || !req.body.firstname || !req.body.lastname || !req.body.password) {
+    if (!req.body.username || !req.body.firstname || !req.body.password) {
         return res.sendStatus(400);
     }
     var userInfo = helperCreateUser(req);

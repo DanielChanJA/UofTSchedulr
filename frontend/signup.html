@@ -64,57 +64,38 @@
     </nav>
 
     <div id="p" class="container well center col-lg-6 col-md-8 col-sm-10 col-xs-12">
-        <!--col-lg-3 col-md-3 col-sm-3 col-xs-3-->
-        <!--<div class="row">-->
 
-        <div class="row">
-            <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-                <a class="my-class btn btn-block btn-social btn-facebook" onclick="_gaq.push(['_trackEvent', 'btn-social', 'click', 'btn-twitter']);">
-                    <span class="fa fa-facebook"></span> Sign in with Facebook
-                </a>
-            </div>
-            <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-                <a class="my-class btn btn-block btn-social btn-google" onclick="_gaq.push(['_trackEvent', 'btn-social', 'click', 'btn-twitter']);">
-                    <span class="fa fa-google"></span> Sign in with Google
-                </a>
-            </div>
-        </div>
         <br>
-        <form action="/" method="post">
-            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 center">
+        <form id="signup-form" class="col-lg-12 col-md-12 col-sm-12 col-xs-12 center">
 
-                <div class="input-group input-group-md">
-                    <span class="input-group-addon" style="min-width: 10em;">Name</span>
-                    <input type="text" class="form-control" placeholder="John Doe" required>
-                </div>
-                <div class="input-group input-group-md">
-                    <span class="input-group-addon" style="min-width: 10em;">Email Address</span>
-                    <input type="email" class="form-control" placeholder="john.doe@mail.utoronto.ca" pattern="^[A-Za-z0-9_]*@mail\.utoronto\.ca" required>
-                </div>
-                <div class="input-group input-group-md">
-                    <span class="input-group-addon" style="min-width: 10em;">Password</span>
-                    <input type="password" class="form-control" placeholder="" required>
-                </div>
-                <div class="input-group input-group-md">
-                    <span class="input-group-addon" style="min-width: 10em;">Verify Password</span>
-                    <input type="password" class="form-control" placeholder="" required>
-                </div>
-            </div>
-            <!--<div class="col-md-6">
             <div class="input-group input-group-md">
-                <span class="input-group-addon" style="min-width: 120px;">Issue</span>
-                <textarea class="form-control" rows="5" id="comment" placeholder="Tell us more about your issue." required></textarea>
+                <span class="input-group-addon" style="min-width: 10em;">First Name</span>
+                <input type="text" class="form-control" id="firstname" placeholder="John" required>
             </div>
-        </div>-->
+            <div class="input-group input-group-md">
+                <span class="input-group-addon" style="min-width: 10em;">Last Name</span>
+                <input type="text" class="form-control" id="lastname" placeholder="Doe">
+            </div>
+            <div class="input-group input-group-md">
+                <span class="input-group-addon" style="min-width: 10em;">Email Address</span>
+                <input type="email" class="form-control" id="username" placeholder="john.doe@mail.utoronto.ca" required>
+            </div>
+            <div class="input-group input-group-md">
+                <span class="input-group-addon" style="min-width: 10em;">Password</span>
+                <input type="password" class="form-control" id="password" placeholder="" required>
+            </div>
+            <div class="input-group input-group-md">
+                <span class="input-group-addon" style="min-width: 10em;">Verify Password</span>
+                <input type="password" class="form-control" id="passwordverify" placeholder="" required>
+            </div>
+
+
             <div class="col-md-12 text-center center">
                 <br>
-                <!--<a href="index.html">-->
-                <button class="btn-primary btn btn-lg" type="submit">Sign up</button>
-                <!--<a href="index.html"></a>-->
+                <button class="btn-primary btn btn-lg" id="signup-button" type="submit">Sign up</button>
+
             </div>
         </form>
-
-        <!--</div>-->
 
 
     </div>
@@ -134,6 +115,7 @@
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <script src="Assets/Javascript/signup.js"></script>
 </body>
 
 </html>
