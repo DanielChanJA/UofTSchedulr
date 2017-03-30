@@ -319,6 +319,7 @@ function createUser(req, res) {
     //     return res.sendStatus(400);
     // }
     User.register(new User({ "username": req.body.username, "firstname": req.body.firstname, "lastname": req.body.lastname }), req.body.password, function(err, user) {
+
         if (err) {
             console.log(err);
             return res.status(400).json({
@@ -328,11 +329,14 @@ function createUser(req, res) {
         }
 
         passport.authenticate("local")(req, res, function() {
+            console.log("here.");
             return res.status(200).json({
                 Status: "Success",
-                Message: "Successfully created the account."
+                Message: "Successfully authenticated you."
             });
-        })
+        });
+
+
     });
 }
 
