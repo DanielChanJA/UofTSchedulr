@@ -17,6 +17,25 @@ if (mediaQueryTablet.matches) {
     refreshLargeTable();
 }
 
+checkLogin();
+
+
+function checkLogin() {
+    $.ajax({
+        type: "GET",
+        url: "/isLoggedIn",
+        dataType: "json",
+        contentType: "application/json; charset=utf-8",
+        success: function(response) {
+            return console.log("You are logged in.");
+        },
+        error: function(response) {
+            return console.log(response);
+        }
+    });
+}
+
+
 
 // Refresh table based on resize
 // Don't refresh if it is within a boundary
@@ -382,9 +401,9 @@ function checkConflict(course) {
                     schedule[i].time = time;
                     schedule[i].instructor = schedule[i].instructor[0];
                     schedule[i].colour = colours[0];
-                    colours.shift();    
+                    colours.shift();
                 }
-                refreshTable();   
+                refreshTable();
             }
         }
     });
@@ -431,7 +450,7 @@ $(".search-bar-btn").on("click", function() {
                     $(".button-add-class").prop("disabled", false);
                     if (window.innerWidth < 768) {
                         window.scrollTo(0, document.body.scrollHeight);
-                    }   
+                    }
                 }
             }
         });
@@ -460,7 +479,7 @@ $(".button-add-class").on("click", function() {
             data: { code: code },
             contentType: "application/json; charset=utf-8",
             success: function(res) {
-                let course = {data: res};
+                let course = { data: res };
                 checkConflict(course);
             }
         });
@@ -479,7 +498,7 @@ $(".btn-delete-course").on("click", function() {
     $.ajax({
         type: "DELETE",
         url: "/removecourse",
-        data: JSON.stringify({code: code}),
+        data: JSON.stringify({ code: code }),
         contentType: "application/json; charset=utf-8",
         success: function(res) {
             schedule = res;

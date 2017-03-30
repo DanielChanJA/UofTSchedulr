@@ -273,7 +273,7 @@ function insertCourse(req, res) {
     } else {
         res.send(false);
     }
-    
+
 }
 
 /**
@@ -379,8 +379,13 @@ function isLoggedIn(req, res, next) {
     });
 }
 
-
-function isAdmin(req, res, next) {
+/**
+ * Middleware if you want to verify that the user is logged in. Place it inbetween the routes and the function call below.
+ * @param {*} req 
+ * @param {*} res 
+ * @param {*} next 
+ */
+function isAdminLoggedIn(req, res, next) {
     if (req.isAuthenticated() && req.user.email == "danielja.chan@mail.utoronto.ca") {
         console.log("User is an administrator.");
         console.log(req.user);
@@ -389,50 +394,8 @@ function isAdmin(req, res, next) {
 
     return res.status(403).json({
         Status: "Failed",
-        Message: "You need to be an admin to login."
+        Message: "You need to be an admin to view content."
     });
-}
-
-/**
- * Middleware if you want to verify that the user is logged in. Place it inbetween the routes and the function call below.
- * @param {*} req 
- * @param {*} res 
- * @param {*} next 
- */
-function isAdminLoggedIn(req, res, next) {
-    if (req.isAuthenticated()) {
-        ///
-        console.log(" 1" + req.user.username);
-        User.findOne({ username: req.user.username }, function(err, user) {
-            if (err) {
-                console.log("2" + err);
-                return res.status(500);
-            } else {
-                console.log("3" + user.admin);
-                console.log("4" + user);
-                if (user.admin === true) {
-                    console.log("User is confirmed an Admin");
-                    console.log("5" + req.user);
-                    return next();
-                } else {
-                    return res.status(401).json({
-                        Status: "Failed",
-                        Message: "You have been denied access since you are not an Admin."
-                    });
-
-                }
-            }
-        });
-        ///
-
-    } else {
-
-        console.log(req.user);
-        return res.status(401).json({
-            Status: "Failed",
-            Message: "You have been denied access since you are not logged in."
-        });
-    }
 };
 
 // Adds courses
@@ -693,7 +656,7 @@ app.get('/getcomment', isAdminLoggedIn, retrieveCommentAll); // for devs. retrie
 /**
  * Relevant routes for courses & navigating Cobalt.
  */
-app.get('/search', getCourse);
+app.get('/search', isLoggedIn, getCourse);
 app.post('/addcourse', insertCourse);
 app.delete('/removecourse', removeCourse);
 //app.put('/savetimetable', isLoggedIn, saveTimetable);
@@ -707,3 +670,10 @@ app.get('/coursesearch', searchCourse);
 app.post('/login', passport.authenticate('local'), authenticateUser);
 app.post('/register', createUser);
 app.post('/logout', destroySession);
+app.get('/isLoggedIn', function(req, res) {
+    console.log(req.isAuthenticated());
+    if (req.isAuthenticated() == true)
+        return res.status(200).send('Hurray!');
+    else
+        return res.status(401).send('User not logged in.');
+});
