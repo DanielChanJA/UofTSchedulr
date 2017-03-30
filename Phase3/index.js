@@ -392,7 +392,6 @@ function createUser(req, res) {
             });
         }
 
-
         passport.authenticate("local")(req, res, function() {
             return res.status(200).json({
                 Status: "Success",
@@ -443,7 +442,21 @@ function isLoggedIn(req, res, next) {
         Status: "Failed",
         Message: "You need to be logged in to access content."
     });
-};
+}
+
+
+function isAdmin(req, res, next) {
+    if (req.isAuthenticated() && req.user.email == "danielja.chan@mail.utoronto.ca") {
+        console.log("User is an administrator.");
+        console.log(req.user);
+        return next();
+    }
+
+    return res.status(403).json({
+        Status: "Failed",
+        Message: "You need to be an admin to login."
+    });
+}
 
 // Adds courses
 // {"code": "", "name": "", "instructor": "", "timeslots": [[day, start]], "time": [start, duration], "colour": "", "timeslots":[[start, end]]}
