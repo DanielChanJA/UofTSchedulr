@@ -156,25 +156,6 @@ table {
 }
 
 
-/*---------- Fonts ----------*/
-
-input,
-.header-day,
-.schedule,
-.modal-course-info h2,
-.modal-sign-in h2,
-.modal-course-info h3,
-.modal-course-info p,
-.modal-course-info button,
-.modal-sign-in input,
-.modal-sign-in button,
-.course-info,
-.search-bar button,
-noscript {
-    font-family: raleway, serif;
-}
-
-
 /*---------- All Devices ----------*/
 
 * {
