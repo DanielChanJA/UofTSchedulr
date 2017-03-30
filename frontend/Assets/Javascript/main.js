@@ -1,4 +1,4 @@
-var colours = ["#dd1c1a", "#f0c808", "#06aed5", "#fff1d0"];
+var colours = ["#dd1c1a", "#f0c808", "#06aed5", "#fff1d0", "#4abdac", "#fc4a1a", "#f7b733", "#007849", "#a239ca", "#e37222"];
 var daysOTW = ["M", "T", "W", "TH", "F"];
 
 var schedule = [];
@@ -348,6 +348,49 @@ buttonSignIn2.addEventListener("click", function() {
 })
 
 
+function checkConflict(course) {
+    var course;
+    var days;
+    var time;
+    var timeStart;
+    $.ajax({
+        type: "POST",
+        url: "/addcourse",
+        data: JSON.stringify(course),
+        contentType: "application/json; charset=utf-8",
+        success: function(res) {
+            if (res == false) {
+                alert("There is a conflict.");
+            } else {
+                for (let m = 0; m < schedule.length; m++) {
+                    colours.push(schedule[m].colour);
+                }
+                schedule = res;
+                for (let i = 0; i < schedule.length; i++) {
+                    days = [];
+                    time = [];
+                    for (let k = 0; k < schedule[i].days.length; k++) {
+                        days.push(schedule[i].days[k][0]);
+                    }
+                    timeStart = schedule[i].days[0][1];
+                    if (timeStart > 12) {
+                        timeStart -= 12;
+                    }
+                    time.push(timeStart);
+                    time.push(schedule[i].duration / 3600);
+                    schedule[i].days = days;
+                    schedule[i].time = time;
+                    schedule[i].instructor = schedule[i].instructor[0];
+                    schedule[i].colour = colours[0];
+                    colours.shift();    
+                }
+                refreshTable();   
+            }
+        }
+    });
+}
+
+
 // CRUD functions
 // Search for a course
 $(".search-bar-btn").on("click", function() {
@@ -407,15 +450,7 @@ $(".show-more-button").click(function() {
 
 // Add a course that was searched
 $(".button-add-class").on("click", function() {
-    var radioBtns = $("input[name='section']");
-    var code = "";
-    var section;
-    for (let i = 0; i < radioBtns.length; i++) {
-        if (radioBtns[i].checked) {
-            code = $("input[name='search']").val();
-            section = radioBtns[i].value;
-        }
-    }
+    let code = $("input[name='search']").val();
     if (code == "") {
         alert("You must select a section");
     } else {
@@ -425,27 +460,8 @@ $(".button-add-class").on("click", function() {
             data: { code: code },
             contentType: "application/json; charset=utf-8",
             success: function(res) {
-                course = { "code": res[0].code, "name": res[0].name, "colour": colours[0], "days": [] };
-                colours.shift();
-                for (let k = 0; k < res[0].meeting_sections.length; k++) {
-                    if (res[0].meeting_sections[k].code == section) {
-                        if (res[0].meeting_sections[k].times.length == 0) {
-                            alert("There are no times for this section.");
-                        }
-                        course.instructor = res[0].meeting_sections[k].instructors[0];
-                        for (let m = 0; m < res[0].meeting_sections[k].times.length; m++) {
-                            course.days.push(interpretDay(res[0].meeting_sections[k].times[m].day));
-                        }
-                        var timeStart = res[0].meeting_sections[k].times[0].start / 3600;
-                        if (timeStart > 12) {
-                            timeStart -= 12;
-                        }
-                        let duration = res[0].meeting_sections[k].times[0].duration / 3600;
-                        course.time = [timeStart, duration];
-                    }
-                }
-                schedule.push(course);
-                refreshTable();
+                let course = {data: res};
+                checkConflict(course);
             }
         });
     }
@@ -454,12 +470,21 @@ $(".button-add-class").on("click", function() {
 
 // Delete a course which was clicked on the timetable
 $(".btn-delete-course").on("click", function() {
+    var code = $(".modal-course-info h2").text();
     for (let i = 0; i < schedule.length; i++) {
-        if (schedule[i].code == $(".modal-course-info h2").text()) {
+        if (schedule[i].code == code) {
             colours.push(schedule[i].colour);
-            schedule.splice(i, 1);
         }
     }
-    refreshTable();
-    $(".modal-container").css("display", "none");
+    $.ajax({
+        type: "DELETE",
+        url: "/removecourse",
+        data: JSON.stringify({code: code}),
+        contentType: "application/json; charset=utf-8",
+        success: function(res) {
+            schedule = res;
+            refreshTable();
+            $(".modal-container").css("display", "none");
+        }
+    });
 });
