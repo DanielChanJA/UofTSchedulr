@@ -61,28 +61,30 @@
 
 
     <div class="container well">
-
-        <div class="col-md-6">
-            <div class="input-group input-group-md">
+        <form class="feedback-form">
+            <div class="col-md-6">
+                <!--<div class="input-group input-group-md">
                 <span class="input-group-addon" style="min-width: 120px;">Name</span>
                 <input type="text" class="form-control" placeholder="John Doe" required>
+            </div>-->
+                <div class="input-group input-group-md">
+                    <span class="input-group-addon" style="min-width: 120px;">Email Address</span>
+                    <input type="text" name="email" class="form-control" id="email" placeholder="john.doe@mail.utoronto.ca">
+                </div>
             </div>
-            <div class="input-group input-group-md">
-                <span class="input-group-addon" style="min-width: 120px;">Email Address</span>
-                <input type="text" class="form-control" placeholder="john.doe@mail.utoronto.ca">
+            <div class="col-md-6">
+                <div class="input-group input-group-md">
+                    <span class="input-group-addon" style="min-width: 120px;">Issue</span>
+                    <textarea name="comment" class="form-control" rows="5" id="comment" placeholder="Tell us more about your issue." required></textarea>
+                </div>
             </div>
-        </div>
-        <div class="col-md-6">
-            <div class="input-group input-group-md">
-                <span class="input-group-addon" style="min-width: 120px;">Issue</span>
-                <textarea class="form-control" rows="5" id="comment" placeholder="Tell us more about your issue." required></textarea>
-            </div>
-        </div>
 
-        <div class="col-md-12 text-center">
-            <br>
-            <a href="index.html" class="btn-primary btn btn-lg" role="button">Submit Feedback</a>
-        </div>
+            <div class="col-md-12 text-center">
+                <br>
+                <a id="submit-feedback" class="btn-primary btn btn-lg" role="button">Submit Feedback</a>
+                <!--href="index.html"-->
+            </div>
+        </form>
 
     </div>
 
@@ -99,7 +101,7 @@
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-
+    <script src="./Assets/Javascript/feedback.js"></script>
 </body>
 
 </html>

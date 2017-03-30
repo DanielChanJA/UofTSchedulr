@@ -390,7 +390,7 @@ function isLoggedIn(req, res, next) {
  * @param {*} next 
  */
 function isAdminLoggedIn(req, res, next) {
-    if (req.isAuthenticated() && req.user.email == "danielja.chan@mail.utoronto.ca") {
+    if (req.isAuthenticated() && req.user.username == "danielja.chan@mail.utoronto.ca") {
         console.log("User is an administrator.");
         console.log(req.user);
         return next();
