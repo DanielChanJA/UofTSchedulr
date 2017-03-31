@@ -437,7 +437,7 @@ function isAdminLoggedIn(req, res, next) {
 
 // Adds courses
 // {"code": "", "name": "", "instructor": "", "timeslots": [[day, start]], "time": [start, duration], "colour": "", "timeslots":[[start, end]]}
-function buildTimetable(data, schedule) {
+function buildTimetable(data) {
     var startTime;
     var endTime;
     var day;
@@ -477,10 +477,10 @@ function buildTimetable(data, schedule) {
             days.push([day, time]);
 
             // Iterate through the selected courses to check for conflicts
-            for (let m = 0; m < schedule.length; m++) {
+            for (let m = 0; m < selectedCourses.length; m++) {
                 // If there is a conflict
-                for (let j = 0; j < schedule[m].timeslots.length; j++) {
-                    if (startTime >= schedule[m].timeslots[j][0] && startTime <= schedule[m].timeslots[j][1]) {
+                for (let j = 0; j < selectedCourses[m].timeslots.length; j++) {
+                    if (startTime >= selectedCourses[m].timeslots[j][0] && startTime <= selectedCourses[m].timeslots[j][1]) {
                         conflict = true;
                         break;
                     }
@@ -492,11 +492,11 @@ function buildTimetable(data, schedule) {
         }
 
         if (conflict == false) {
-            schedule.push({ "code": data.code, "name": data.name, "instructor": data.meeting_sections[i].instructors, "days": days, "timeslots": timeslots, "colour": "", duration: data.meeting_sections[i].times[0].duration, location: data.meeting_sections[i].times[0].location });
-            return schedule;
+            selectedCourses.push({ "code": data.code, "name": data.name, "instructor": data.meeting_sections[i].instructors, "days": days, "timeslots": timeslots, "colour": "", duration: data.meeting_sections[i].times[0].duration, location: data.meeting_sections[i].times[0].location });
+            return true;
         }
     }
-    return null;
+    return false;
 }
 
 function convertDayToNum(day) {
