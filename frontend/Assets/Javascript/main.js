@@ -409,19 +409,19 @@ function checkConflict(course) {
                 schedule = res;
                 interpretSchedule(schedule);
                 refreshTable();
-                getBuildingCode(schedule);
+                mapper();
             }
         }
     });
 }
 
-function getBuildingCode(courseInfo) {
+function getBuildingCode(i) {
 
-    var localInfo = courseInfo;
+    console.log(schedule);
 
-    console.log(localInfo);
+    console.log(i);
 
-    var buildingRoom = localInfo[0].location;
+    var buildingRoom = schedule[i].location;
 
     var buildingCode = buildingRoom.substring(0, 2);
 
@@ -433,13 +433,10 @@ function getBuildingCode(courseInfo) {
             var latitude = response.lat;
             var longitude = response.lng;
 
-            if (map == null) {
-                map = initMap();
-            }
-
             insertMarker(latitude, longitude, buildingCode);
         }
     });
+
 
 }
 
@@ -520,7 +517,16 @@ function deleteMarkers() {
     markers = [];
 }
 
+function mapper() {
+    deleteMarkers();
+    if (map == null) {
+        map = initMap();
+    }
 
+    for (var i = 0; i < schedule.length; i++) {
+        getBuildingCode(i);
+    }
+}
 
 
 $(document).ready(function() {
@@ -529,9 +535,7 @@ $(document).ready(function() {
         $("#timetable").hide();
         $("#map").show();
 
-        if (map == null) {
-            initMap();
-        }
+        mapper();
 
     });
 
@@ -557,6 +561,14 @@ $(document).ready(function() {
 // CRUD functions
 // Search for a course
 $(".search-bar-btn").on("click", function() {
+
+    console.log(map == null);
+    if (map == null) {
+        initMap();
+    }
+
+    mapper();
+
     var url = "/coursesearch";
     // var filterObject = {};
 
@@ -653,6 +665,8 @@ $(".button-add-class").on("click", function() {
             }
         });
     }
+
+    mapper();
 });
 
 
