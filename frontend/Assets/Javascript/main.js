@@ -2,6 +2,7 @@ var colours = ["#dd1c1a", "#f0c808", "#06aed5", "#fff1d0", "#4abdac", "#fc4a1a",
 var daysOTW = ["M", "T", "W", "TH", "F"];
 
 var schedule = [];
+var scheduleId = null;
 
 
 // Media query for mobile devices (max: iPad portrait - 1px)
@@ -17,9 +18,11 @@ if (mediaQueryTablet.matches) {
     refreshLargeTable();
 }
 
+// Check if a user is logged in
 checkLogin();
 
 
+// Display additional buttons if user is logged in
 function checkLogin() {
     $.ajax({
         type: "GET",
@@ -27,6 +30,9 @@ function checkLogin() {
         dataType: "text json",
         contentType: "application/json; charset=utf-8",
         success: function(response) {
+            $(".btn-save").show();
+            $(".btn-delete").show();
+            $(".btn-load").show();
             return console.log("You are logged in.");
         },
         error: function(response) {
@@ -34,7 +40,6 @@ function checkLogin() {
         }
     });
 }
-
 
 
 // Refresh table based on resize
@@ -358,15 +363,6 @@ window.addEventListener("click", function(event) {
 });
 
 
-// Second sign in button
-var buttonSignIn2 = document.getElementsByClassName("button-sign-in2")[0];
-buttonSignIn2.addEventListener("click", function() {
-    modals[0].style.display = "none";
-    modals[0].childNodes[1].childNodes[3].value = "";
-    modals[0].childNodes[1].childNodes[5].value = "";
-})
-
-
 function checkConflict(course) {
     var course;
     var days;
@@ -457,6 +453,7 @@ $(".search-bar-btn").on("click", function() {
     }
 });
 
+
 $(".show-more-button").click(function() {
     $(".show-more-class").slideToggle();
     if ($(".show-more-button").text() == "show more") {
@@ -506,4 +503,99 @@ $(".btn-delete-course").on("click", function() {
             $(".modal-container").css("display", "none");
         }
     });
+});
+
+
+$(".btn-save").on("click", function() {
+    $.ajax({
+        type: "POST",
+        url: "/savetimetable",
+        contentType: "application/json; charset=utf-8",
+        success: function(res) {
+            alert("Saved");
+            scheduleId = res._id;
+        }
+    });
+});
+
+
+$(".btn-delete").on("click", function() {
+    $.ajax({
+        type: "DELETE",
+        url: "/deletetimetable",
+        data: JSON.stringify({_id: scheduleId}),
+        contentType: "application/json; charset=utf-8",
+        success: function(res) {
+            alert("Deleted");
+            schedule = res;
+            scheduleId = null;
+            refreshTable();
+        }
+    });
+});
+
+
+$(".btn-load").on("click", function() {
+    var modalContainer = document.getElementsByClassName("modal-container-saved")[0];
+    var modal = document.getElementsByClassName("modal-saved")[0];
+    var saved = $(".modal-saved section");
+    modalContainer.style.display = "block";
+    modal.style.display = "block";
+    $.ajax({
+        type: "GET",
+        url: "/getalltimetables",
+        contentType: "application/json; charset=utf-8",
+        success: function(res) {
+            saved.empty();
+            for (let i = 0; i < res.length; i++) {
+                saved.append("<input class='schedule-option' type='radio' name='schedule' value='" + res[i]._id + "'> " + res[i]._id + "<br>");
+            }
+        }
+    });
+});
+
+
+$(".btn-cancel").on("click", function() {
+    $(".modal-container-saved").css("display", "none");
+    $(".modal-saved").css("display", "none");
+});
+
+
+$(".btn-load-schedule").on("click", function() {
+    let radioBtns = $("input[name='schedule']");
+    for (let i = 0; i < radioBtns.length; i++) {
+        if (radioBtns[i].checked) {
+            $.ajax({
+                type: "GET",
+                data: {_id: radioBtns[i].value},
+                url: "/loadtimetable",
+                contentType: "application/json; charset=utf-8",
+                success: function(res) {
+                    schedule = res[0].timetable;
+                    scheduleId = res[0]._id;
+                    $(".modal-container-saved").css("display", "none");
+                    $(".modal-saved").css("display", "none"); 
+                      for (let i = 0; i < schedule.length; i++) {
+                        days = [];
+                        time = [];
+                        for (let k = 0; k < schedule[i].days.length; k++) {
+                            days.push(schedule[i].days[k][0]);
+                        }
+                        timeStart = schedule[i].days[0][1];
+                        if (timeStart > 12) {
+                            timeStart -= 12;
+                        }
+                        time.push(timeStart);
+                        time.push(schedule[i].duration / 3600);
+                        schedule[i].days = days;
+                        schedule[i].time = time;
+                        schedule[i].instructor = schedule[i].instructor[0];
+                        schedule[i].colour = colours[0];
+                        colours.shift();
+                    }
+                    refreshTable();
+                }
+            });
+        }
+    }
 });

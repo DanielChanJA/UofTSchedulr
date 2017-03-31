@@ -107,6 +107,7 @@ var timetableSchema = new mongoose.Schema({
 var Timetables = mongoose.model("Timetables", timetableSchema);
 
 loadCourses();
+Timetables.remove({}, function() {});
 
 
 console.log("Completed Initialization.");
@@ -570,7 +571,6 @@ function loadCourses() {
 
         console.log("End of iteration.");
         skip = skip + 100;
-
     }
 }
 
@@ -586,60 +586,34 @@ function contains(item, container) {
 
 
 function saveTimetable(req, res) {
-    if (req.body.userid == null) {
-        console.log("Failed");
-    }
-    var userid = req.body.userid;
-    var query = { "userid": userid, timetable: selectedCourses }
-    Timetables.findOneAndUpdate(query, { $set: { timetable: selectedCourses } }, { upsert: true, new: true }, function(err, result) {
-        if (err) {
-            console.log("Error");
-            return res.status(500).json({
-                Status: "Failed",
-                Message: "Failed to save timetable"
-            });
-        } else {
-            res.sendStatus(200);
-        }
+    let t = {userid: req.user.username, timetable: selectedCourses};
+    let s = new Timetables(t);
+    s.save(function(err, result) {
+        res.send(result);
     });
 }
 
 
-//function deleteTimetable(req, res) {
-//    var userid = req.body.userid;
-//    var timetableid = req.body.timetable[0];
-//    var query = { "userid": userid, "timetableid": timetableid };
-//    Timetables.findOneAndRemove(query, { sort: false }, function(err, result) {
-//        if (err) {
-//            return res.json({
-//                Status: "Failed",
-//                Message: "Failed to delete timetable"
-//            });
-//        }
-//    });
-//    for (let i = 0; i < timetableIds.length; i++) {
-//        if (timetableIds[i] == timetableid) {
-//            timetableIds.splice(i, 1);
-//        }
-//    }
-//    res.sendStatus(200);
-//}
+function deleteTimetable(req, res) {
+    Timetables.findOneAndRemove({_id: req.body._id}, function(err, result) {
+        selectedCourses = [];
+        res.send(selectedCourses);
+    });
+}
 
 
-//function loadTimetable(req, res) {
-//    var userid = req.body.userid;
-//    var timetableid = req.body.timetable[0];
-//    Timetables.findOne({ "userid": userid, "timetableid": timetableid }, function(err, result) {
-//        if (err) {
-//            return res.json({
-//                Status: "Failed",
-//                Messaeg: "Failed to load timetable"
-//            });
-//        }
-//        selectedCourses = result;
-//    });
-//    res.sendStatus(200);
-//}
+function getAllTimetables(req, res) {
+    Timetables.find({userid: req.user.username}, function(err, result) {
+        res.send(result);
+    });
+}
+
+
+function loadTimetable(req, res) {
+    Timetables.find({_id: req.query._id}, function(err, result) {
+        res.send(result);
+    });
+}
 
 
 
@@ -663,9 +637,10 @@ app.get('/getcomment', isAdminLoggedIn, retrieveCommentAll); // for devs. retrie
 app.get('/search', isLoggedIn, getCourse);
 app.post('/addcourse', insertCourse);
 app.delete('/removecourse', removeCourse);
-//app.put('/savetimetable', isLoggedIn, saveTimetable);
-//app.delete('/deletetimetable', isLoggedIn, deleteTimetable);
-//app.get('/loadtimetable', isLoggedIn, loadTimetable);
+app.post('/savetimetable', isLoggedIn, saveTimetable);
+app.delete('/deletetimetable', isLoggedIn, deleteTimetable);
+app.get('/getalltimetables', isLoggedIn, getAllTimetables);
+app.get('/loadtimetable', isLoggedIn, loadTimetable);
 app.get('/coursesearch', searchCourse);
 
 /**
