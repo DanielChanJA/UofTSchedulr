@@ -636,7 +636,6 @@ $(".button-add-class").on("click", function() {
             success: function(res) {
                 let course = { data: res };
                 checkConflict(course);
-                getBuildingCode(course);
 
             }
         });
