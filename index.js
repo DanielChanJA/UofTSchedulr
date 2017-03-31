@@ -599,7 +599,6 @@ function loadCourses() {
             } else {
                 var courseInfo = JSON.parse(body);
                 console.log("Attempting to insert...");
-                console.log(courseInfo);
 
                 CourseData.insertMany(courseInfo, function(err, docs) {
                     if (err) {
