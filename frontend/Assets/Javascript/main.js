@@ -196,7 +196,6 @@ function refreshLargeTable() {
 
     // Populate each row
     populateDaysLarge(table);
-    console.log(schedule);
 }
 
 
@@ -448,7 +447,9 @@ function interpretSchedule(schedule) {
             days.push(schedule[i].days[k][0]);
         }
         if (schedule[i].days[0][1]) {
-            timeStart = schedule[i].days[0][1];
+            if (schedule[i].days[0][1] === parseInt(schedule[i].days[0][1], 10)) {
+                timeStart = schedule[i].days[0][1];
+            }
         } else {
             timeStart = schedule[i].time[0];
         }
@@ -521,6 +522,7 @@ function mapper() {
     deleteMarkers();
     if (map == null) {
         map = initMap();
+        return;
     }
 
     for (var i = 0; i < schedule.length; i++) {
@@ -535,6 +537,7 @@ $(document).ready(function() {
         $("#timetable").hide();
         $("#map").show();
 
+        console.log(map == null);
         mapper();
 
     });
@@ -564,7 +567,7 @@ $(".search-bar-btn").on("click", function() {
 
     console.log(map == null);
     if (map == null) {
-        initMap();
+        mapper();
     }
 
     mapper();
@@ -667,6 +670,8 @@ $(".button-add-class").on("click", function() {
         });
     }
 
+    console.log(map == null);
+
     mapper();
 });
 
@@ -675,7 +680,6 @@ $(".button-add-class").on("click", function() {
 $(".btn-delete-course").on("click", function() {
     var code = $(".modal-course-info h2").text();
     var time = $(".time").text();
-    console.log("time: " + time);
     time = time.slice(0, 2);
     if (time[1] == ":") {
         time = time[0];
