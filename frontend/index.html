@@ -11,6 +11,8 @@
     <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Gorditas" rel="stylesheet">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+    <!--<link rel="stylesheet" href="Assets/CSS/main.css">-->
+
     <title>Schdule</title>
 </head>
 
@@ -56,8 +58,9 @@
     </nav>
     <div class="col-md-3">
         <form class="search-bar col-sm-12 form-horizontal text-center">
-            <div class="form-group col-sm-12 ">
-                <input class="center-x form-control" type="text" name="search" id="query" placeholder="CSC108H1F">
+            <div class="form-group col-sm-12" style="padding: 0;
+    margin-left: 0;">
+                <input class="form-control" type="text" name="search" id="query" placeholder="CSC108H1F">
             </div>
             <!--radio buttons-->
             <label class="radio-inline center-z">
@@ -76,6 +79,26 @@
             <button class="btn-delete btn btn-default col-sm-12" type="button" hidden>Delete</button>
             <button class="btn-load btn btn-primary col-sm-12" type="button" hidden>Load</button>
         </form>
+        <!--<section class="course-info">-->
+        <div class="center-x col-sm-12">
+            <h2 class="course-code"></h2>
+            <h3 class="course-name-title"></h3>
+            <p> </p>
+            <!--<p class="course-name"></p>-->
+            <p class="course-department"></p>
+            <p class="course-prereq"></p>
+
+            <span class="show-more-class">
+                <p class="course-description"></p>
+                <p class="course-exclusions"></p>
+                <p class="course-campus"></p>
+                <p class="course-breadths"></p>
+            </span>
+
+            <button class="show-more-button">show more</button>
+        </div>
+
+        <!--</section>-->
     </div>
     <section class="table-header">
         <div class="center-x">
@@ -116,26 +139,7 @@
         </div>
     </div>
 
-    <section class="course-info">
-        <div class="center-x">
-            <h2 class="course-code"></h2>
-            <h3 class="course-name-title"></h3>
-            <p> </p>
-            <!--<p class="course-name"></p>-->
-            <p class="course-department"></p>
-            <p class="course-prereq"></p>
-
-            <span class="show-more-class">
-                <p class="course-description"></p>
-                <p class="course-exclusions"></p>
-                <p class="course-campus"></p>
-                <p class="course-breadths"></p>
-            </span>
-
-            <button class="show-more-button">show more</button>
-        </div>
-
-    </section>
+    <!---->
 
     <footer>
         <div class="container-okok">
