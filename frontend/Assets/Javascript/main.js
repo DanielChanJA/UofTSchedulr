@@ -7,6 +7,15 @@ var scheduleId = null;
 var map;
 var markers = [];
 
+var days = {
+    "M": "Monday",
+    "T": "Tuesday",
+    "W": "Wednesday",
+    "R": "Thursday",
+    "F": "Friday"
+};
+
+
 // Media query for mobile devices (max: iPad portrait - 1px)
 var mediaQueryMobile = window.matchMedia("(max-width: 767px)");
 if (mediaQueryMobile.matches) {
