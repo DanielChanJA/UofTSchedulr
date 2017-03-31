@@ -408,6 +408,7 @@ function checkConflict(course) {
                 schedule = res;
                 interpretSchedule(schedule);
                 refreshTable();
+                console.log(schedule[0]);
             }
         }
     });
@@ -616,7 +617,6 @@ $(".button-add-class").on("click", function() {
             success: function(res) {
                 let course = { data: res };
                 checkConflict(course);
-
             }
         });
     }

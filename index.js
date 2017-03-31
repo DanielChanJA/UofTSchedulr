@@ -492,7 +492,7 @@ function buildTimetable(data) {
         }
 
         if (conflict == false) {
-            selectedCourses.push({ "code": data.code, "name": data.name, "instructor": data.meeting_sections[i].instructors, "days": days, "timeslots": timeslots, "colour": "", duration: data.meeting_sections[i].times[0].duration });
+            selectedCourses.push({ "code": data.code, "name": data.name, "instructor": data.meeting_sections[i].instructors, "days": days, "timeslots": timeslots, "colour": "", duration: data.meeting_sections[i].times[0].duration, location: data.meeting_sections[i].times[0].location });
             return true;
         }
     }
