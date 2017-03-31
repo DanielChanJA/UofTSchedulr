@@ -1,4 +1,4 @@
-var colours = ["#dd1c1a", "#f0c808", "#06aed5", "#fff1d0", "#4abdac", "#fc4a1a", "#f7b733", "#007849", "#a239ca", "#e37222"];
+var colours = ["#dd1c1a", "#f0c808", "#06aed5", "#fff1d0", "#4abdac", "#fc4a1a", "#f7b733", "#e37222"];
 var daysOTW = ["M", "T", "W", "TH", "F"];
 
 var schedule = [];
@@ -381,28 +381,40 @@ function checkConflict(course) {
                     colours.push(schedule[m].colour);
                 }
                 schedule = res;
-                for (let i = 0; i < schedule.length; i++) {
-                    days = [];
-                    time = [];
-                    for (let k = 0; k < schedule[i].days.length; k++) {
-                        days.push(schedule[i].days[k][0]);
-                    }
-                    timeStart = schedule[i].days[0][1];
-                    if (timeStart > 12) {
-                        timeStart -= 12;
-                    }
-                    time.push(timeStart);
-                    time.push(schedule[i].duration / 3600);
-                    schedule[i].days = days;
-                    schedule[i].time = time;
-                    schedule[i].instructor = schedule[i].instructor[0];
-                    schedule[i].colour = colours[0];
-                    colours.shift();
-                }
+                interpretSchedule(schedule);
                 refreshTable();
             }
         }
     });
+}
+
+
+function interpretSchedule(schedule) {
+    for (let i = 0; i < schedule.length; i++) {
+        days = [];
+        time = [];
+        for (let k = 0; k < schedule[i].days.length; k++) {
+            days.push(schedule[i].days[k][0]);
+        }
+        timeStart = schedule[i].days[0][1];
+        if (timeStart > 12) {
+            timeStart -= 12;
+        }
+        time.push(timeStart);
+        time.push(schedule[i].duration / 3600);
+        schedule[i].days = days;
+        schedule[i].time = time;
+        schedule[i].instructor = schedule[i].instructor[0];
+        schedule[i].colour = colours[0];
+        colours.shift();
+    }
+}
+
+
+function replenishColours(schedule) {
+    for (let i = 0; i < schedule.length; i++) {
+        colours.push(schedule[i].colour);
+    }
 }
 
 
@@ -522,9 +534,11 @@ $(".btn-delete-course").on("click", function() {
 
 
 $(".btn-save").on("click", function() {
+    let name = prompt("Enter a name for this schedule.");
     $.ajax({
         type: "POST",
         url: "/savetimetable",
+        data: JSON.stringify({name: name}),
         contentType: "application/json; charset=utf-8",
         success: function(res) {
             alert("Saved");
@@ -541,8 +555,7 @@ $(".btn-delete").on("click", function() {
         data: JSON.stringify({_id: scheduleId}),
         contentType: "application/json; charset=utf-8",
         success: function(res) {
-            alert("Deleted");
-            schedule = res;
+            alert("Deleted");s;
             scheduleId = null;
             refreshTable();
         }
@@ -561,9 +574,10 @@ $(".btn-load").on("click", function() {
         url: "/getalltimetables",
         contentType: "application/json; charset=utf-8",
         success: function(res) {
+            replenishColours(schedule);
             saved.empty();
             for (let i = 0; i < res.length; i++) {
-                saved.append("<input class='schedule-option' type='radio' name='schedule' value='" + res[i]._id + "'> " + res[i]._id + "<br>");
+                saved.append("<input class='schedule-option' type='radio' name='schedule' value='" + res[i]._id + "'> " + res[i].name + "<br>");
             }
         }
     });
@@ -590,24 +604,7 @@ $(".btn-load-schedule").on("click", function() {
                     scheduleId = res[0]._id;
                     $(".modal-container-saved").css("display", "none");
                     $(".modal-saved").css("display", "none"); 
-                      for (let i = 0; i < schedule.length; i++) {
-                        days = [];
-                        time = [];
-                        for (let k = 0; k < schedule[i].days.length; k++) {
-                            days.push(schedule[i].days[k][0]);
-                        }
-                        timeStart = schedule[i].days[0][1];
-                        if (timeStart > 12) {
-                            timeStart -= 12;
-                        }
-                        time.push(timeStart);
-                        time.push(schedule[i].duration / 3600);
-                        schedule[i].days = days;
-                        schedule[i].time = time;
-                        schedule[i].instructor = schedule[i].instructor[0];
-                        schedule[i].colour = colours[0];
-                        colours.shift();
-                    }
+                    interpretSchedule(schedule);
                     refreshTable();
                 }
             });

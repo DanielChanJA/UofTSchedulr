@@ -102,7 +102,8 @@ var Comment = mongoose.model("Comment", commentSchema);
 // Timetables schema
 var timetableSchema = new mongoose.Schema({
     userid: String,
-    timetable: Array
+    timetable: Array,
+    name: String
 })
 var Timetables = mongoose.model("Timetables", timetableSchema);
 
@@ -586,7 +587,7 @@ function contains(item, container) {
 
 
 function saveTimetable(req, res) {
-    let t = {userid: req.user.username, timetable: selectedCourses};
+    let t = {userid: req.user.username, timetable: selectedCourses, name: req.body.name};
     let s = new Timetables(t);
     s.save(function(err, result) {
         res.send(result);
@@ -603,6 +604,7 @@ function deleteTimetable(req, res) {
 
 
 function getAllTimetables(req, res) {
+    
     Timetables.find({userid: req.user.username}, function(err, result) {
         res.send(result);
     });
