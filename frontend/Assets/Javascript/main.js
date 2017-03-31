@@ -196,6 +196,7 @@ function refreshLargeTable() {
 
     // Populate each row
     populateDaysLarge(table);
+    console.log(schedule);
 }
 
 
@@ -396,7 +397,7 @@ function checkConflict(course) {
     $.ajax({
         type: "POST",
         url: "/addcourse",
-        data: JSON.stringify(course),
+        data: JSON.stringify({course: course, schedule: schedule}),
         contentType: "application/json; charset=utf-8",
         success: function(res) {
             if (res == false) {
@@ -408,7 +409,6 @@ function checkConflict(course) {
                 schedule = res;
                 interpretSchedule(schedule);
                 refreshTable();
-                console.log(schedule[0]);
             }
         }
     });
@@ -422,7 +422,11 @@ function interpretSchedule(schedule) {
         for (let k = 0; k < schedule[i].days.length; k++) {
             days.push(schedule[i].days[k][0]);
         }
-        timeStart = schedule[i].days[0][1];
+        if (schedule[i].days[0][1]) {
+            timeStart = schedule[i].days[0][1];
+        } else {
+            timeStart = schedule[i].time[0];
+        }
         if (timeStart > 12) {
             timeStart -= 12;
         }
@@ -634,7 +638,7 @@ $(".btn-delete-course").on("click", function() {
     $.ajax({
         type: "DELETE",
         url: "/removecourse",
-        data: JSON.stringify({ code: code }),
+        data: JSON.stringify({ code: code, schedule: schedule}),
         contentType: "application/json; charset=utf-8",
         success: function(res) {
             schedule = res;
@@ -650,7 +654,7 @@ $(".btn-save").on("click", function() {
     $.ajax({
         type: "POST",
         url: "/savetimetable",
-        data: JSON.stringify({ name: name }),
+        data: JSON.stringify({ name: name, schedule: schedule }),
         contentType: "application/json; charset=utf-8",
         success: function(res) {
             alert("Saved");
@@ -668,7 +672,7 @@ $(".btn-delete").on("click", function() {
         contentType: "application/json; charset=utf-8",
         success: function(res) {
             alert("Deleted");
-            s;
+            schedule = [];
             scheduleId = null;
             refreshTable();
         }
