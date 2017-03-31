@@ -21,6 +21,8 @@ if (mediaQueryTablet.matches) {
 // Check if a user is logged in
 checkLogin();
 
+// Initialize the Map.
+
 
 // Display additional buttons if user is logged in
 function checkLogin() {
@@ -327,6 +329,8 @@ function interpretDay(day) {
 }
 
 
+
+
 // Display course information mdoal
 var modals = document.getElementsByClassName("modal-container");
 
@@ -416,6 +420,46 @@ function replenishColours(schedule) {
         colours.push(schedule[i].colour);
     }
 }
+
+
+function initMap() {
+    var myLatLng = { lat: 43.6636401, lng: -79.3954695 };
+
+    var map = new google.maps.Map(document.getElementById('map'), {
+        zoom: 16,
+        center: myLatLng
+    });
+
+    var marker = new google.maps.Marker({
+        position: myLatLng,
+        map: map,
+        title: 'Hello World!'
+    });
+
+    console.log("Initialized Map");
+}
+
+
+
+$(document).ready(function() {
+
+
+    $("#mapview").click(function() {
+        $("#timetable").hide();
+        $("#map").show();
+        console.log("Clicked Mapview");
+        initMap();
+
+    });
+
+    $("#timetableview").click(function() {
+        $("#map").hide();
+        $("#timetable").show();
+        console.log("Clicked table view.");
+    });
+});
+
+
 
 
 // CRUD functions
@@ -538,7 +582,7 @@ $(".btn-save").on("click", function() {
     $.ajax({
         type: "POST",
         url: "/savetimetable",
-        data: JSON.stringify({name: name}),
+        data: JSON.stringify({ name: name }),
         contentType: "application/json; charset=utf-8",
         success: function(res) {
             alert("Saved");
@@ -552,10 +596,11 @@ $(".btn-delete").on("click", function() {
     $.ajax({
         type: "DELETE",
         url: "/deletetimetable",
-        data: JSON.stringify({_id: scheduleId}),
+        data: JSON.stringify({ _id: scheduleId }),
         contentType: "application/json; charset=utf-8",
         success: function(res) {
-            alert("Deleted");s;
+            alert("Deleted");
+            s;
             scheduleId = null;
             refreshTable();
         }
@@ -596,14 +641,14 @@ $(".btn-load-schedule").on("click", function() {
         if (radioBtns[i].checked) {
             $.ajax({
                 type: "GET",
-                data: {_id: radioBtns[i].value},
+                data: { _id: radioBtns[i].value },
                 url: "/loadtimetable",
                 contentType: "application/json; charset=utf-8",
                 success: function(res) {
                     schedule = res[0].timetable;
                     scheduleId = res[0]._id;
                     $(".modal-container-saved").css("display", "none");
-                    $(".modal-saved").css("display", "none"); 
+                    $(".modal-saved").css("display", "none");
                     interpretSchedule(schedule);
                     refreshTable();
                 }

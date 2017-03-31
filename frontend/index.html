@@ -78,12 +78,15 @@
     </section>
     <div class="col-md-9 text-center">
         <div id="view-switcher" class="btn-group">
-            <button type="button" class="btn btn-default">Map View</button>
-            <button type="button" class="btn btn-default">Timetable View</button>
+            <button type="button" class="btn btn-default" id="mapview">Map View</button>
+            <button type="button" class="btn btn-default" id="timetableview">Timetable View</button>
         </div>
         <br>
-        <section class="schedule-container col-md-12">
+        <div id="map" style="height: 400px;">
+        </div>
+        <section class="schedule-container col-md-12" id="timetable">
         </section>
+
     </div>
     <div class="modal-container">
         <div class="modal-course-info center-x">
@@ -137,8 +140,33 @@
         </div>
     </footer>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <script src="Assets/Javascript/main.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCeb2Wqqaiy_yYFB7D-cVE4NrFu1OdQycs&callback=initMap">
+    </script>
+    <script>
+        var user_lat, user_lng;
+        var map;
+
+        function initMap() {
+            map = new google.maps.Map(document.getElementById('map'), {
+                center: {
+                    lat: 17,
+                    lng: 80
+                },
+                zoom: 5
+            });
+            var marker = new google.maps.Marker({
+                position: {
+                    lat: 17,
+                    lng: 80
+                },
+                map: map,
+                title: 'Hello World!'
+            });
+        }
+    </script>
+    <script src="Assets/Javascript/main.js"></script>
+
 </body>
 
 </html>
