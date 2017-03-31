@@ -44,7 +44,7 @@ mongoose.connect("mongodb://localhost/schdule", function(err, db) {
         console.log("Unable to connect to DB.");
     }
 
-    app.listen(3000, function() {
+    app.listen(process.env.port || 3000, function() {
         console.log("Listening on port 3000");
         console.log("Successfully connected to schdule DB.");
     });
