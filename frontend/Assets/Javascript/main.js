@@ -561,8 +561,8 @@ $(".search-bar-btn").on("click", function() {
     // var filterObject = {};
 
     // filterObject.code = $("input[name='search']").val();
-
-    url = url + "?" + "code=" + $("input[name='search']").val();
+    // console.log($("input[name='search']").val().toUpperCase());
+    url = url + "?" + "code=" + $("input[name='search']").val().toUpperCase();
     console.log("1" + url);
     // var radioValue = $("input[name='optradio']:checked").val();
     // console.log("1" + radioValue);
@@ -616,6 +616,15 @@ $(".search-bar-btn").on("click", function() {
     }
 });
 
+/**
+ * Pressing enter on the search bar, submits the form.
+ */
+$('#search-bar').keypress(function(e) {
+    if (e.which == 13) {
+        $(".search-bar-btn").click();
+        return false; //<---- Add this line
+    }
+});
 
 $(".show-more-button").click(function() {
     $(".show-more-class").slideToggle();
