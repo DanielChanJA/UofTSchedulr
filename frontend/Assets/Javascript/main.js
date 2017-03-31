@@ -406,9 +406,9 @@ function checkConflict(course) {
                     colours.push(schedule[m].colour);
                 }
                 schedule = res;
-                console.log(schedule);
                 interpretSchedule(schedule);
                 refreshTable();
+                getBuildingCode(schedule);
             }
         }
     });
@@ -416,15 +416,15 @@ function checkConflict(course) {
 
 function getBuildingCode(courseInfo) {
 
-    console.log(courseInfo.data[0].code);
+    var localInfo = courseInfo;
+    var buildingRoom = localInfo[0].location;
 
-    var courseCode = courseInfo.data[0].code;
-    var buildingRoom = courseInfo.data[0].code;
-
-    console.log(courseCode);
+    var buildingCode = buildingRoom.substring(0, 2);
     console.log(buildingRoom);
+    console.log(buildingCode);
 
-    var buildingCode = buildingRoom.substring(0, 3);
+    console.log(map == null);
+
 
     $.ajax({
         type: "GET",
@@ -434,8 +434,12 @@ function getBuildingCode(courseInfo) {
             var latitude = response.lat;
             var longitude = response.lng;
 
-            insertMarker(latitude, longitude, courseCode);
-            console.log("Inserted " + courseCode + " " + buildingCode + " " + latitude + " " + longitude);
+            if (map == null) {
+                map = initMap();
+            }
+
+            insertMarker(latitude, longitude, buildingCode);
+            console.log("Inserted " + " " + buildingCode + " " + latitude + " " + longitude);
         }
     });
 
@@ -528,9 +532,7 @@ $(document).ready(function() {
         $("#timetable").hide();
         $("#map").show();
         console.log("Clicked Mapview");
-        if (map == null) {
-            map = initMap();
-        }
+
     });
 
     $("#timetableview").click(function() {
