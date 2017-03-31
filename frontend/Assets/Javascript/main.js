@@ -511,6 +511,7 @@ $(document).ready(function() {
             url: "/logout",
             success: function(res) {
                 console.log("Successfully logged out.");
+                window.location.replace("/");
             }
         });
     });
