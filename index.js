@@ -32,7 +32,7 @@ passport.deserializeUser(User.deserializeUser());
 //Stuff to pull from Cobalt API.
 var request = require('request');
 var cobalt = "?key=wxyV572ztbmjVEc7qcokZ0xYVPv2Qf0n";
-var cobaltApi = "https://cobalt.qas.im/api/1.0/courses/";
+var cobaltApi = "https://cobalt.qas.im/api/1.0/";
 
 var selectedCourses = [];
 
@@ -126,7 +126,7 @@ function getCourse(req, res) {
     console.log("Searched for: " + query);
 
     // 10 results by default. Use ?limit=x to get more/less, up to a maximum of 100.
-    var searchUri = cobaltApi + "search" + cobalt + "&q=" + query;
+    var searchUri = cobaltApi + "courses/search" + cobalt + "&q=" + query;
     console.log("URI: " + searchUri);
 
     request(searchUri, function(err, resp, body) {
@@ -160,6 +160,36 @@ function getCourse(req, res) {
 
     });
 
+}
+
+function getBuildingCord(req, res) {
+    var query = req.query.buildingcode;
+
+    var searchUri = cobaltApi + "buildings/search" + cobalt + "&q=\"" + query + "\"";
+    console.log("URI: " + searchUri);
+
+    request(searchUri, function(err, resp, body) {
+        if (err) {
+            console.log("Error:" + err);
+            return res.status(500).json({
+                Status: "Failed",
+                Message: err
+            });
+        }
+
+        if (resp.statusCode != 200) {
+            console.log("Invalid status code: " + resp.statusCode);
+            return res.status(400).json({
+                Status: "Failed",
+                Message: "No buildings to list."
+            });
+        }
+
+
+        var building = JSON.parse(body);
+        res.status(200).json({ "lat": building[0].lat, "lng": building[0].lng });
+
+    });
 }
 
 
@@ -272,6 +302,7 @@ function insertComment(req, res) {
 function insertCourse(req, res) {
     if (buildTimetable(req.body.data[0]) == true) {
         res.send(selectedCourses);
+        console.log(selectedCourses);
     } else {
         res.send(false);
     }
@@ -587,7 +618,7 @@ function contains(item, container) {
 
 
 function saveTimetable(req, res) {
-    let t = {userid: req.user.username, timetable: selectedCourses, name: req.body.name};
+    let t = { userid: req.user.username, timetable: selectedCourses, name: req.body.name };
     let s = new Timetables(t);
     s.save(function(err, result) {
         res.send(result);
@@ -596,7 +627,7 @@ function saveTimetable(req, res) {
 
 
 function deleteTimetable(req, res) {
-    Timetables.findOneAndRemove({_id: req.body._id}, function(err, result) {
+    Timetables.findOneAndRemove({ _id: req.body._id }, function(err, result) {
         selectedCourses = [];
         res.send(selectedCourses);
     });
@@ -604,15 +635,15 @@ function deleteTimetable(req, res) {
 
 
 function getAllTimetables(req, res) {
-    
-    Timetables.find({userid: req.user.username}, function(err, result) {
+
+    Timetables.find({ userid: req.user.username }, function(err, result) {
         res.send(result);
     });
 }
 
 
 function loadTimetable(req, res) {
-    Timetables.find({_id: req.query._id}, function(err, result) {
+    Timetables.find({ _id: req.query._id }, function(err, result) {
         res.send(result);
     });
 }
@@ -649,6 +680,7 @@ app.delete('/deletetimetable', isLoggedIn, deleteTimetable);
 app.get('/getalltimetables', isLoggedIn, getAllTimetables);
 app.get('/loadtimetable', isLoggedIn, loadTimetable);
 app.get('/coursesearch', searchCourse);
+app.get("/building", getBuildingCord);
 
 /**
  * Relevant routes for authentication.

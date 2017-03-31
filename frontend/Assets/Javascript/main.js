@@ -4,6 +4,8 @@ var daysOTW = ["M", "T", "W", "TH", "F"];
 var schedule = [];
 var scheduleId = null;
 
+var map;
+var markers = [];
 
 // Media query for mobile devices (max: iPad portrait - 1px)
 var mediaQueryMobile = window.matchMedia("(max-width: 767px)");
@@ -22,6 +24,7 @@ if (mediaQueryTablet.matches) {
 checkLogin();
 
 // Initialize the Map.
+$("#map").hide();
 
 
 // Display additional buttons if user is logged in
@@ -430,14 +433,48 @@ function initMap() {
         center: myLatLng
     });
 
+    console.log("Initialized Map");
+
+    return map;
+}
+
+function insertMarker(latitude, longitude, code) {
+
+    var newPin = { lat: latitude, lng: longitude };
+
     var marker = new google.maps.Marker({
-        position: myLatLng,
+        position: newPin,
         map: map,
-        title: 'Hello World!'
+        label: code
     });
 
-    console.log("Initialized Map");
+    markers.push(marker);
+
+    console.log("Successfully inserted pin.");
 }
+
+function setMapOnAll(map) {
+    for (var i = 0; i < markers.length; i++) {
+        markers[i].setMap(map);
+    }
+}
+
+// Removes the markers from the map, but keeps them in the array.
+function clearMarkers() {
+    setMapOnAll(null);
+}
+
+// Shows any markers currently in the array.
+function showMarkers() {
+    setMapOnAll(map);
+}
+
+// Deletes all markers in the array by removing references to them.
+function deleteMarkers() {
+    clearMarkers();
+    markers = [];
+}
+
 
 
 
@@ -448,8 +485,13 @@ $(document).ready(function() {
         $("#timetable").hide();
         $("#map").show();
         console.log("Clicked Mapview");
-        initMap();
-
+        if (map == null) {
+            map = initMap();
+            insertMarker(43.65966794914353, -79.397374250679, "BA");
+            insertMarker(43.66012007293862, -79.3951037607479, "SF");
+            insertMarker(43.660739554480855, -79.3937338224935, "MS");
+            insertMarker(43.66311506487241, -79.3989849171924, "RW");
+        }
     });
 
     $("#timetableview").click(function() {
@@ -457,6 +499,8 @@ $(document).ready(function() {
         $("#timetable").show();
         console.log("Clicked table view.");
     });
+
+
 });
 
 
@@ -549,6 +593,7 @@ $(".button-add-class").on("click", function() {
             success: function(res) {
                 let course = { data: res };
                 checkConflict(course);
+
             }
         });
     }

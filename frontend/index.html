@@ -51,24 +51,29 @@
             </div>
         </div>
     </nav>
-    <form class="search-bar col-md-3">
-        <input class="center-x" type="text" name="search" placeholder="Search courses">
-        <!--radio buttons-->
-        <label class="radio-inline center-z">
-      <input type="radio" name="optradio" value="UTSC">UTSC
-    </label>
-        <label class="radio-inline center-z">
-      <input  type="radio" name="optradio" value="UTSG">UTSG
-    </label>
-        <label class="radio-inline center-z">
-      <input type="radio" name="optradio" value="UTM">UTM
-    </label>
-        <button class="search-bar-btn" type="button">Search</button>
-        <button class="button-add-class" type="button" disabled>Add Class</button>
-        <button class="btn-save" type="button" hidden>Save</button>
-        <button class="btn-delete" type="button" hidden>Delete</button>
-        <button class="btn-load" type="button" hidden>Load</button>
-    </form>
+    <div class="col-md-3">
+        <form class="search-bar col-sm-12 form-horizontal text-center">
+            <div class="form-group col-sm-12 ">
+                <input class="center-x form-control" type="text" name="search" id="query" placeholder="CSC108H1F">
+            </div>
+            <!--radio buttons-->
+            <label class="radio-inline center-z">
+            <input type="radio" name="optradio" value="UTSC">UTSC
+            </label>
+            <label class="radio-inline center-z">
+            <input type="radio" name="optradio" value="UTSG">UTSG
+        </label>
+            <label class="radio-inline center-z">
+            <input type="radio" name="optradio" value="UTM">UTM
+        </label>
+
+            <button class="search-bar-btn btn btn-default col-sm-12" type="button">Search</button>
+            <button class="button-add-class btn btn-default col-sm-12" type="button" disabled>Add Class</button>
+            <button class="btn-save btn btn-default col-sm-12" type="button" hidden>Save</button>
+            <button class="btn-delete btn btn-default col-sm-12" type="button" hidden>Delete</button>
+            <button class="btn-load btn btn-default col-sm-12" type="button" hidden>Load</button>
+        </form>
+    </div>
     <section class="table-header">
         <div class="center-x">
             <button class="prev-day">&#60;</button>
@@ -82,7 +87,7 @@
             <button type="button" class="btn btn-default" id="timetableview">Timetable View</button>
         </div>
         <br>
-        <div id="map" style="height: 400px;">
+        <div id="map" style="height: 700px;">
         </div>
         <section class="schedule-container col-md-12" id="timetable">
         </section>
@@ -107,6 +112,7 @@
             <button class="btn-cancel center-x" type="button">Cancel</button>
         </div>
     </div>
+
     <section class="course-info">
         <div class="center-x">
             <h2 class="course-code"></h2>
@@ -127,6 +133,7 @@
         </div>
 
     </section>
+
     <footer>
         <div class="container-okok">
             <div class="row">
@@ -142,28 +149,6 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
     <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCeb2Wqqaiy_yYFB7D-cVE4NrFu1OdQycs&callback=initMap">
-    </script>
-    <script>
-        var user_lat, user_lng;
-        var map;
-
-        function initMap() {
-            map = new google.maps.Map(document.getElementById('map'), {
-                center: {
-                    lat: 17,
-                    lng: 80
-                },
-                zoom: 5
-            });
-            var marker = new google.maps.Marker({
-                position: {
-                    lat: 17,
-                    lng: 80
-                },
-                map: map,
-                title: 'Hello World!'
-            });
-        }
     </script>
     <script src="Assets/Javascript/main.js"></script>
 
