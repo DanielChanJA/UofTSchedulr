@@ -51,7 +51,7 @@
             </div>
         </div>
     </nav>
-    <form class="search-bar">
+    <form class="search-bar col-md-3">
         <input class="center-x" type="text" name="search" placeholder="Search courses">
         <!--radio buttons-->
         <label class="radio-inline center-z">
@@ -63,9 +63,8 @@
         <label class="radio-inline center-z">
       <input type="radio" name="optradio" value="UTM">UTM
     </label>
-        <!--radio buttons-->
         <button class="search-bar-btn center-x" type="button">Search</button>
-        <button class="button-add-class center-x" type="button" disabled>Add Class</button>
+        <button class="button-add-class center-x " type="button" disabled>Add Class</button>
         <button class="btn-save center-x" type="button" hidden>Save</button>
         <button class="btn-delete center-x" type="button" hidden>Delete</button>
         <button class="btn-load center-x" type="button" hidden>Load</button>
@@ -77,8 +76,15 @@
             <button class="next-day">&#62;</button>
         </div>
     </section>
-    <noscript>You must have Javascript enabled.</noscript>
-    <section class="schedule-container"></section>
+    <div class="col-md-9 text-center">
+        <div id="view-switcher" class="btn-group">
+            <button type="button" class="btn btn-default">Map View</button>
+            <button type="button" class="btn btn-default">Timetable View</button>
+        </div>
+        <br>
+        <section class="schedule-container col-md-12">
+        </section>
+    </div>
     <div class="modal-container">
         <div class="modal-course-info center-x">
             <h2></h2>
@@ -130,8 +136,8 @@
             </div>
         </div>
     </footer>
-    <script src="Assets/Javascript/main.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="Assets/Javascript/main.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 </body>
 
