@@ -406,9 +406,9 @@ function checkConflict(course) {
                     colours.push(schedule[m].colour);
                 }
                 schedule = res;
-                console.log(schedule);
                 interpretSchedule(schedule);
                 refreshTable();
+                getBuildingCode(schedule);
             }
         }
     });
@@ -416,15 +416,13 @@ function checkConflict(course) {
 
 function getBuildingCode(courseInfo) {
 
-    console.log(courseInfo.data[0].code);
+    var localInfo = courseInfo;
 
-    var courseCode = courseInfo.data[0].code;
-    var buildingRoom = courseInfo.data[0].code;
+    console.log(localInfo);
 
-    console.log(courseCode);
-    console.log(buildingRoom);
+    var buildingRoom = localInfo[0].location;
 
-    var buildingCode = buildingRoom.substring(0, 3);
+    var buildingCode = buildingRoom.substring(0, 2);
 
     $.ajax({
         type: "GET",
@@ -434,14 +432,15 @@ function getBuildingCode(courseInfo) {
             var latitude = response.lat;
             var longitude = response.lng;
 
-            insertMarker(latitude, longitude, courseCode);
-            console.log("Inserted " + courseCode + " " + buildingCode + " " + latitude + " " + longitude);
+            if (map == null) {
+                map = initMap();
+            }
+
+            insertMarker(latitude, longitude, buildingCode);
         }
     });
 
 }
-
-
 
 function interpretSchedule(schedule) {
     for (let i = 0; i < schedule.length; i++) {
@@ -479,8 +478,6 @@ function initMap() {
         zoom: 16,
         center: myLatLng
     });
-
-    console.log("Initialized Map");
     return map;
 }
 
@@ -494,7 +491,6 @@ function insertMarker(latitude, longitude, code) {
         label: code
     });
     markers.push(marker);
-    console.log("Successfully inserted pin.");
 }
 
 function setMapOnAll(map) {
@@ -527,16 +523,16 @@ $(document).ready(function() {
     $("#mapview").click(function() {
         $("#timetable").hide();
         $("#map").show();
-        console.log("Clicked Mapview");
+
         if (map == null) {
-            map = initMap();
+            initMap();
         }
+
     });
 
     $("#timetableview").click(function() {
         $("#map").hide();
         $("#timetable").show();
-        console.log("Clicked table view.");
     });
 
     $("#signoutRef").click(function() {
@@ -544,7 +540,6 @@ $(document).ready(function() {
             type: "POST",
             url: "/logout",
             success: function(res) {
-                console.log("Successfully logged out.");
                 window.location.replace("/");
             }
         });
@@ -650,7 +645,6 @@ $(".button-add-class").on("click", function() {
             success: function(res) {
                 let course = { data: res };
                 checkConflict(course);
-                getBuildingCode(course);
 
             }
         });

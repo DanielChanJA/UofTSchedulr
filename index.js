@@ -555,6 +555,16 @@ function loadCourses() {
     var skip = 0;
     var popOut = false;
 
+    request("https://cobalt.qas.im/api/1.0/courses" + cobalt + "&limit=10", function(err, resp, body) {
+        if (err) {
+            return console.log("Failed to connect, falling back to previous data.");
+        }
+
+        if (resp.statusCode != 200) {
+            return console.log("Did not get proper error code, falling back to previous data.");
+        }
+    });
+
     // Need to implement a check if a connection can be successfully established, we drop the coursesData relation
     // Otherwise stop, dont process anything and just use pre-existing data.
     CourseData.remove({}, function(err) {
@@ -564,7 +574,7 @@ function loadCourses() {
         } else {
             console.log("Successfully removed courses.");
         }
-    })
+    });
 
 
     while (popOut == false || skip < 7000) {
@@ -573,7 +583,6 @@ function loadCourses() {
         console.log(searchUri);
 
         popOut = request(searchUri, function(err, resp, body) {
-            console.log("Sending req");
             if (err) {
                 console.log("Error connecting to Cobalt, falling back to pre-existing data.");
                 return true;
@@ -589,7 +598,6 @@ function loadCourses() {
             } else {
                 var courseInfo = JSON.parse(body);
                 console.log("Attempting to insert...");
-                console.log(courseInfo);
 
                 CourseData.insertMany(courseInfo, function(err, docs) {
                     if (err) {
