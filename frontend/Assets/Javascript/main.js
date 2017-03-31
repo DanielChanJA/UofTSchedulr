@@ -578,7 +578,7 @@ $(".search-bar-btn").on("click", function() {
             // contentType: "application/json; charset=utf-8",
             success: function(res) {
                 if (res == "") {
-                    alert("Course not found or not available in specified campus. Search is case sensitive, and must be the full course code (Ex: CSC108H1F).");
+                    alert("Course not found or not available in specified campus. UTSG course code format example: CSC108H1F");
                 } else {
                     $(".course-code").html(res[0].code);
                     $(".course-name-title").html("Course Name:" + "&nbsp;&nbsp;&nbsp;&nbsp;" + res[0].name);
