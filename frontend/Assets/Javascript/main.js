@@ -397,7 +397,7 @@ function checkConflict(course) {
     $.ajax({
         type: "POST",
         url: "/addcourse",
-        data: JSON.stringify({course: course, schedule: schedule}),
+        data: JSON.stringify({ course: course, schedule: schedule }),
         contentType: "application/json; charset=utf-8",
         success: function(res) {
             if (res == false) {
@@ -521,6 +521,7 @@ function mapper() {
     deleteMarkers();
     if (map == null) {
         map = initMap();
+        return;
     }
 
     for (var i = 0; i < schedule.length; i++) {
@@ -535,6 +536,7 @@ $(document).ready(function() {
         $("#timetable").hide();
         $("#map").show();
 
+        console.log(map == null);
         mapper();
 
     });
@@ -564,7 +566,7 @@ $(".search-bar-btn").on("click", function() {
 
     console.log(map == null);
     if (map == null) {
-        initMap();
+        mapper();
     }
 
     mapper();
@@ -666,6 +668,8 @@ $(".button-add-class").on("click", function() {
         });
     }
 
+    console.log(map == null);
+
     mapper();
 });
 
@@ -687,7 +691,7 @@ $(".btn-delete-course").on("click", function() {
     $.ajax({
         type: "DELETE",
         url: "/removecourse",
-        data: JSON.stringify({ code: code, time: time, schedule: schedule}),
+        data: JSON.stringify({ code: code, time: time, schedule: schedule }),
         contentType: "application/json; charset=utf-8",
         success: function(res) {
             schedule = res;
@@ -712,7 +716,7 @@ $(".btn-save").on("click", function() {
                 alert("Saved");
                 scheduleId = res._id;
             }
-        });   
+        });
     }
 });
 
