@@ -421,9 +421,6 @@ function getBuildingCode(courseInfo) {
 
     var buildingCode = buildingRoom.substring(0, 2);
 
-    console.log(map == null);
-
-
     $.ajax({
         type: "GET",
         url: "/building",
@@ -441,8 +438,6 @@ function getBuildingCode(courseInfo) {
     });
 
 }
-
-
 
 function interpretSchedule(schedule) {
     for (let i = 0; i < schedule.length; i++) {
@@ -525,6 +520,10 @@ $(document).ready(function() {
     $("#mapview").click(function() {
         $("#timetable").hide();
         $("#map").show();
+
+        if (map == null) {
+            initMap();
+        }
 
     });
 
