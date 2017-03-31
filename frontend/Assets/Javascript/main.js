@@ -409,18 +409,33 @@ function checkConflict(course) {
 // CRUD functions
 // Search for a course
 $(".search-bar-btn").on("click", function() {
-    var code = $("input[name='search']").val();
-    if (code == "") {
+    var url = "/coursesearch";
+    // var filterObject = {};
+
+    // filterObject.code = $("input[name='search']").val();
+
+    url = url + "?" + "code=" + $("input[name='search']").val();
+    console.log("1" + url);
+    // var radioValue = $("input[name='optradio']:checked").val();
+    // console.log("1" + radioValue);
+
+
+    if ($("input[name='optradio']:checked").val() !== undefined) {
+        url = url + "&campus=" + $("input[name='optradio']:checked").val();
+        console.log("2" + url);
+
+    }
+    if ($("input[name='search']").val() == "") {
         alert("You must input a course code.");
     } else {
         $.ajax({
             type: "GET",
-            url: "/coursesearch",
-            data: { code: code },
-            contentType: "application/json; charset=utf-8",
+            url: url,
+            // data: filterObject, //{ code: code }
+            // contentType: "application/json; charset=utf-8",
             success: function(res) {
                 if (res == "") {
-                    alert("Course not found. Search is case sensitive, and must be the full course code (Ex: CSC108H1F).");
+                    alert("Course not found or not available in specified campus. Search is case sensitive, and must be the full course code (Ex: CSC108H1F).");
                 } else {
                     $(".course-code").html(res[0].code);
                     $(".course-name-title").html("Course Name:" + "&nbsp;&nbsp;&nbsp;&nbsp;" + res[0].name);

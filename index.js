@@ -391,7 +391,7 @@ function isLoggedIn(req, res, next) {
  * @param {*} next 
  */
 function isAdminLoggedIn(req, res, next) {
-    if (req.isAuthenticated() && req.user.email == "danielja.chan@mail.utoronto.ca") {
+    if (req.isAuthenticated() && req.user.username == "danielja.chan@mail.utoronto.ca") {
         console.log("User is an administrator.");
         console.log(req.user);
         return next();
@@ -619,7 +619,12 @@ function loadTimetable(req, res) {
 
 // Search local database for course
 function searchCourse(req, res) {
-    CourseData.find({ code: req.query.code }, function(err, result) {
+    var filter = {};
+    filter.code = req.query.code;
+    if (req.query.campus) {
+        filter.campus = req.query.campus;
+    }
+    CourseData.find(filter, function(err, result) {
         res.send(result);
     });
 }
