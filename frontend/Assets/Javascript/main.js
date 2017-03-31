@@ -406,12 +406,41 @@ function checkConflict(course) {
                     colours.push(schedule[m].colour);
                 }
                 schedule = res;
+                console.log(schedule);
                 interpretSchedule(schedule);
                 refreshTable();
             }
         }
     });
 }
+
+function getBuildingCode(courseInfo) {
+
+    console.log(courseInfo.data[0].code);
+
+    var courseCode = courseInfo.data[0].code;
+    var buildingRoom = courseInfo.data[0].code;
+
+    console.log(courseCode);
+    console.log(buildingRoom);
+
+    var buildingCode = buildingRoom.substring(0, 3);
+
+    $.ajax({
+        type: "GET",
+        url: "/building",
+        data: { "buildingcode": buildingCode },
+        success: function(response) {
+            var latitude = response.lat;
+            var longitude = response.lng;
+
+            insertMarker(latitude, longitude, courseCode);
+            console.log("Inserted " + courseCode + " " + buildingCode + " " + latitude + " " + longitude);
+        }
+    });
+
+}
+
 
 
 function interpretSchedule(schedule) {
@@ -501,10 +530,6 @@ $(document).ready(function() {
         console.log("Clicked Mapview");
         if (map == null) {
             map = initMap();
-            insertMarker(43.65966794914353, -79.397374250679, "BA");
-            insertMarker(43.66012007293862, -79.3951037607479, "SF");
-            insertMarker(43.660739554480855, -79.3937338224935, "MS");
-            insertMarker(43.66311506487241, -79.3989849171924, "RW");
         }
     });
 
@@ -616,6 +641,7 @@ $(".button-add-class").on("click", function() {
             success: function(res) {
                 let course = { data: res };
                 checkConflict(course);
+                getBuildingCode(course);
 
             }
         });
