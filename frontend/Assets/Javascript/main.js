@@ -196,6 +196,7 @@ function refreshLargeTable() {
 
     // Populate each row
     populateDaysLarge(table);
+    console.log(schedule);
 }
 
 
@@ -396,7 +397,7 @@ function checkConflict(course) {
     $.ajax({
         type: "POST",
         url: "/addcourse",
-        data: JSON.stringify(course),
+        data: JSON.stringify({course: course, schedule: schedule}),
         contentType: "application/json; charset=utf-8",
         success: function(res) {
             if (res == false) {
@@ -446,7 +447,11 @@ function interpretSchedule(schedule) {
         for (let k = 0; k < schedule[i].days.length; k++) {
             days.push(schedule[i].days[k][0]);
         }
-        timeStart = schedule[i].days[0][1];
+        if (schedule[i].days[0][1]) {
+            timeStart = schedule[i].days[0][1];
+        } else {
+            timeStart = schedule[i].time[0];
+        }
         if (timeStart > 12) {
             timeStart -= 12;
         }
@@ -568,8 +573,8 @@ $(".search-bar-btn").on("click", function() {
     // var filterObject = {};
 
     // filterObject.code = $("input[name='search']").val();
-
-    url = url + "?" + "code=" + $("input[name='search']").val();
+    // console.log($("input[name='search']").val().toUpperCase());
+    url = url + "?" + "code=" + $("input[name='search']").val().toUpperCase();
     console.log("1" + url);
     // var radioValue = $("input[name='optradio']:checked").val();
     // console.log("1" + radioValue);
@@ -590,7 +595,7 @@ $(".search-bar-btn").on("click", function() {
             // contentType: "application/json; charset=utf-8",
             success: function(res) {
                 if (res == "") {
-                    alert("Course not found or not available in specified campus. Search is case sensitive, and must be the full course code (Ex: CSC108H1F).");
+                    alert("Course not found or not available in specified campus. UTSG course code format example: CSC108H1F");
                 } else {
                     $(".course-code").html(res[0].code);
                     $(".course-name-title").html("Course Name:" + "&nbsp;&nbsp;&nbsp;&nbsp;" + res[0].name);
@@ -623,6 +628,15 @@ $(".search-bar-btn").on("click", function() {
     }
 });
 
+/**
+ * Pressing enter on the search bar, submits the form.
+ */
+$('#search-bar').keypress(function(e) {
+    if (e.which == 13) {
+        $(".search-bar-btn").click();
+        return false; //<---- Add this line
+    }
+});
 
 $(".show-more-button").click(function() {
     $(".show-more-class").slideToggle();
@@ -648,7 +662,6 @@ $(".button-add-class").on("click", function() {
             success: function(res) {
                 let course = { data: res };
                 checkConflict(course);
-
             }
         });
     }
@@ -668,7 +681,7 @@ $(".btn-delete-course").on("click", function() {
     $.ajax({
         type: "DELETE",
         url: "/removecourse",
-        data: JSON.stringify({ code: code }),
+        data: JSON.stringify({ code: code, schedule: schedule}),
         contentType: "application/json; charset=utf-8",
         success: function(res) {
             schedule = res;
@@ -684,7 +697,7 @@ $(".btn-save").on("click", function() {
     $.ajax({
         type: "POST",
         url: "/savetimetable",
-        data: JSON.stringify({ name: name }),
+        data: JSON.stringify({ name: name, schedule: schedule }),
         contentType: "application/json; charset=utf-8",
         success: function(res) {
             alert("Saved");
@@ -702,7 +715,7 @@ $(".btn-delete").on("click", function() {
         contentType: "application/json; charset=utf-8",
         success: function(res) {
             alert("Deleted");
-            s;
+            schedule = [];
             scheduleId = null;
             refreshTable();
         }
