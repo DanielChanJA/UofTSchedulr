@@ -417,6 +417,9 @@ function checkConflict(course) {
 function getBuildingCode(courseInfo) {
 
     var localInfo = courseInfo;
+
+    console.log(localInfo);
+
     var buildingRoom = localInfo[0].location;
 
     var buildingCode = buildingRoom.substring(0, 2);
