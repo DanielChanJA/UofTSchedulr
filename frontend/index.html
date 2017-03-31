@@ -11,6 +11,8 @@
     <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Gorditas" rel="stylesheet">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+    <script src="https://use.fontawesome.com/4419ed53bd.js"></script>
+
     <!--<link rel="stylesheet" href="Assets/CSS/main.css">-->
 
     <title>Schdule</title>
@@ -56,28 +58,30 @@
             </div>
         </div>
     </nav>
-    <div class="col-md-3">
+    <div class="col-md-3 col-sm-12">
         <form class="search-bar col-sm-12 form-horizontal text-center">
             <div class="form-group col-sm-12" style="padding: 0;
     margin-left: 0;">
-                <input class="form-control" type="text" name="search" id="query" placeholder="CSC108H1F">
+                <input id="search-bar" class="form-control" type="text" name="search" id="query" placeholder="CSC108H1F">
             </div>
             <!--radio buttons-->
-            <label class="radio-inline center-z">
+            <label class="radio-inline center-z" style="margin-bottom: 1em">
             <input type="radio" name="optradio" value="UTSC">UTSC
             </label>
-            <label class="radio-inline center-z">
+            <label class="radio-inline center-z" style="margin-bottom: 1em">
             <input type="radio" name="optradio" value="UTSG">UTSG
         </label>
-            <label class="radio-inline center-z">
+            <label class="radio-inline center-z" style="margin-bottom: 1em">
             <input type="radio" name="optradio" value="UTM">UTM
         </label>
 
-            <button class="search-bar-btn btn btn-primary col-sm-12" type="button">Search</button>
-            <button class="button-add-class btn btn-default col-sm-12" type="button" disabled>Add Class</button>
-            <button class="btn-save btn btn-primary col-sm-12" type="button" hidden>Save</button>
-            <button class="btn-delete btn btn-default col-sm-12" type="button" hidden>Delete</button>
-            <button class="btn-load btn btn-primary col-sm-12" type="button" hidden>Load</button>
+            <div>
+                <button class="search-bar-btn btn btn-primary col-sm-12" type="button">Search</button>
+                <button class="button-add-class btn btn-default col-sm-12" type="button" disabled>Add Class</button>
+                <button class="btn-save btn btn-primary col-sm-12" type="button" hidden>Save</button>
+                <button class="btn-delete btn btn-default col-sm-12" type="button" hidden>Delete</button>
+                <button class="btn-load btn btn-primary col-sm-12" type="button" hidden>Load</button>
+            </div>
         </form>
         <!--<section class="course-info">-->
         <div class="center-x col-sm-12">
@@ -94,8 +98,7 @@
                 <p class="course-campus"></p>
                 <p class="course-breadths"></p>
             </span>
-
-            <button class="show-more-button">show more</button>
+            <button class="show-more-button">Show More</button>
         </div>
 
         <!--</section>-->

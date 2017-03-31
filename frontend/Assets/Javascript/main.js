@@ -409,11 +409,39 @@ function checkConflict(course) {
                 schedule = res;
                 interpretSchedule(schedule);
                 refreshTable();
+                getBuildingCode(schedule);
             }
         }
     });
 }
 
+function getBuildingCode(courseInfo) {
+
+    var localInfo = courseInfo;
+
+    console.log(localInfo);
+
+    var buildingRoom = localInfo[0].location;
+
+    var buildingCode = buildingRoom.substring(0, 2);
+
+    $.ajax({
+        type: "GET",
+        url: "/building",
+        data: { "buildingcode": buildingCode },
+        success: function(response) {
+            var latitude = response.lat;
+            var longitude = response.lng;
+
+            if (map == null) {
+                map = initMap();
+            }
+
+            insertMarker(latitude, longitude, buildingCode);
+        }
+    });
+
+}
 
 function interpretSchedule(schedule) {
     for (let i = 0; i < schedule.length; i++) {
@@ -455,8 +483,6 @@ function initMap() {
         zoom: 16,
         center: myLatLng
     });
-
-    console.log("Initialized Map");
     return map;
 }
 
@@ -470,7 +496,6 @@ function insertMarker(latitude, longitude, code) {
         label: code
     });
     markers.push(marker);
-    console.log("Successfully inserted pin.");
 }
 
 function setMapOnAll(map) {
@@ -503,20 +528,16 @@ $(document).ready(function() {
     $("#mapview").click(function() {
         $("#timetable").hide();
         $("#map").show();
-        console.log("Clicked Mapview");
+
         if (map == null) {
-            map = initMap();
-            insertMarker(43.65966794914353, -79.397374250679, "BA");
-            insertMarker(43.66012007293862, -79.3951037607479, "SF");
-            insertMarker(43.660739554480855, -79.3937338224935, "MS");
-            insertMarker(43.66311506487241, -79.3989849171924, "RW");
+            initMap();
         }
+
     });
 
     $("#timetableview").click(function() {
         $("#map").hide();
         $("#timetable").show();
-        console.log("Clicked table view.");
     });
 
     $("#signoutRef").click(function() {
@@ -524,7 +545,6 @@ $(document).ready(function() {
             type: "POST",
             url: "/logout",
             success: function(res) {
-                console.log("Successfully logged out.");
                 window.location.replace("/");
             }
         });
@@ -541,8 +561,8 @@ $(".search-bar-btn").on("click", function() {
     // var filterObject = {};
 
     // filterObject.code = $("input[name='search']").val();
-
-    url = url + "?" + "code=" + $("input[name='search']").val();
+    // console.log($("input[name='search']").val().toUpperCase());
+    url = url + "?" + "code=" + $("input[name='search']").val().toUpperCase();
     console.log("1" + url);
     // var radioValue = $("input[name='optradio']:checked").val();
     // console.log("1" + radioValue);
@@ -563,7 +583,7 @@ $(".search-bar-btn").on("click", function() {
             // contentType: "application/json; charset=utf-8",
             success: function(res) {
                 if (res == "") {
-                    alert("Course not found or not available in specified campus. Search is case sensitive, and must be the full course code (Ex: CSC108H1F).");
+                    alert("Course not found or not available in specified campus. UTSG course code format example: CSC108H1F");
                 } else {
                     $(".course-code").html(res[0].code);
                     $(".course-name-title").html("Course Name:" + "&nbsp;&nbsp;&nbsp;&nbsp;" + res[0].name);
@@ -596,6 +616,15 @@ $(".search-bar-btn").on("click", function() {
     }
 });
 
+/**
+ * Pressing enter on the search bar, submits the form.
+ */
+$('#search-bar').keypress(function(e) {
+    if (e.which == 13) {
+        $(".search-bar-btn").click();
+        return false; //<---- Add this line
+    }
+});
 
 $(".show-more-button").click(function() {
     $(".show-more-class").slideToggle();
