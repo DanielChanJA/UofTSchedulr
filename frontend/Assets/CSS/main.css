@@ -183,18 +183,7 @@ noscript {
     margin: 0 0 10px 0;
 }
 
-.search-bar-btn {
-    background-color: #086788;
-    border: none;
-    color: white;
-    width: 50%;
-    height: 30px;
-    min-width: 100px;
-    font-size: 100%;
-    max-width: 200px;
-    display: block;
-}
-
+.search-bar-btn,
 .button-add-class,
 .btn-save,
 .btn-delete,
@@ -207,7 +196,7 @@ noscript {
     border: none;
     color: white;
     margin: 5px 0 0 0;
-    min-width: 100px;
+    min-width: 150px;
     max-width: 200px;
     font-size: 100%;
     display: block;
