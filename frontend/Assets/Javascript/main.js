@@ -335,7 +335,7 @@ function interpretDay(day) {
 var modals = document.getElementsByClassName("modal-container");
 
 function displayCourse(course) {
-    var modalContainer = modals[1];
+    var modalContainer = modals[0];
     modalContainer.style.display = "block";
     var modal = modalContainer.childNodes[1];
     modal.childNodes[1].innerHTML = course.code;
