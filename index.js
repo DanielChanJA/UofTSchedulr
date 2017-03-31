@@ -583,7 +583,6 @@ function loadCourses() {
         console.log(searchUri);
 
         popOut = request(searchUri, function(err, resp, body) {
-            console.log("Sending req");
             if (err) {
                 console.log("Error connecting to Cobalt, falling back to pre-existing data.");
                 return true;
