@@ -196,6 +196,7 @@ function refreshLargeTable() {
 
     // Populate each row
     populateDaysLarge(table);
+    console.log(schedule);
 }
 
 
@@ -362,12 +363,12 @@ function displayCourse(course) {
     modal.childNodes[1].innerHTML = course.code;
     modal.childNodes[5].innerHTML = course.name;
     modal.childNodes[9].innerHTML = course.instructor;
-    var time = "";
+    var days = "";
     for (let i = 0; i < course.days.length; i++) {
-        time += course.days[i] + " "
+        days += course.days[i] + " "
     }
-    time += "<br>" + course.time[0] + ":00";
-    modal.childNodes[13].innerHTML = time;
+    modal.childNodes[13].innerHTML = days;
+    $(".time").text(course.time[0] + ":00");
 }
 
 
@@ -396,7 +397,7 @@ function checkConflict(course) {
     $.ajax({
         type: "POST",
         url: "/addcourse",
-        data: JSON.stringify(course),
+        data: JSON.stringify({course: course, schedule: schedule}),
         contentType: "application/json; charset=utf-8",
         success: function(res) {
             if (res == false) {
@@ -408,19 +409,19 @@ function checkConflict(course) {
                 schedule = res;
                 interpretSchedule(schedule);
                 refreshTable();
-                getBuildingCode(schedule);
+                mapper();
             }
         }
     });
 }
 
-function getBuildingCode(courseInfo) {
+function getBuildingCode(i) {
 
-    var localInfo = courseInfo;
+    console.log(schedule);
 
-    console.log(localInfo);
+    console.log(i);
 
-    var buildingRoom = localInfo[0].location;
+    var buildingRoom = schedule[i].location;
 
     var buildingCode = buildingRoom.substring(0, 2);
 
@@ -432,13 +433,10 @@ function getBuildingCode(courseInfo) {
             var latitude = response.lat;
             var longitude = response.lng;
 
-            if (map == null) {
-                map = initMap();
-            }
-
             insertMarker(latitude, longitude, buildingCode);
         }
     });
+
 
 }
 
@@ -449,7 +447,11 @@ function interpretSchedule(schedule) {
         for (let k = 0; k < schedule[i].days.length; k++) {
             days.push(schedule[i].days[k][0]);
         }
-        timeStart = schedule[i].days[0][1];
+        if (schedule[i].days[0][1]) {
+            timeStart = schedule[i].days[0][1];
+        } else {
+            timeStart = schedule[i].time[0];
+        }
         if (timeStart > 12) {
             timeStart -= 12;
         }
@@ -515,7 +517,16 @@ function deleteMarkers() {
     markers = [];
 }
 
+function mapper() {
+    deleteMarkers();
+    if (map == null) {
+        map = initMap();
+    }
 
+    for (var i = 0; i < schedule.length; i++) {
+        getBuildingCode(i);
+    }
+}
 
 
 $(document).ready(function() {
@@ -524,9 +535,7 @@ $(document).ready(function() {
         $("#timetable").hide();
         $("#map").show();
 
-        if (map == null) {
-            initMap();
-        }
+        mapper();
 
     });
 
@@ -552,6 +561,14 @@ $(document).ready(function() {
 // CRUD functions
 // Search for a course
 $(".search-bar-btn").on("click", function() {
+
+    console.log(map == null);
+    if (map == null) {
+        initMap();
+    }
+
+    mapper();
+
     var url = "/coursesearch";
     // var filterObject = {};
 
@@ -645,16 +662,23 @@ $(".button-add-class").on("click", function() {
             success: function(res) {
                 let course = { data: res };
                 checkConflict(course);
-
             }
         });
     }
+
+    mapper();
 });
 
 
 // Delete a course which was clicked on the timetable
 $(".btn-delete-course").on("click", function() {
     var code = $(".modal-course-info h2").text();
+    var time = $(".time").text();
+    console.log("time: " + time);
+    time = time.slice(0, 2);
+    if (time[1] == ":") {
+        time = time[0];
+    }
     for (let i = 0; i < schedule.length; i++) {
         if (schedule[i].code == code) {
             colours.push(schedule[i].colour);
@@ -663,7 +687,7 @@ $(".btn-delete-course").on("click", function() {
     $.ajax({
         type: "DELETE",
         url: "/removecourse",
-        data: JSON.stringify({ code: code }),
+        data: JSON.stringify({ code: code, time: time, schedule: schedule}),
         contentType: "application/json; charset=utf-8",
         success: function(res) {
             schedule = res;
@@ -676,16 +700,20 @@ $(".btn-delete-course").on("click", function() {
 
 $(".btn-save").on("click", function() {
     let name = prompt("Enter a name for this schedule.");
-    $.ajax({
-        type: "POST",
-        url: "/savetimetable",
-        data: JSON.stringify({ name: name }),
-        contentType: "application/json; charset=utf-8",
-        success: function(res) {
-            alert("Saved");
-            scheduleId = res._id;
-        }
-    });
+    if (name == null) {
+        alert("You must enter a name.");
+    } else {
+        $.ajax({
+            type: "POST",
+            url: "/savetimetable",
+            data: JSON.stringify({ name: name, schedule: schedule }),
+            contentType: "application/json; charset=utf-8",
+            success: function(res) {
+                alert("Saved");
+                scheduleId = res._id;
+            }
+        });   
+    }
 });
 
 
@@ -697,7 +725,7 @@ $(".btn-delete").on("click", function() {
         contentType: "application/json; charset=utf-8",
         success: function(res) {
             alert("Deleted");
-            s;
+            schedule = [];
             scheduleId = null;
             refreshTable();
         }

@@ -34,8 +34,6 @@ var request = require('request');
 var cobalt = "?key=wxyV572ztbmjVEc7qcokZ0xYVPv2Qf0n";
 var cobaltApi = "https://cobalt.qas.im/api/1.0/";
 
-var selectedCourses = [];
-
 /**
  * Initialization.
  */
@@ -300,13 +298,13 @@ function insertComment(req, res) {
  * @param {*} res 
  */
 function insertCourse(req, res) {
-    if (buildTimetable(req.body.data[0]) == true) {
-        res.send(selectedCourses);
-        console.log(selectedCourses);
+    var schedule = null;
+    schedule = buildTimetable(req.body.course.data[0], req.body.schedule);
+    if (schedule != null) {
+        res.send(schedule);
     } else {
         res.send(false);
     }
-
 }
 
 /**
@@ -315,12 +313,12 @@ function insertCourse(req, res) {
  * @param {*} res 
  */
 function removeCourse(req, res) {
-    for (let i = 0; i < selectedCourses.length; i++) {
-        if (selectedCourses[i].code == req.body.code) {
-            selectedCourses.splice(i, 1);
+    for (let i = 0; i < req.body.schedule.length; i++) {
+        if (req.body.schedule[i].code == req.body.code && req.body.time == req.body.schedule[i].time[0]) {
+            req.body.schedule.splice(i, 1);
         }
     }
-    res.send(selectedCourses);
+    res.send(req.body.schedule);
 }
 
 
@@ -437,7 +435,7 @@ function isAdminLoggedIn(req, res, next) {
 
 // Adds courses
 // {"code": "", "name": "", "instructor": "", "timeslots": [[day, start]], "time": [start, duration], "colour": "", "timeslots":[[start, end]]}
-function buildTimetable(data) {
+function buildTimetable(data, schedule) {
     var startTime;
     var endTime;
     var day;
@@ -477,10 +475,10 @@ function buildTimetable(data) {
             days.push([day, time]);
 
             // Iterate through the selected courses to check for conflicts
-            for (let m = 0; m < selectedCourses.length; m++) {
+            for (let m = 0; m < schedule.length; m++) {
                 // If there is a conflict
-                for (let j = 0; j < selectedCourses[m].timeslots.length; j++) {
-                    if (startTime >= selectedCourses[m].timeslots[j][0] && startTime <= selectedCourses[m].timeslots[j][1]) {
+                for (let j = 0; j < schedule[m].timeslots.length; j++) {
+                    if (startTime >= schedule[m].timeslots[j][0] && startTime <= schedule[m].timeslots[j][1]) {
                         conflict = true;
                         break;
                     }
@@ -492,11 +490,11 @@ function buildTimetable(data) {
         }
 
         if (conflict == false) {
-            selectedCourses.push({ "code": data.code, "name": data.name, "instructor": data.meeting_sections[i].instructors, "days": days, "timeslots": timeslots, "colour": "", duration: data.meeting_sections[i].times[0].duration, location: data.meeting_sections[i].times[0].location });
-            return true;
+            schedule.push({ "code": data.code, "name": data.name, "instructor": data.meeting_sections[i].instructors, "days": days, "timeslots": timeslots, "colour": "", duration: data.meeting_sections[i].times[0].duration, location: data.meeting_sections[i].times[0].location });
+            return schedule;
         }
     }
-    return false;
+    return null;
 }
 
 function convertDayToNum(day) {
@@ -626,7 +624,7 @@ function contains(item, container) {
 
 
 function saveTimetable(req, res) {
-    let t = { userid: req.user.username, timetable: selectedCourses, name: req.body.name };
+    let t = { userid: req.user.username, timetable: req.body.schedule, name: req.body.name };
     let s = new Timetables(t);
     s.save(function(err, result) {
         res.send(result);
@@ -635,10 +633,13 @@ function saveTimetable(req, res) {
 
 
 function deleteTimetable(req, res) {
-    Timetables.findOneAndRemove({ _id: req.body._id }, function(err, result) {
-        selectedCourses = [];
-        res.send(selectedCourses);
-    });
+    if (req.body._id == null) {
+        res.send(200);
+    } else {
+        Timetables.findOneAndRemove({ _id: req.body._id }, function(err, result) {
+            res.send(200);
+        });
+    }
 }
 
 

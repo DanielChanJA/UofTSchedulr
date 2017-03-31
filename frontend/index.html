@@ -131,6 +131,7 @@
             <p></p>
             <h3>Time</h3>
             <p></p>
+            <p class="time"></p>
             <button class="btn-delete-course center-x" type="button">Delete Course</button>
         </div>
     </div>
@@ -158,6 +159,19 @@
     </footer>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <script>
+        function initMap() {
+            var myLatLng = {
+                lat: 43.6636401,
+                lng: -79.3954695
+            };
+
+            var map = new google.maps.Map(document.getElementById('map'), {
+                zoom: 16,
+                center: myLatLng
+            });
+        }
+    </script>
     <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCeb2Wqqaiy_yYFB7D-cVE4NrFu1OdQycs&callback=initMap">
     </script>
     <script src="Assets/Javascript/main.js"></script>
