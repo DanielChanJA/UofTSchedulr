@@ -20,6 +20,12 @@ if (mediaQueryTablet.matches) {
     refreshLargeTable();
 }
 
+$(".btn-save").hide();
+$(".btn-delete").hide();
+$(".btn-load").hide();
+$("#signoutRef").hide();
+
+
 // Check if a user is logged in
 checkLogin();
 
@@ -38,6 +44,9 @@ function checkLogin() {
             $(".btn-save").show();
             $(".btn-delete").show();
             $(".btn-load").show();
+            $("#signupRef").hide();
+            $("#signinRef").hide();
+            $("#signoutRef").show();
             return console.log("You are logged in.");
         },
         error: function(response) {
@@ -434,7 +443,6 @@ function initMap() {
     });
 
     console.log("Initialized Map");
-
     return map;
 }
 
@@ -447,9 +455,7 @@ function insertMarker(latitude, longitude, code) {
         map: map,
         label: code
     });
-
     markers.push(marker);
-
     console.log("Successfully inserted pin.");
 }
 
@@ -480,7 +486,6 @@ function deleteMarkers() {
 
 $(document).ready(function() {
 
-
     $("#mapview").click(function() {
         $("#timetable").hide();
         $("#map").show();
@@ -500,7 +505,15 @@ $(document).ready(function() {
         console.log("Clicked table view.");
     });
 
-
+    $("#signoutRef").click(function() {
+        $.ajax({
+            type: "POST",
+            url: "/logout",
+            success: function(res) {
+                console.log("Successfully logged out.");
+            }
+        });
+    });
 });
 
 

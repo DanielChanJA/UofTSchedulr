@@ -1,8 +1,8 @@
 $(document).ready(function() {
 
 
+    $("#signoutRef").hide();
     checkLogin();
-
 
     function checkLogin() {
         $.ajax({
@@ -11,13 +11,14 @@ $(document).ready(function() {
             dataType: "text json",
             contentType: "application/json; charset=utf-8",
             success: function(response) {
-                console.log("You are logged in.");
+                $("#signupRef").hide();
+                $("#signinRef").hide();
+                $("#signoutRef").show();
+                return console.log("You are logged in.");
             },
             error: function(response) {
-                console.log("You are not logged in.");
+                return console.log(response);
             }
         });
     }
-
-
 });
