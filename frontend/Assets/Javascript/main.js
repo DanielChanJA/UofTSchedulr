@@ -420,8 +420,6 @@ function getBuildingCode(courseInfo) {
     var buildingRoom = localInfo[0].location;
 
     var buildingCode = buildingRoom.substring(0, 2);
-    console.log(buildingRoom);
-    console.log(buildingCode);
 
     console.log(map == null);
 
@@ -439,7 +437,6 @@ function getBuildingCode(courseInfo) {
             }
 
             insertMarker(latitude, longitude, buildingCode);
-            console.log("Inserted " + " " + buildingCode + " " + latitude + " " + longitude);
         }
     });
 
@@ -483,8 +480,6 @@ function initMap() {
         zoom: 16,
         center: myLatLng
     });
-
-    console.log("Initialized Map");
     return map;
 }
 
@@ -498,7 +493,6 @@ function insertMarker(latitude, longitude, code) {
         label: code
     });
     markers.push(marker);
-    console.log("Successfully inserted pin.");
 }
 
 function setMapOnAll(map) {
@@ -531,14 +525,12 @@ $(document).ready(function() {
     $("#mapview").click(function() {
         $("#timetable").hide();
         $("#map").show();
-        console.log("Clicked Mapview");
 
     });
 
     $("#timetableview").click(function() {
         $("#map").hide();
         $("#timetable").show();
-        console.log("Clicked table view.");
     });
 
     $("#signoutRef").click(function() {
@@ -546,7 +538,6 @@ $(document).ready(function() {
             type: "POST",
             url: "/logout",
             success: function(res) {
-                console.log("Successfully logged out.");
                 window.location.replace("/");
             }
         });
