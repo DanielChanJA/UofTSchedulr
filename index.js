@@ -314,7 +314,7 @@ function insertCourse(req, res) {
  */
 function removeCourse(req, res) {
     for (let i = 0; i < req.body.schedule.length; i++) {
-        if (req.body.schedule[i].code == req.body.code) {
+        if (req.body.schedule[i].code == req.body.code && req.body.time == req.body.schedule[i].time[0]) {
             req.body.schedule.splice(i, 1);
         }
     }
