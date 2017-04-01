@@ -792,3 +792,10 @@ $(".btn-load-schedule").on("click", function() {
         }
     }
 });
+
+
+$("#clearall").on("click", function() {
+    schedule = [];
+    refreshTable();
+});
+
