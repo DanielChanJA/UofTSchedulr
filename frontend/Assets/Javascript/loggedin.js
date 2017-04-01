@@ -1,3 +1,7 @@
+/**
+ * checks if user is logged in
+ */
+
 $(document).ready(function() {
 
 
