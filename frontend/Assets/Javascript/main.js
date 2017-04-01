@@ -577,7 +577,8 @@ $(".search-bar-btn").on("click", function() {
 
     // filterObject.code = $("input[name='search']").val();
     // console.log($("input[name='search']").val().toUpperCase());
-    url = url + "?" + "code=" + $("input[name='search']").val().toUpperCase();
+    var valUpperCase = $("input[name='search']").val().toUpperCase();
+    url = url + "?" + "code=" + valUpperCase;
     console.log("1" + url);
     // var radioValue = $("input[name='optradio']:checked").val();
     // console.log("1" + radioValue);
@@ -653,7 +654,7 @@ $(".show-more-button").click(function() {
 
 // Add a course that was searched
 $(".button-add-class").on("click", function() {
-    let code = $("input[name='search']").val();
+    let code = $("input[name='search']").val().toUpperCase();
     if (code == "") {
         alert("You must select a section");
     } else {
