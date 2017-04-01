@@ -1,7 +1,7 @@
 var colours = [
     "#dd1c1a", "#f0c808", "#06aed5", "#fff1d0", "#4abdac", "#fc4a1a", "#f7b733", "#e37222", "#1adbdd", "#dd7e1a",
     "#1add7e", "#a4f008", "#5408f0", "#08f0c8", "#f05408", "#def008", "#4abd73", "#bd4a5a", "#d5f733", "#f733d5"
-    ];
+];
 var daysOTW = ["M", "T", "W", "TH", "F"];
 var schedule = [];
 var scheduleId = null;
@@ -31,10 +31,7 @@ if (mediaQueryTablet.matches) {
     refreshLargeTable();
 }
 
-$(".btn-save").hide();
-$(".btn-delete").hide();
-$(".btn-load").hide();
-$("#signoutRef").hide();
+
 
 
 // Check if a user is logged in
@@ -461,8 +458,8 @@ function interpretSchedule(schedule) {
             schedule[i].time = time;
             schedule[i].instructor = schedule[i].instructor[0];
             schedule[i].colour = colours[0];
-            colours.shift();   
-        }   
+            colours.shift();
+        }
     }
 }
 
@@ -533,6 +530,11 @@ function mapper() {
 
 $(document).ready(function() {
 
+
+    $(".btn-save").hide();
+    $(".btn-delete").hide();
+    $(".btn-load").hide();
+    $("#signoutRef").hide();
 
     $("#mapview").click(function() {
         $("#timetable").hide();
@@ -810,4 +812,3 @@ $("#clearall").on("click", function() {
     schedule = [];
     refreshTable();
 });
-
