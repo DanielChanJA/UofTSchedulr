@@ -1,6 +1,8 @@
-var colours = ["#dd1c1a", "#f0c808", "#06aed5", "#fff1d0", "#4abdac", "#fc4a1a", "#f7b733", "#e37222"];
+var colours = [
+    "#dd1c1a", "#f0c808", "#06aed5", "#fff1d0", "#4abdac", "#fc4a1a", "#f7b733", "#e37222", "#1adbdd", "#dd7e1a",
+    "#1add7e", "#a4f008", "#5408f0", "#08f0c8", "#f05408", "#def008", "#4abd73", "#bd4a5a", "#d5f733", "#f733d5"
+    ];
 var daysOTW = ["M", "T", "W", "TH", "F"];
-
 var schedule = [];
 var scheduleId = null;
 
@@ -40,7 +42,6 @@ checkLogin();
 
 // Initialize the Map.
 $("#map").hide();
-
 
 // Display additional buttons if user is logged in
 function checkLogin() {
@@ -416,10 +417,6 @@ function checkConflict(course) {
 
 function getBuildingCode(i) {
 
-    console.log(schedule);
-
-    console.log(i);
-
     var buildingRoom = schedule[i].location;
 
     var buildingCode = buildingRoom.substring(0, 2);
@@ -441,28 +438,31 @@ function getBuildingCode(i) {
 
 function interpretSchedule(schedule) {
     for (let i = 0; i < schedule.length; i++) {
-        days = [];
-        time = [];
-        for (let k = 0; k < schedule[i].days.length; k++) {
-            days.push(schedule[i].days[k][0]);
-        }
-        if (schedule[i].days[0][1]) {
-            if (schedule[i].days[0][1] === parseInt(schedule[i].days[0][1], 10)) {
-                timeStart = schedule[i].days[0][1];
+        if (!schedule[i].hasOwnProperty("interpreted")) {
+            schedule[i].interpreted = true;
+            days = [];
+            time = [];
+            for (let k = 0; k < schedule[i].days.length; k++) {
+                days.push(schedule[i].days[k][0]);
             }
-        } else {
-            timeStart = schedule[i].time[0];
-        }
-        if (timeStart > 12) {
-            timeStart -= 12;
-        }
-        time.push(timeStart);
-        time.push(schedule[i].duration / 3600);
-        schedule[i].days = days;
-        schedule[i].time = time;
-        schedule[i].instructor = schedule[i].instructor[0];
-        schedule[i].colour = colours[0];
-        colours.shift();
+            if (schedule[i].days[0][1]) {
+                if (schedule[i].days[0][1] === parseInt(schedule[i].days[0][1], 10)) {
+                    timeStart = schedule[i].days[0][1];
+                }
+            } else {
+                timeStart = schedule[i].time[0];
+            }
+            if (timeStart > 12) {
+                timeStart -= 12;
+            }
+            time.push(timeStart);
+            time.push(schedule[i].duration / 3600);
+            schedule[i].days = days;
+            schedule[i].time = time;
+            schedule[i].instructor = schedule[i].instructor[0];
+            schedule[i].colour = colours[0];
+            colours.shift();   
+        }   
     }
 }
 
@@ -533,6 +533,7 @@ function mapper() {
 
 $(document).ready(function() {
 
+
     $("#mapview").click(function() {
         $("#timetable").hide();
         $("#map").show();
@@ -540,7 +541,14 @@ $(document).ready(function() {
         console.log(map == null);
         mapper();
 
+        $(window).resize(function() {
+            google.maps.event.trigger(map, 'resize');
+        });
+        google.maps.event.trigger(map, 'resize');
+
     });
+
+
 
     $("#timetableview").click(function() {
         $("#map").hide();
@@ -557,8 +565,6 @@ $(document).ready(function() {
         });
     });
 });
-
-
 
 
 // CRUD functions
@@ -632,6 +638,7 @@ $(".search-bar-btn").on("click", function() {
     }
 });
 
+
 /**
  * Pressing enter on the search bar, submits the form.
  */
@@ -642,6 +649,8 @@ $('#search-bar').keypress(function(e) {
     }
 });
 
+
+// Shows more course details
 $(".show-more-button").click(function() {
     $(".show-more-class").slideToggle();
     if ($(".show-more-button").text() == "show more") {
@@ -703,6 +712,7 @@ $(".btn-delete-course").on("click", function() {
 });
 
 
+// Saves a timetable
 $(".btn-save").on("click", function() {
     let name = prompt("Enter a name for this schedule.");
     if (name == null) {
@@ -722,6 +732,7 @@ $(".btn-save").on("click", function() {
 });
 
 
+// Deletes a course
 $(".btn-delete").on("click", function() {
     $.ajax({
         type: "DELETE",
@@ -738,6 +749,7 @@ $(".btn-delete").on("click", function() {
 });
 
 
+// Shows the courese that are saved
 $(".btn-load").on("click", function() {
     var modalContainer = document.getElementsByClassName("modal-container-saved")[0];
     var modal = document.getElementsByClassName("modal-saved")[0];
@@ -759,12 +771,14 @@ $(".btn-load").on("click", function() {
 });
 
 
+// Cancels course loading
 $(".btn-cancel").on("click", function() {
     $(".modal-container-saved").css("display", "none");
     $(".modal-saved").css("display", "none");
 });
 
 
+// Loads a selected schedule
 $(".btn-load-schedule").on("click", function() {
     let radioBtns = $("input[name='schedule']");
     for (let i = 0; i < radioBtns.length; i++) {
@@ -786,3 +800,14 @@ $(".btn-load-schedule").on("click", function() {
         }
     }
 });
+
+
+// Removes all courses from schedule
+$("#clearall").on("click", function() {
+    for (let i = 0; i < schedule.length; i++) {
+        colours.push(schedule[i].colour);
+    }
+    schedule = [];
+    refreshTable();
+});
+

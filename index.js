@@ -49,8 +49,6 @@ mongoose.connect("mongodb://localhost/schdule", function(err, db) {
 });
 
 
-
-
 // userId course relationship.
 var courseSchema = new mongoose.Schema({
     userid: String,
@@ -117,7 +115,6 @@ console.log("Completed Initialization.");
  * @param {*} req 
  * @param {*} res 
  */
-
 function getCourse(req, res) {
 
     var query = req.query.course;
@@ -160,6 +157,8 @@ function getCourse(req, res) {
 
 }
 
+
+// Gets building coordinates
 function getBuildingCord(req, res) {
     var query = req.query.buildingcode;
 
@@ -322,6 +321,7 @@ function removeCourse(req, res) {
 }
 
 
+// Helper to create user
 function helperCreateUser(req) {
     var userInfo = {};
     if (req.body.username) {
@@ -433,8 +433,8 @@ function isAdminLoggedIn(req, res, next) {
     });
 };
 
-// Adds courses
-// {"code": "", "name": "", "instructor": "", "timeslots": [[day, start]], "time": [start, duration], "colour": "", "timeslots":[[start, end]]}
+
+// Builds timetables after adding them one at a time
 function buildTimetable(data, schedule) {
     var startTime;
     var endTime;
@@ -497,6 +497,8 @@ function buildTimetable(data, schedule) {
     return null;
 }
 
+
+// Coverts days to numbers
 function convertDayToNum(day) {
     var num;
     switch (day) {
@@ -519,6 +521,8 @@ function convertDayToNum(day) {
     return num;
 }
 
+
+// A function to abbreviate days
 function abbreviateDay(day) {
     var d;
     switch (day) {
@@ -613,6 +617,7 @@ function loadCourses() {
 }
 
 
+// Checks if an array contains an item
 function contains(item, container) {
     for (let i = 0; i < container.length; i++) {
         if (item == container[i]) {
@@ -623,6 +628,7 @@ function contains(item, container) {
 }
 
 
+// Save a timetable
 function saveTimetable(req, res) {
     let t = { userid: req.user.username, timetable: req.body.schedule, name: req.body.name };
     let s = new Timetables(t);
@@ -632,6 +638,7 @@ function saveTimetable(req, res) {
 }
 
 
+// Delete a specific timetable
 function deleteTimetable(req, res) {
     if (req.body._id == null) {
         res.send(200);
@@ -643,20 +650,20 @@ function deleteTimetable(req, res) {
 }
 
 
+// Get all timetables for loading
 function getAllTimetables(req, res) {
-
     Timetables.find({ userid: req.user.username }, function(err, result) {
         res.send(result);
     });
 }
 
 
+// Load a specific timetable
 function loadTimetable(req, res) {
     Timetables.find({ _id: req.query._id }, function(err, result) {
         res.send(result);
     });
 }
-
 
 
 // Search local database for course
