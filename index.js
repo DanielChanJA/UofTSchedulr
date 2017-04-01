@@ -146,8 +146,6 @@ function getCourse(req, res) {
 
         // If the response from the API call is [] we know its an empty array. Means that the user input was wrong.
         if (body.length == 2) {
-            console.log(body);
-            console.log(body.length);
             return res.status(400).json({
                 Status: "Failed",
                 Message: "No courses to list."
@@ -346,25 +344,26 @@ function helperCreateUser(req) {
 function createUser(req, res) {
     console.log(req.body.username);
 
-    // if (!req.body.username || !req.body.firstname || !req.body.password) {
-    //     return res.sendStatus(400);
-    // }
+    if (!req.body.username || !req.body.firstname || !req.body.password) {
+        return res.sendStatus(400);
+    }
     User.register(new User({ "username": req.body.username, "firstname": req.body.firstname, "lastname": req.body.lastname }), req.body.password, function(err, user) {
 
         if (err) {
             console.log(err);
-            return res.status(400).json({
-                Status: "Failed",
-                Message: "Username already exists."
-            });
+            res.sendStatus(403);
+            return;
         }
+
+        console.log(user);
 
         passport.authenticate("local")(req, res, function() {
             console.log("here.");
-            return res.status(200).json({
+            res.status(200).json({
                 Status: "Success",
                 Message: "Successfully authenticated you."
             });
+            return;
         });
 
 
@@ -698,7 +697,6 @@ app.post('/login', passport.authenticate('local'), authenticateUser);
 app.post('/register', createUser);
 app.post('/logout', destroySession);
 app.get('/isLoggedIn', function(req, res) {
-    console.log(req.isAuthenticated());
     if (req.isAuthenticated() == true)
         return res.status(200).json('Hurray!');
     else

@@ -1,5 +1,7 @@
 $(document).ready(function() {
     $("#signup-button").click(function() {
+        event.preventDefault();
+
         var firstname = $("#firstname").val();
         var lastname = $("#lastname").val();
         var username = $("#username").val();
@@ -10,7 +12,6 @@ $(document).ready(function() {
             alert("Password does not match.");
             return false;
         }
-        console.log(username);
 
         $.ajax({
             url: "/register",
@@ -18,9 +19,14 @@ $(document).ready(function() {
             dataType: "json",
             contentType: "application/json; charset=utf-8",
             data: JSON.stringify({ "username": username, "password": password, "firstname": firstname, "lastname": lastname }),
-            success: function(response) {
+            success: function(resp) {
                 alert("Successfully signed up!");
+                console.log(resp);
+                window.location.replace("/");
                 return;
+            },
+            error: function(resp) {
+                alert("One or more fields are incorrect.");
             }
         });
     });
@@ -32,16 +38,13 @@ $(document).ready(function() {
         $.ajax({
             type: "GET",
             url: "/isLoggedIn",
-            dataType: "text json",
+            dataType: "json",
             contentType: "application/json; charset=utf-8",
             success: function(response) {
                 $("#signupRef").hide();
                 $("#signinRef").hide();
                 $("#signoutRef").show();
                 return console.log("You are logged in.");
-            },
-            error: function(response) {
-                return console.log(response);
             }
         });
     }
