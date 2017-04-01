@@ -416,10 +416,6 @@ function checkConflict(course) {
 
 function getBuildingCode(i) {
 
-    console.log(schedule);
-
-    console.log(i);
-
     var buildingRoom = schedule[i].location;
 
     var buildingCode = buildingRoom.substring(0, 2);
@@ -441,28 +437,31 @@ function getBuildingCode(i) {
 
 function interpretSchedule(schedule) {
     for (let i = 0; i < schedule.length; i++) {
-        days = [];
-        time = [];
-        for (let k = 0; k < schedule[i].days.length; k++) {
-            days.push(schedule[i].days[k][0]);
-        }
-        if (schedule[i].days[0][1]) {
-            if (schedule[i].days[0][1] === parseInt(schedule[i].days[0][1], 10)) {
-                timeStart = schedule[i].days[0][1];
+        if (!schedule[i].hasOwnProperty("interpreted")) {
+            schedule[i].interpreted = true;
+            days = [];
+            time = [];
+            for (let k = 0; k < schedule[i].days.length; k++) {
+                days.push(schedule[i].days[k][0]);
             }
-        } else {
-            timeStart = schedule[i].time[0];
-        }
-        if (timeStart > 12) {
-            timeStart -= 12;
-        }
-        time.push(timeStart);
-        time.push(schedule[i].duration / 3600);
-        schedule[i].days = days;
-        schedule[i].time = time;
-        schedule[i].instructor = schedule[i].instructor[0];
-        schedule[i].colour = colours[0];
-        colours.shift();
+            if (schedule[i].days[0][1]) {
+                if (schedule[i].days[0][1] === parseInt(schedule[i].days[0][1], 10)) {
+                    timeStart = schedule[i].days[0][1];
+                }
+            } else {
+                timeStart = schedule[i].time[0];
+            }
+            if (timeStart > 12) {
+                timeStart -= 12;
+            }
+            time.push(timeStart);
+            time.push(schedule[i].duration / 3600);
+            schedule[i].days = days;
+            schedule[i].time = time;
+            schedule[i].instructor = schedule[i].instructor[0];
+            schedule[i].colour = colours[0];
+            colours.shift();   
+        }   
     }
 }
 
