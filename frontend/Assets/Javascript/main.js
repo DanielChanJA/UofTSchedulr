@@ -41,7 +41,6 @@ checkLogin();
 // Initialize the Map.
 $("#map").hide();
 
-
 // Display additional buttons if user is logged in
 function checkLogin() {
     $.ajax({
@@ -533,6 +532,7 @@ function mapper() {
 
 $(document).ready(function() {
 
+
     $("#mapview").click(function() {
         $("#timetable").hide();
         $("#map").show();
@@ -540,7 +540,14 @@ $(document).ready(function() {
         console.log(map == null);
         mapper();
 
+        $(window).resize(function() {
+            google.maps.event.trigger(map, 'resize');
+        });
+        google.maps.event.trigger(map, 'resize');
+
     });
+
+
 
     $("#timetableview").click(function() {
         $("#map").hide();
