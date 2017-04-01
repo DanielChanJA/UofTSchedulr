@@ -1,3 +1,7 @@
+/**
+ * Register user form.
+ */
+
 $(document).ready(function() {
     $("#signup-button").click(function() {
         event.preventDefault();

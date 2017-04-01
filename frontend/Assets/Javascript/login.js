@@ -1,3 +1,7 @@
+/**
+ * login user and checks if logged in
+ */
+
 $(document).ready(function() {
 
     $("#user-signin").click(function() {
