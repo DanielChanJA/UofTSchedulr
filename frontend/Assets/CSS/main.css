@@ -175,15 +175,20 @@ noscript {
 }
 
 
-/*.search-bar {
+/**/
+
+.search-bar {
     width: 100%;
     margin: 0 0 20px 0;
 }
 
+
+/**/
+
 .search-bar input {
     display: block;
     margin: 0 0 10px 0;
-}*/
+}
 
 .btn-load-schedule,
 .btn-cancel {

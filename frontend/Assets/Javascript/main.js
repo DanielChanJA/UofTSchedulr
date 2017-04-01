@@ -50,9 +50,9 @@ function checkLogin() {
         dataType: "text json",
         contentType: "application/json; charset=utf-8",
         success: function(response) {
-            $(".btn-save").show();
-            $(".btn-delete").show();
-            $(".btn-load").show();
+            $("#save").show();
+            $("#delete").show();
+            $("#load").show();
             $("#signupRef").hide();
             $("#signinRef").hide();
             $("#signoutRef").show();
