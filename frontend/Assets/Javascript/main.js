@@ -1,6 +1,8 @@
-var colours = ["#dd1c1a", "#f0c808", "#06aed5", "#fff1d0", "#4abdac", "#fc4a1a", "#f7b733", "#e37222"];
+var colours = [
+    "#dd1c1a", "#f0c808", "#06aed5", "#fff1d0", "#4abdac", "#fc4a1a", "#f7b733", "#e37222", "#1adbdd", "#dd7e1a",
+    "#1add7e", "#a4f008", "#5408f0", "#08f0c8", "#f05408", "#def008", "#4abd73", "#bd4a5a", "#d5f733", "#f733d5"
+    ];
 var daysOTW = ["M", "T", "W", "TH", "F"];
-
 var schedule = [];
 var scheduleId = null;
 
@@ -49,9 +51,9 @@ function checkLogin() {
         dataType: "text json",
         contentType: "application/json; charset=utf-8",
         success: function(response) {
-            $(".btn-save").show();
-            $(".btn-delete").show();
-            $(".btn-load").show();
+            $("#save").show();
+            $("#delete").show();
+            $("#load").show();
             $("#signupRef").hide();
             $("#signinRef").hide();
             $("#signoutRef").show();
@@ -565,8 +567,6 @@ $(document).ready(function() {
 });
 
 
-
-
 // CRUD functions
 // Search for a course
 $(".search-bar-btn").on("click", function() {
@@ -638,6 +638,7 @@ $(".search-bar-btn").on("click", function() {
     }
 });
 
+
 /**
  * Pressing enter on the search bar, submits the form.
  */
@@ -648,6 +649,8 @@ $('#search-bar').keypress(function(e) {
     }
 });
 
+
+// Shows more course details
 $(".show-more-button").click(function() {
     $(".show-more-class").slideToggle();
     if ($(".show-more-button").text() == "show more") {
@@ -709,6 +712,7 @@ $(".btn-delete-course").on("click", function() {
 });
 
 
+// Saves a timetable
 $(".btn-save").on("click", function() {
     let name = prompt("Enter a name for this schedule.");
     if (name == null) {
@@ -728,6 +732,7 @@ $(".btn-save").on("click", function() {
 });
 
 
+// Deletes a course
 $(".btn-delete").on("click", function() {
     $.ajax({
         type: "DELETE",
@@ -744,6 +749,7 @@ $(".btn-delete").on("click", function() {
 });
 
 
+// Shows the courese that are saved
 $(".btn-load").on("click", function() {
     var modalContainer = document.getElementsByClassName("modal-container-saved")[0];
     var modal = document.getElementsByClassName("modal-saved")[0];
@@ -765,12 +771,14 @@ $(".btn-load").on("click", function() {
 });
 
 
+// Cancels course loading
 $(".btn-cancel").on("click", function() {
     $(".modal-container-saved").css("display", "none");
     $(".modal-saved").css("display", "none");
 });
 
 
+// Loads a selected schedule
 $(".btn-load-schedule").on("click", function() {
     let radioBtns = $("input[name='schedule']");
     for (let i = 0; i < radioBtns.length; i++) {
@@ -792,3 +800,14 @@ $(".btn-load-schedule").on("click", function() {
         }
     }
 });
+
+
+// Removes all courses from schedule
+$("#clearall").on("click", function() {
+    for (let i = 0; i < schedule.length; i++) {
+        colours.push(schedule[i].colour);
+    }
+    schedule = [];
+    refreshTable();
+});
+
