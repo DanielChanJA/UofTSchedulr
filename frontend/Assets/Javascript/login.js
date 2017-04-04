@@ -5,6 +5,8 @@
 $(document).ready(function() {
 
     $("#user-signin").click(function() {
+        event.preventDefault();
+
         var username = $("#username").val();
         var password = $("#password").val();
 
