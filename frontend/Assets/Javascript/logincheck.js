@@ -19,3 +19,15 @@ function checkLogin() {
         }
     });
 }
+
+$(document).ready(function() {
+    $("#signoutRef").click(function() {
+        $.ajax({
+            type: "POST",
+            url: "/logout",
+            success: function(res) {
+                window.location.replace("/");
+            }
+        });
+    });
+});
