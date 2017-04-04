@@ -1,4 +1,6 @@
+$("#signoutRef").hide();
 checkLogin();
+
 
 function checkLogin() {
     $.ajax({
@@ -7,9 +9,6 @@ function checkLogin() {
         dataType: "text json",
         contentType: "application/json; charset=utf-8",
         success: function(response) {
-            $("#save").show();
-            $("#delete").show();
-            $("#load").show();
             $("#signupRef").hide();
             $("#signinRef").hide();
             $("#signoutRef").show();
