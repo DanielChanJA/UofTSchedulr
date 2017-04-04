@@ -19,6 +19,9 @@ $(document).ready(function() {
             success: function(response) {
                 alert("Successfully logged in!");
                 window.location.replace("/");
+            },
+            error: function(response) {
+                alert("Wrong username/password.");
             }
         });
     });
