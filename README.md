@@ -7,12 +7,26 @@ The backend is written in NodeJS, and the frontend is to be re-written in Angula
 
 The testing framework will be written in Jasmine.
 
+
 ## Developer Instructions
 ---
 If you wish to contribute to this repository please make merge requests for any of the issues and we will review the merge requests.
 
+Schedulr interacts with other external web APIs such as Cobalt to retrieve more information regarding the campus information. As such you will need to provide your own key in `/backend/views/keys.js`
+
+```bash
+module.exports({
+    "cobaltKey": {The_cobalt_key_from_cobalt}
+});
+```
+
+You can get a key for free at https://cobalt.qas.im/
+
 ## Quickstart
 ---
+
+Please note that you will need to populate the API keys as defined in backend/keys.js
+
 ```bash
  git clone https://github.com/DanielChanJA/UofTSchedulr.git
 

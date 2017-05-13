@@ -54,7 +54,6 @@ mongoose.connect("mongodb://localhost/schdule", function(err, db) {
 });
 
 
-// userId course relationship.
 var courseSchema = new mongoose.Schema({
     userid: String,
     courseid: String,
