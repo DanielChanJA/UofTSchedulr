@@ -3,10 +3,13 @@ var bodyParser = require("body-parser");
 var mongoose = require("mongoose");
 var session = require('express-session');
 var passport = require("passport");
-var User = require("./backend/user");
+var User = require("./backend/models/User");
 var LocalStrategy = require("passport-local");
 var passportLocalMongoose = require("passport-local-mongoose");
 var path = require("path");
+
+var keys = require("./backend/Keys");
+var courses = require("./backend/models/Course");
 
 var app = express();
 
