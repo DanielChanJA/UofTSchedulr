@@ -2,6 +2,7 @@
 
 mongodb/
 .DS_Store
+backend/keys.js
 
 
 # BOILERPLATE: https://raw.githubusercontent.com/github/gitignore/master/Node.gitignore
