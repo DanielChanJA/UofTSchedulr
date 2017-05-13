@@ -3,7 +3,7 @@ Schedulr is a web application designed for University of Toronto students to opt
 
 What makes Schedulr stand out is that it allows students to get a map view of where all their classes are held.
 
-The backend is written in NodeJS with the front-end with plans to be written in Angular.
+The backend is written in NodeJS, and the frontend is to be re-written in Angular.
 
 The testing framework will be written in Jasmine.
 

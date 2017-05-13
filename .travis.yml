@@ -3,7 +3,8 @@ node_js:
   - "stable"
 env: 
   - NODE_ENV="development"
-  - NODE_ENV="production"
 services:
   - mongodb
-# script: gulp travis
+before_script:
+  - npm install -g gulp
+script: gulp travis
