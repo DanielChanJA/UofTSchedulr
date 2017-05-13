@@ -9,15 +9,15 @@ If you wish to contribute to this repository please make merge requests for any 
 
 ## To start
 ---
-- `git clone https://github.com/DanielChanJA/UofTSchedulr.git`
+ `git clone https://github.com/DanielChanJA/UofTSchedulr.git`
 
-- `cd UoftSchedulr/`
+ `cd UoftSchedulr/`
 
-- `npm install`
+ `npm install`
 
-- `npm start`
+ `npm start`
 
-- `Open the browser and head to http://localhost:3000/`
+ `Open the browser and head to http://localhost:3000/`
 
 ## Credits for Images
 https://www.utoronto.ca/sites/default/files/2016-11-14-sitting-students.jpg
