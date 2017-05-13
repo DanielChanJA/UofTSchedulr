@@ -15,9 +15,9 @@ If you wish to contribute to this repository please make merge requests for any 
 Schedulr interacts with other external web APIs such as Cobalt to retrieve more information regarding the campus information. As such you will need to provide your own key in `/backend/views/keys.js`
 
 ```bash
-module.exports({
+module.exports = {
     "cobaltKey": {The_cobalt_key_from_cobalt}
-});
+};
 ```
 
 You can get a key for free at https://cobalt.qas.im/
