@@ -16,7 +16,7 @@ Schedulr interacts with other external web APIs such as Cobalt to retrieve more 
 
 ```bash
 module.exports = {
-    "cobaltKey": {The_cobalt_key_from_cobalt}
+    "cobaltKey": "{The_cobalt_key_from_cobalt}"
 };
 ```
 
