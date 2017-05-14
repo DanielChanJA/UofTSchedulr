@@ -43,7 +43,7 @@ var cobaltApi = "https://cobalt.qas.im/api/1.0/";
 /**
  * Initialization.
  */
-mongoose.connect("mongodb://localhost/schdule", function(err, db) {
+mongoose.connect("mongodb://localhost/schedulr", function(err, db) {
     if (err) {
         console.log("Unable to connect to DB.");
     }
