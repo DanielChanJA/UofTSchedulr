@@ -7,6 +7,7 @@ var User = require("./backend/models/user");
 var LocalStrategy = require("passport-local");
 var passportLocalMongoose = require("passport-local-mongoose");
 var path = require("path");
+var request = require('request');
 
 var keys = require("./backend/keys");
 var courses = require("./backend/models/course");
@@ -36,7 +37,6 @@ passport.deserializeUser(User.deserializeUser());
 
 
 //Stuff to pull from Cobalt API.
-var request = require('request');
 var cobalt = "?key=wxyV572ztbmjVEc7qcokZ0xYVPv2Qf0n";
 var cobaltApi = "https://cobalt.qas.im/api/1.0/";
 

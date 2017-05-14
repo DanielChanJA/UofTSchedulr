@@ -15,7 +15,11 @@ timetableSchema.statics.createTimetable = function() {
 
 }
 
-timetableSchema.statics.deleteTimetable = function(id) {
+timetableSchema.statics.updateTimetable = function(tId) {
+
+}
+
+timetableSchema.statics.deleteTimetable = function(tId) {
 
 }
 

@@ -1,0 +1,102 @@
+<% include partials/header %>
+
+    <nav class="navbar navbar-default" style="background: #086788;">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navmenu_about" aria-expanded="false">
+                    <span class="sr-only"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="pull-left" href="index.html"><img style="max-width:50px; padding-top: 2px; padding-bottom: 2px;" src="Assets/Images/schedulr_logo.png" alt="Schdulr Logo"></a>
+            </div>
+
+            <div class="collapse navbar-collapse" id="navmenu_about">
+                <ul class="nav navbar-nav">
+                    <li>
+                        <a style="color: #FFFFFF" href="index.html">Scheduler</a>
+                    </li>
+                    <li class="active">
+                        <a style="color: #FFFFFF" href="about_us.html">About Us<span class="sr-only">(current)</span></a>
+                    </li>
+                    <li>
+                        <a style="color: #FFFFFF" href="feedback.html">Feedback</a>
+                    </li>
+                </ul>
+
+                <ul class="nav navbar-right navbar-nav">
+                    <li>
+                        <a id="signupRef" style="color: #FFFFFF" href="signup.html">Sign Up</a>
+                    </li>
+                    <li>
+                        <a id="signinRef" style="color: #FFFFFF" href="login.html">Sign In</a>
+                    </li>
+                    <li>
+                        <a id="signoutRef" style="color: #FFFFFF" href="index.html">Sign Out</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+
+
+    <div class="container">
+
+        <div class="jumbotron">
+            <h1>Welcome to Schedulr!</h1>
+            <p>Your next timetable web application that generates non-conflicting fall and winter timetables for University of Toronto students.</p>
+            <hr class="my-2">
+
+            <a href="index.html" class="btn-primary btn btn-lg" role="button">Create a Timetable</a>
+        </div>
+
+        <div class="col-md-12 text-center w-100">
+            <h1>Meet Our Team</h1>
+        </div>
+        <div class="col-sm-4 well">
+            <h2 class="text-center text-primary">Vincent Huor</h2>
+            <img class="img-circle" style="width : 75%; height : auto; margin-left: auto; margin-right: auto; display: block;" src="Assets/Images/vincent_profile.jpg" alt="Vincent Happy">
+            <h3 class="text-center">Full Stack Developer</h3>
+            <p class="text-center">
+                Vincent Huor is such an amazing developer, his code makes me happy.
+            </p>
+
+            <div style="text-align: center">
+                <a href="https://github.com/vincenthuor">
+                    <i class="fa fa-github fa-2x" aria-hidden="true"></i>
+                </a>
+            </div>
+        </div>
+        <div class="col-sm-4 well">
+            <h2 class="text-center text-primary">George Lam</h2>
+            <img class="img-circle" style="width : 75%; height : auto; margin-left: auto; margin-right: auto; display: block;" src="Assets/Images/george_profile.jpg" alt="George Happy">
+            <h3 class="text-center">Full Stack Developer</h3>
+            <p class="text-center">
+                George Lam is a dedicated well rounded engineer that likes to get things done.
+            </p>
+            <div style="text-align: center">
+                <a href="https://github.com/georgelamuoft">
+                    <i class="fa fa-github fa-2x" aria-hidden="true"></i>
+                </a>
+            </div>
+        </div>
+        <div class="col-sm-4 well">
+            <h2 class="text-center text-primary">Daniel Chan</h2>
+            <img class="img-circle" style="width : 75%; height : auto; margin-left: auto; margin-right: auto; display: block;" src="Assets/Images/daniel_profile.jpg" alt="Daniel Happy">
+            <h3 class="text-center">Full Stack Developer</h3>
+            <p class="text-center">
+                Daniel Chan is filled with bright ideas and writes beautiful code.
+            </p>
+            <div style="text-align: center">
+                <a href="https://github.com/danielchanja">
+                    <i class="fa fa-github fa-2x" aria-hidden="true"></i>
+                </a>
+            </div>
+        </div>
+
+    </div>
+
+
+    <% include partials/footer %>

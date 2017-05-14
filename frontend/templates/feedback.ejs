@@ -1,0 +1,84 @@
+<% include partials/header %>
+
+    <nav class="navbar navbar-default" style="background: #086788;">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navmenu_about" aria-expanded="false">
+                    <span class="sr-only"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="pull-left" href="index.html"><img style="max-width:50px; padding-top: 2px; padding-bottom: 2px;" src="Assets/Images/schedulr_logo.png" alt="Schdulr Logo"></a>
+            </div>
+
+            <div class="collapse navbar-collapse" id="navmenu_about">
+                <ul class="nav navbar-nav">
+                    <li class>
+                        <a style="color: #FFFFFF" href="index.html">Scheduler</a>
+                    </li>
+                    <li>
+                        <a style="color: #FFFFFF" href="about_us.html">About Us</a>
+                    </li>
+                    <li class="active">
+                        <a style="color: #FFFFFF" href="feedback.html">Feedback<span class="sr-only">(current)</span></a>
+                    </li>
+                </ul>
+
+                <ul class="nav navbar-right navbar-nav">
+                    <li>
+                        <a id="signupRef" style="color: #FFFFFF" href="signup.html">Sign Up</a>
+                    </li>
+                    <li>
+                        <a id="signinRef" style="color: #FFFFFF" href="login.html">Sign In</a>
+                    </li>
+                    <li>
+                        <a id="signoutRef" style="color: #FFFFFF" href="index.html">Sign Out</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div id="mycarousel" class="carousel slide" data-ride="carousel">
+            <div class="carousel-inner">
+                <div class="item active">
+                    <img src="Assets/Images/feedback_banner.jpg" class="img-responsive" alt="Feedback Banner" style="width: 100%;
+    height: auto;">
+                    <div class="carousel-caption">
+                        <h1>Contact Us</h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+
+    <div class="container well">
+        <form class="feedback-form">
+            <div class="col-md-6">
+                <!--<div class="input-group input-group-md">
+                <span class="input-group-addon" style="min-width: 120px;">Name</span>
+                <input type="text" class="form-control" placeholder="John Doe" required>
+            </div>-->
+                <div class="input-group input-group-md">
+                    <span class="input-group-addon" style="min-width: 120px;">Email Address</span>
+                    <input type="email" name="email" class="form-control" id="email" placeholder="john.doe@mail.utoronto.ca">
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="input-group input-group-md">
+                    <span class="input-group-addon" style="min-width: 120px;">Issue</span>
+                    <textarea name="comment" class="form-control" rows="5" id="comment" placeholder="Tell us more about your issue." required></textarea>
+                </div>
+            </div>
+
+            <div class="col-md-12 text-center">
+                <br>
+                <a id="submit-feedback" class="btn-primary btn btn-lg" role="button">Submit Feedback</a>
+                <!--href="index.html"-->
+            </div>
+        </form>
+
+    </div>
+
+    <% include partials/footer %>
