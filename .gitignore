@@ -3,6 +3,7 @@
 mongodb/
 .DS_Store
 backend/keys.js
+.idea/
 
 
 # BOILERPLATE: https://raw.githubusercontent.com/github/gitignore/master/Node.gitignore

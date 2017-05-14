@@ -155,7 +155,6 @@ function getCourse(req, res) {
         }
         // Everything is a-ok.
         res.status(200).send(JSON.parse(body));
-
     });
 
 }
@@ -347,8 +346,6 @@ function helperCreateUser(req) {
  * @param {*} res 
  */
 function createUser(req, res) {
-    console.log(req.body.username);
-
     if (!req.body.username || !req.body.firstname || !req.body.password) {
         return res.sendStatus(400);
     }
@@ -359,18 +356,13 @@ function createUser(req, res) {
             res.sendStatus(403);
             return;
         }
-
-        console.log(user);
-
         passport.authenticate("local")(req, res, function() {
-            console.log("here.");
             res.status(200).json({
                 Status: "Success",
                 Message: "Successfully authenticated you."
             });
             return;
         });
-
 
     });
 }
@@ -389,7 +381,6 @@ function authenticateUser(req, res) {
 
 function destroySession(req, res) {
 
-    console.log(req.user.username + " logged out.");
     req.logout();
     res.status(200).json({
         Status: "Success",
