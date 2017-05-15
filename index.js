@@ -9,7 +9,7 @@ var passportLocalMongoose = require("passport-local-mongoose");
 var path = require("path");
 var request = require('request');
 
-var keys = require("./backend/keys");
+var seedDB = require('./backend/seeds');
 var courses = require("./backend/models/course");
 
 var app = express();
@@ -30,6 +30,11 @@ app.set("view engine", "ejs");
 
 app.use(express.static(__dirname + "/frontend/"));
 app.use(express.static(__dirname + "/backend/"));
+
+app.use(indexRoutes);
+app.use(authRoutes);
+app.use(timetableRoutes);
+app.use(campusDataRoutes);
 
 passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
@@ -62,55 +67,16 @@ var courseSchema = new mongoose.Schema({
 });
 var Course = mongoose.model("Course", courseSchema);
 
-var courseDatabase = new mongoose.Schema({
-    id: String,
-    code: String,
-    name: String,
-    description: String,
-    division: String,
-    department: String,
-    prerequisites: String,
-    exclusions: String,
-    level: Number,
-    campus: String,
-    term: String,
-    breadths: [Number],
-    meeting_sections: [{
-        code: String,
-        instructors: [String],
-        times: [{
-            day: String,
-            start: Number,
-            end: Number,
-            duration: Number,
-            location: String
-        }],
-        size: Number,
-        enrolment: Number
-    }]
-});
-var CourseData = mongoose.model("CourseData", courseDatabase);
+// Course Informations.
+var CourseData = require('./backend/models/course_deprecated');
 
-// feeback schema
-var commentSchema = new mongoose.Schema({
-    email: String,
-    comments: [{
-        type: String
-    }]
-});
-var Comment = mongoose.model("Comment", commentSchema);
+// Feedback
+var Comment = require('./backend/models/comments');
 
 // Timetables schema
-var timetableSchema = new mongoose.Schema({
-    userid: String,
-    timetable: Array,
-    name: String
-})
-var Timetables = mongoose.model("Timetables", timetableSchema);
+var Timetables = require('./backend/models/timetable_deprecated');
 
-loadCourses();
-Timetables.remove({}, function() {});
-
+seedDB();
 
 console.log("Completed Initialization.");
 
@@ -539,78 +505,6 @@ function abbreviateDay(day) {
     }
     return d;
 }
-
-
-/**
- * Calls the CobaltAPI, plops everything that Cobalt has on Courses and stores it locally in our own Mongo as local cache.
- * This function is called on startup.
- * 
- * Interesting fact: UofT across all 3 campuses have 6721 courses in both undergraduate and graduate courses!
- */
-function loadCourses() {
-    var limit = 100;
-    var skip = 0;
-    var popOut = false;
-
-    request("https://cobalt.qas.im/api/1.0/courses" + cobalt + "&limit=10", function(err, resp, body) {
-        if (err) {
-            return console.log("Failed to connect, falling back to previous data.");
-        }
-
-        if (resp.statusCode != 200) {
-            return console.log("Did not get proper error code, falling back to previous data.");
-        }
-    });
-
-    // Need to implement a check if a connection can be successfully established, we drop the coursesData relation
-    // Otherwise stop, dont process anything and just use pre-existing data.
-    CourseData.remove({}, function(err) {
-        if (err) {
-            console.log("Failed to remove courses.");
-            return true;
-        } else {
-            console.log("Successfully removed courses.");
-        }
-    });
-
-
-    while (popOut == false || skip < 7000) {
-
-        var searchUri = "https://cobalt.qas.im/api/1.0/courses" + cobalt + "&limit=" + limit + "&skip=" + skip;
-        console.log(searchUri);
-
-        popOut = request(searchUri, function(err, resp, body) {
-            if (err) {
-                console.log("Error connecting to Cobalt, falling back to pre-existing data.");
-                return true;
-            }
-
-            if (resp.statusCode != 200) {
-                console.log("Cobalt API returned a different status code than expected: " + resp.statusCode);
-                return true;
-            }
-
-            if (body == null) {
-                console.log("Empty body");
-            } else {
-                var courseInfo = JSON.parse(body);
-                console.log("Attempting to insert...");
-
-                CourseData.insertMany(courseInfo, function(err, docs) {
-                    if (err) {
-                        console.log("Failed to add set into database.");
-                    } else {
-                        console.log(docs.length + " courses were successfully inserted into the database.");
-                    }
-                });
-            }
-        });
-
-        console.log("End of iteration.");
-        skip = skip + 100;
-    }
-}
-
 
 // Checks if an array contains an item
 function contains(item, container) {
