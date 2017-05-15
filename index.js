@@ -345,8 +345,10 @@ function authenticateUser(req, res) {
     });
 }
 
+/**
+ * Logging out a user.
+ */
 function destroySession(req, res) {
-
     req.logout();
     res.status(200).json({
         Status: "Success",
