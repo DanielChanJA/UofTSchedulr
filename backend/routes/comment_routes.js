@@ -2,6 +2,8 @@ var express = require('express');
 var router = express.Router();
 
 var Comment = require('../models/comments');
+var isAdminLoggedIn = require('./middlewares').isAdminLoggedIn;
+var isLoggedIn = require('./middlewares').isLoggedIn;
 
 /**
  * This function posts comments from the about us page to the DB.
