@@ -1,10 +1,10 @@
 # Custom
 
 mongodb/
+db/
 .DS_Store
 backend/keys.js
 .idea/
-.db/
 
 
 # BOILERPLATE: https://raw.githubusercontent.com/github/gitignore/master/Node.gitignore
